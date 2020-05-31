@@ -21,7 +21,7 @@ bool NPAPI_InitLocal() {
     g_nfn->NPAPI_SetTypeHandler_TypeCheck(handle, LumberyardModel::noesis_check);
 
     write_dragon_log("Initializing \"%s\" handler...\n", "Lumberyard Texture");
-    handle = g_nfn->NPAPI_Register((char*) "Lumberyard Texture", (char*) ".1");
+    handle = g_nfn->NPAPI_Register((char*) "Lumberyard Texture", (char*) ".a;.1");
     g_nfn->NPAPI_SetTypeHandler_LoadRGBA(handle, LumberyardTexture::noesis_load);
     g_nfn->NPAPI_SetTypeHandler_TypeCheck(handle, LumberyardTexture::noesis_check);
 

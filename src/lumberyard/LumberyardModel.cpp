@@ -24,8 +24,8 @@ LumberyardModel::LumberyardModel(vector<char> buffer) {
         super_assert_dragon_log<overflow_error>(buffer.size() >= chunk_header.Pointer + chunk_header.Size,
                                                 "Buffer overflow when parsing model chunk",
                                                 "Assertion failed -> length > chunk pointer + chunk size\n");
-        vector<uint8_t> chunk_buffer(buffer_ptr + chunk_header.Pointer,
-                                     buffer_ptr + chunk_header.Pointer + chunk_header.Size);
+        vector<char> chunk_buffer(buffer_ptr + chunk_header.Pointer,
+                                  buffer_ptr + chunk_header.Pointer + chunk_header.Size);
         switch(chunk_header.Type) {
             case LumberyardModelChunkMesh:
                 write_dragon_log("Found MODEL_CHUNK_MESH\n");

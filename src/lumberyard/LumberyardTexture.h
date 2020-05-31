@@ -17,7 +17,7 @@ public:
     vector<char> cook();
 
     vector<char> Header;
-    vector<vector<char>> Textures;
+    vector<char> Data;
 
     static bool check(vector<char> buffer);
 
@@ -27,7 +27,8 @@ public:
     noesis_load([[maybe_unused]] BYTE* buffer, [[maybe_unused]] int length, CArrayList<noesisTex_t*> &noe_tex,
                 noeRAPI_t* rapi);
 
-    static bool noesis_check([[maybe_unused]] BYTE* buffer, [[maybe_unused]] int length, [[maybe_unused]] noeRAPI_t* rapi);
+    static bool
+    noesis_check([[maybe_unused]] BYTE* buffer, [[maybe_unused]] int length, [[maybe_unused]] noeRAPI_t* rapi);
 
     static int noesis_tool([[maybe_unused]] int handle, [[maybe_unused]] void* user_data);
 
