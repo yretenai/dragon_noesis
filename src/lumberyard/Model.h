@@ -4,18 +4,24 @@
 
 #pragma once
 
-#ifndef FMT_DRAGON_LUMBERYARDMODEL_H
-#define FMT_DRAGON_LUMBERYARDMODEL_H
+#ifndef FMT_DRAGON_MODEL_H
+#define FMT_DRAGON_MODEL_H
 
 #include "Lumberyard.h"
-#include "LumberyardModelStructs.h"
+#include "ModelStructs.h"
+#include "chunks/model/AbstractModelChunk.h"
 
-class DRAGON_EXPORT LumberyardModel {
+class LUMBERYARD_EXPORT Model {
 public:
-    LumberyardModel(vector<char> buffer);
+    Model(vector<char> buffer);
+
+    ~Model();
 
     CrChHeader Header;
     vector<CrChChunkHeader> ChunkTable;
+    map<uint32_t, AbstractModelChunk*> Chunks;
+
+    CrChChunkHeader* get_chunk_header(uint32_t id);
 
     static bool check(vector<char> buffer);
 
@@ -28,4 +34,4 @@ public:
 #endif // USE_NOESIS
 };
 
-#endif //FMT_DRAGON_LUMBERYARDMODEL_H
+#endif //FMT_DRAGON_MODEL_H

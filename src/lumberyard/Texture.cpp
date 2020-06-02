@@ -4,7 +4,7 @@
 
 #include "Lumberyard.h"
 
-LumberyardTexture::LumberyardTexture(filesystem::path path) {
+Texture::Texture(filesystem::path path) {
     vector<char> dds = read_file(path);
     bool is_alpha = path.has_extension() && path.extension().compare(".a") == 0;
     uint32_t* pointer = reinterpret_cast<uint32_t*>(dds.data());
@@ -33,7 +33,7 @@ LumberyardTexture::LumberyardTexture(filesystem::path path) {
     delete[] buffer;
 }
 
-vector<char> LumberyardTexture::cook() {
+vector<char> Texture::cook() {
     if(Header.empty() || Data.empty())
         return vector<char>();
     vector<char> data(Header.size() + Data.size());
@@ -49,14 +49,14 @@ vector<char> LumberyardTexture::cook() {
 
 }
 
-bool LumberyardTexture::check(vector<char> buffer) {
+bool Texture::check(vector<char> buffer) {
     uint32_t* pointer = reinterpret_cast<uint32_t*>(buffer.data());
     return buffer.size() >= 0x80 && pointer[0] == FOURCC_DDS && pointer[1] == 0x7C && pointer[31] == FOURCC_FYRC;
 }
 
 #if USE_NOESIS
 
-bool LumberyardTexture::noesis_load([[maybe_unused]] BYTE* buffer, [[maybe_unused]] int length,
+bool Texture::noesis_load([[maybe_unused]] BYTE* buffer, [[maybe_unused]] int length,
                                     CArrayList<noesisTex_t*> &noe_tex, noeRAPI_t* rapi) {
     wchar_t* path = new wchar_t[MAX_NOESIS_PATH];
     g_nfn->NPAPI_GetSelectedFile(path);
@@ -72,7 +72,7 @@ bool LumberyardTexture::noesis_load([[maybe_unused]] BYTE* buffer, [[maybe_unuse
     if(wpath.extension().compare(".a") != 0)
         wpath.replace_extension();
 
-    LumberyardTexture texture(wpath);
+    Texture texture(wpath);
 
     vector<char> data = texture.cook();
     if(data.empty())
@@ -85,7 +85,7 @@ bool LumberyardTexture::noesis_load([[maybe_unused]] BYTE* buffer, [[maybe_unuse
     return true;
 }
 
-bool LumberyardTexture::noesis_check([[maybe_unused]] BYTE* buffer, [[maybe_unused]] int length,
+bool Texture::noesis_check([[maybe_unused]] BYTE* buffer, [[maybe_unused]] int length,
                                      [[maybe_unused]] noeRAPI_t* rapi) {
     wchar_t* path = new wchar_t[MAX_NOESIS_PATH];
     g_nfn->NPAPI_GetSelectedFile(path);
@@ -97,7 +97,7 @@ bool LumberyardTexture::noesis_check([[maybe_unused]] BYTE* buffer, [[maybe_unus
     return noesis_tool_visibility(0, path, nullptr, nullptr);
 }
 
-int LumberyardTexture::noesis_tool([[maybe_unused]] int handle, [[maybe_unused]] void* user_data) {
+int Texture::noesis_tool([[maybe_unused]] int handle, [[maybe_unused]] void* user_data) {
     wchar_t* path = new wchar_t[MAX_NOESIS_PATH];
     g_nfn->NPAPI_GetSelectedFile(path);
     if(wcslen(path) < 2) {
@@ -113,7 +113,7 @@ int LumberyardTexture::noesis_tool([[maybe_unused]] int handle, [[maybe_unused]]
     if(!is_alpha)
         wpath.replace_extension();
 
-    LumberyardTexture texture(wpath);
+    Texture texture(wpath);
 
     // handle color
     // handler is set to .dds.1, so strip .1
@@ -130,7 +130,7 @@ int LumberyardTexture::noesis_tool([[maybe_unused]] int handle, [[maybe_unused]]
     return 1;
 }
 
-int LumberyardTexture::noesis_tool_visibility([[maybe_unused]] int handle, const wchar_t* path,
+int Texture::noesis_tool_visibility([[maybe_unused]] int handle, const wchar_t* path,
                                               [[maybe_unused]] void* resv_a, [[maybe_unused]] void* resv_b) {
     if(path == nullptr)
         return false;
@@ -150,7 +150,7 @@ int LumberyardTexture::noesis_tool_visibility([[maybe_unused]] int handle, const
         wpath.replace_extension();
 
     vector<char> data = read_file(wpath);
-    return LumberyardTexture::check(data);
+    return Texture::check(data);
 }
 
 #endif // USE_NOESIS

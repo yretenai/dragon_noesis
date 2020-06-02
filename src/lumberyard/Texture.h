@@ -2,17 +2,17 @@
 // Created by yretenai on 5/31/2020.
 //
 
-#ifndef FMT_DRAGON_LUMBERYARDTEXTURE_H
-#define FMT_DRAGON_LUMBERYARDTEXTURE_H
+#ifndef FMT_DRAGON_TEXTURE_H
+#define FMT_DRAGON_TEXTURE_H
 
 #include "../dragon.h"
 
 #define FOURCC_DDS (MAKEFOURCC('D','D','S',' '))
 #define FOURCC_FYRC (MAKEFOURCC('F','Y','R','C'))
 
-class DRAGON_EXPORT LumberyardTexture {
+class LUMBERYARD_EXPORT Texture {
 public:
-    LumberyardTexture(filesystem::path path);
+    Texture(filesystem::path path);
 
     vector<char> cook();
 
@@ -39,4 +39,4 @@ public:
 };
 
 
-#endif //FMT_DRAGON_LUMBERYARDTEXTURE_H
+#endif //FMT_DRAGON_TEXTURE_H

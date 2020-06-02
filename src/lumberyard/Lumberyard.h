@@ -7,9 +7,9 @@
 
 #include "../dragon.h"
 #include "export.h"
-#include "LumberyardModel.h"
-#include "LumberyardActor.h"
-#include "LumberyardAnimation.h"
-#include "LumberyardTexture.h"
+#include "Model.h"
+#include "Actor.h"
+#include "Animation.h"
+#include "Texture.h"
 
 #endif //FMT_DRAGON_LUMBERYARD_H

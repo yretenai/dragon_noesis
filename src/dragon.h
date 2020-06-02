@@ -7,6 +7,8 @@
 #ifndef FMT_DRAGON_DRAGON_H
 #define FMT_DRAGON_DRAGON_H
 
+#include "export.h"
+
 #include <cstdio>
 #include <cstdint>
 #include <stdexcept>
@@ -15,6 +17,7 @@
 #include <filesystem>
 #include <iostream>
 #include <fstream>
+#include <map>
 
 #ifndef MAKEFOURCC
 #define MAKEFOURCC(ch0, ch1, ch2, ch3)                                        \
@@ -40,66 +43,22 @@
 
 using namespace std;
 
-extern FILE* DragonLog;
+DRAGON_EXPORT vector<char> read_file(filesystem::path path);
 
-vector<char> read_file(filesystem::path path);
+DRAGON_EXPORT void write_file(filesystem::path path, vector<char> buffer);
 
-void write_file(filesystem::path path, vector<char> buffer);
+DRAGON_EXPORT void open_dragon_log();
 
-inline void open_dragon_log() {
-    if((DragonLog == nullptr || DragonLog == stdout) && !fopen_s(&DragonLog, "fmt_dragon.log", "w")) {
-        DragonLog = nullptr;
-    }
-}
+DRAGON_EXPORT void close_dragon_log();
 
-inline void close_dragon_log() {
-    if(DragonLog != nullptr && DragonLog != stdout) {
-        fclose(DragonLog);
-    }
-}
+DRAGON_EXPORT void flush_dragon_log();
 
-inline void flush_dragon_log() {
-    if(DragonLog != nullptr) {
-        fflush(DragonLog);
-    }
-}
+DRAGON_EXPORT void open_dragon_log_stdout();
 
-inline void open_dragon_log_stdout() {
-    if(DragonLog != nullptr) {
-        flush_dragon_log();
-        close_dragon_log();
-    }
-    DragonLog = stdout;
-}
+DRAGON_EXPORT void write_dragon_log(const char* fmt, ...);
 
-inline void write_dragon_log(const char* fmt, ...) {
-    if(DragonLog != nullptr) {
-        va_list args;
-                va_start(args, fmt);
-        vfprintf(DragonLog, fmt, args);
-                va_end(args);
-    }
-}
+DRAGON_EXPORT void assert_dragon_log(bool check, const char* fmt, ...);
 
-inline void assert_dragon_log(bool check, const char* fmt, ...) {
-    if(!check) {
-        va_list args;
-                va_start(args, fmt);
-        vfprintf(DragonLog, fmt, args);
-                va_end(args);
-    }
-}
-
-template<class exception>
-inline void super_assert_dragon_log(bool check, const char* error, const char* fmt, ...) {
-    if(!check) {
-        va_list args;
-                va_start(args, fmt);
-        vfprintf(DragonLog, fmt, args);
-                va_end(args);
-        flush_dragon_log();
-        throw exception(error);
-    }
-}
+DRAGON_EXPORT void super_assert_dragon_log(bool check, const char* error, const char* fmt, ...);
 
 #endif //FMT_DRAGON_DRAGON_H

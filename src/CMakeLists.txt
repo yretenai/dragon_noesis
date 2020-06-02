@@ -11,11 +11,13 @@ set(USE_NOESIS off CACHE BOOL "Use and Export Noesis functions")
 
 include(GenerateExportHeader)
 
-add_library(fmt_dragon STATIC dragon.cpp)
+add_library(fmt_dragon SHARED dragon.cpp)
+generate_export_header(fmt_dragon BASE_NAME DRAGON DEFINE_NO_DEPRECATED EXPORT_FILE_NAME ${PROJECT_SOURCE_DIR}/export.h)
 
 add_library(fmt_lumberyard SHARED
-        lumberyard/LumberyardModel.cpp lumberyard/LumberyardAnimation.cpp lumberyard/LumberyardActor.cpp
-        lumberyard/LumberyardTexture.cpp lumberyard/LumberyardTexture.h lumberyard/Lumberyard.cpp)
+        lumberyard/Model.cpp lumberyard/Animation.cpp lumberyard/Actor.cpp
+        lumberyard/Texture.cpp lumberyard/Lumberyard.cpp lumberyard/chunks/model/ModelFlags.cpp
+        lumberyard/chunks/model/MaterialName.cpp lumberyard/chunks/model/AbstractModelChunk.cpp)
 target_link_libraries(fmt_lumberyard fmt_dragon)
 
 if(${USE_NOESIS})
@@ -23,10 +25,10 @@ if(${USE_NOESIS})
     add_compile_definitions(USE_NOESIS)
 endif()
 
-generate_export_header(fmt_lumberyard BASE_NAME DRAGON DEFINE_NO_DEPRECATED EXPORT_FILE_NAME ${PROJECT_SOURCE_DIR}/lumberyard/export.h)
+generate_export_header(fmt_lumberyard BASE_NAME LUMBERYARD DEFINE_NO_DEPRECATED EXPORT_FILE_NAME ${PROJECT_SOURCE_DIR}/lumberyard/export.h)
 
 add_executable(lumberyard_test tool/lumberyard/main.cpp)
-target_link_libraries(lumberyard_test fmt_lumberyard)
+target_link_libraries(lumberyard_test fmt_lumberyard fmt_dragon)
 
 install(TARGETS fmt_lumberyard
         RUNTIME DESTINATION "plugins"
