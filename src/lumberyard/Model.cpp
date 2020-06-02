@@ -4,7 +4,7 @@
 
 #include "../dragon.h"
 #include "Model.h"
-#include "chunks/model/ModelFlags.h"
+#include "chunks/model/ExportFlags.h"
 #include "chunks/model/MaterialName.h"
 
 Model::Model(vector<char> buffer) {
@@ -21,41 +21,43 @@ Model::Model(vector<char> buffer) {
                                          reinterpret_cast<CrChChunkHeader*>(buffer_ptr + Header.ChunkTablePointer +
                                                                             sizeof(CrChChunkHeader) *
                                                                             Header.ChunkCount));
-    Chunks = map<uint32_t, AbstractModelChunk*>();
+    Chunks = map<uint32_t, shared_ptr<AbstractModelChunk>>();
     for(CrChChunkHeader chunk_header : ChunkTable) {
         super_assert_dragon_log(buffer.size() >= chunk_header.Pointer + chunk_header.Size,
                                 "Buffer overflow when parsing model chunk",
                                 "Assertion failed -> length > chunk pointer + chunk size\n");
         vector<char> chunk_buffer(buffer_ptr + chunk_header.Pointer,
                                   buffer_ptr + chunk_header.Pointer + chunk_header.Size);
-        Chunks[chunk_header.Id] = nullptr;
         switch(chunk_header.Type) {
-            case ModelChunkMesh:
+            case CRCH_CHUNK_HEADER::ModelChunkMesh:
                 write_dragon_log("Found ModelChunkMesh\n");
                 break;
-            case ModelChunkMaterialList:
+            case CRCH_CHUNK_HEADER::ModelChunkMaterialList:
                 write_dragon_log("Found ModelChunkMaterialList\n");
                 break;
-            case ModelChunkNode:
+            case CRCH_CHUNK_HEADER::ModelChunkNode:
                 write_dragon_log("Found ModelChunkNode\n");
                 break;
-            case ModelChunkMaterial:
+            case CRCH_CHUNK_HEADER::ModelChunkMaterial:
                 write_dragon_log("Found ModelChunkMaterial\n");
                 break;
-            case ModelChunkMeta:
+            case CRCH_CHUNK_HEADER::ModelChunkMeta:
                 write_dragon_log("Found ModelChunkMeta\n");
                 break;
-            case ModelChunkMaterialName:
+            case CRCH_CHUNK_HEADER::ModelChunkMaterialName:
                 write_dragon_log("Found ModelChunkMaterialName\n");
-                Chunks[chunk_header.Id] = (AbstractModelChunk*) new MaterialName(chunk_buffer);
+                Chunks[chunk_header.Id] = shared_ptr<AbstractModelChunk>(
+                        dynamic_cast<AbstractModelChunk*>(new MaterialName(chunk_buffer)));
                 break;
-            case ModelChunkFlags:
+            case CRCH_CHUNK_HEADER::ModelChunkFlags:
                 write_dragon_log("Found ModelChunkFlags\n");
+                Chunks[chunk_header.Id] = shared_ptr<AbstractModelChunk>(
+                        dynamic_cast<AbstractModelChunk*>(new ExportFlags(chunk_buffer)));
                 break;
-            case ModelChunkData:
+            case CRCH_CHUNK_HEADER::ModelChunkData:
                 write_dragon_log("Found ModelChunkData\n");
                 break;
-            case ModelChunkGeometry:
+            case CRCH_CHUNK_HEADER::ModelChunkGeometry:
                 write_dragon_log("Found ModelChunkGeometry\n");
                 break;
             default:
@@ -71,18 +73,14 @@ bool Model::check(vector<char> buffer) {
     return buffer.size() >= sizeof(CrChHeader) && pointer[0] == FOURCC_CRCH && pointer[1] == 0x746;
 }
 
-CrChChunkHeader* Model::get_chunk_header(uint32_t id) {
+bool Model::get_chunk_header(uint32_t id, CrChChunkHeader& chunk) {
     for(int i = 0; i < Chunks.size(); i++) {
-        if(ChunkTable[i].Id == id)
-            return &ChunkTable[i];
+        if(ChunkTable[i].Id == id) {
+            chunk = ChunkTable[i];
+            return true;
+        }
     }
-    return nullptr;
-}
-
-Model::~Model() {
-    for(pair<uint32_t, AbstractModelChunk*> pair : Chunks) {
-        delete pair.second;
-    }
+    return false;
 }
 
 #ifdef USE_NOESIS

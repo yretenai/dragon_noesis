@@ -17,7 +17,6 @@ int main(int argc, char** argv) {
     char* filepath = argv[1];
     std::vector<char> bytes = read_file(filepath);
     Model model(bytes);
-    MaterialName name = *reinterpret_cast<MaterialName*>(model.Chunks[2]);
     close_dragon_log();
     return 0;
 }

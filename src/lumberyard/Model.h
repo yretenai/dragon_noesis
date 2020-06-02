@@ -15,13 +15,11 @@ class LUMBERYARD_EXPORT Model {
 public:
     Model(vector<char> buffer);
 
-    ~Model();
-
     CrChHeader Header;
     vector<CrChChunkHeader> ChunkTable;
-    map<uint32_t, AbstractModelChunk*> Chunks;
+    map<uint32_t, shared_ptr<AbstractModelChunk>> Chunks;
 
-    CrChChunkHeader* get_chunk_header(uint32_t id);
+    bool Model::get_chunk_header(uint32_t id, CrChChunkHeader& chunk);
 
     static bool check(vector<char> buffer);
 

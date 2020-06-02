@@ -16,8 +16,8 @@ generate_export_header(fmt_dragon BASE_NAME DRAGON DEFINE_NO_DEPRECATED EXPORT_F
 
 add_library(fmt_lumberyard SHARED
         lumberyard/Model.cpp lumberyard/Animation.cpp lumberyard/Actor.cpp
-        lumberyard/Texture.cpp lumberyard/Lumberyard.cpp lumberyard/chunks/model/ModelFlags.cpp
-        lumberyard/chunks/model/MaterialName.cpp lumberyard/chunks/model/AbstractModelChunk.cpp)
+        lumberyard/Texture.cpp lumberyard/Lumberyard.cpp lumberyard/chunks/model/ExportFlags.cpp
+        lumberyard/chunks/model/MaterialName.cpp)
 target_link_libraries(fmt_lumberyard fmt_dragon)
 
 if(${USE_NOESIS})

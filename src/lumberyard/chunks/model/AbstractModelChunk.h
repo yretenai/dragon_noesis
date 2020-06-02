@@ -9,9 +9,8 @@
 
 class LUMBERYARD_EXPORT AbstractModelChunk {
 public:
-    virtual ~AbstractModelChunk() {
+    virtual ~AbstractModelChunk() noexcept {
     }
 };
-
 
 #endif //FMT_DRAGON_ABSTRACTMODELCHUNK_H

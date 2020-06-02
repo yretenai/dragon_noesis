@@ -7,13 +7,12 @@
 
 #include "../../Lumberyard.h"
 
-class LUMBERYARD_EXPORT MaterialName : AbstractModelChunk {
+class LUMBERYARD_EXPORT MaterialName : public AbstractModelChunk {
 public:
     MaterialName(vector<char> buffer);
 
-    ~MaterialName();
-
     string Name;
+    vector<int32_t> Types;
     vector<string> Materials;
 };
 
