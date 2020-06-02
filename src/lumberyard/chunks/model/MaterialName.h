@@ -10,6 +10,7 @@
 class LUMBERYARD_EXPORT MaterialName : AbstractModelChunk {
 public:
     MaterialName(vector<char> buffer);
+
     ~MaterialName();
 
     string Name;

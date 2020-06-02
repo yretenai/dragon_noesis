@@ -10,6 +10,7 @@
 class LUMBERYARD_EXPORT ModelFlags : AbstractModelChunk {
 public:
     ModelFlags(vector<char> data);
+
     ~ModelFlags();
 };
 
