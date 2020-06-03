@@ -7,11 +7,17 @@
 
 #include <stdint.h>
 
-typedef struct VERSION_STRUCT {
+struct VERSION_STRUCT {
     uint32_t a;
     uint32_t b;
     uint32_t c;
     uint32_t d;
-} VersionStruct;
+};
+
+struct VECTOR3_SINGLE {
+    float x;
+    float y;
+    float z;
+};
 
 #endif //FMT_DRAGON_SHAREDSTRUCTURES_H

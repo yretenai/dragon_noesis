@@ -6,23 +6,23 @@
 #include "Model.h"
 #include "chunks/model/ExportFlags.h"
 #include "chunks/model/MaterialName.h"
+#include "chunks/model/Submesh.h"
+
+#define CAST_MODEL_CHUNK(chunk) shared_ptr<AbstractModelChunk>(dynamic_cast<AbstractModelChunk*>(chunk))
 
 Model::Model(vector<char> buffer) {
-    super_assert_dragon_log(buffer.size() >= sizeof(CrChHeader), "Buffer overflow when parsing model",
+    super_assert_dragon_log(buffer.size() >= sizeof(CRCH_HEADER), "Buffer overflow when parsing model",
                             "Assertion failed -> length > sizeof CrChHeader\n");
     char* buffer_ptr = buffer.data();
-    Header = reinterpret_cast<CrChHeader*>(buffer_ptr)[0];
+    Header = vector_cast<CRCH_HEADER>(buffer_ptr);
     if(Header.ChunkCount == 0)
         return;
-    super_assert_dragon_log(buffer.size() >= Header.ChunkTablePointer + sizeof(CrChChunkHeader) * Header.ChunkCount,
+    super_assert_dragon_log(buffer.size() >= Header.ChunkTablePointer + sizeof(CRCH_CHUNK_HEADER) * Header.ChunkCount,
                             "Buffer overflow when parsing model chunk table",
                             "Assertion failed -> length > chunks * sizeof CrChChunkHeader\n");
-    ChunkTable = vector<CrChChunkHeader>(reinterpret_cast<CrChChunkHeader*>(buffer_ptr + Header.ChunkTablePointer),
-                                         reinterpret_cast<CrChChunkHeader*>(buffer_ptr + Header.ChunkTablePointer +
-                                                                            sizeof(CrChChunkHeader) *
-                                                                            Header.ChunkCount));
+    ChunkTable = vector_cast_slice<CRCH_CHUNK_HEADER>(buffer_ptr + Header.ChunkTablePointer, Header.ChunkCount);
     Chunks = map<uint32_t, shared_ptr<AbstractModelChunk>>();
-    for(CrChChunkHeader chunk_header : ChunkTable) {
+    for(CRCH_CHUNK_HEADER chunk_header : ChunkTable) {
         super_assert_dragon_log(buffer.size() >= chunk_header.Pointer + chunk_header.Size,
                                 "Buffer overflow when parsing model chunk",
                                 "Assertion failed -> length > chunk pointer + chunk size\n");
@@ -46,19 +46,18 @@ Model::Model(vector<char> buffer) {
                 break;
             case CRCH_CHUNK_HEADER::ModelChunkMaterialName:
                 write_dragon_log("Found ModelChunkMaterialName\n");
-                Chunks[chunk_header.Id] = shared_ptr<AbstractModelChunk>(
-                        dynamic_cast<AbstractModelChunk*>(new MaterialName(chunk_buffer)));
+                Chunks[chunk_header.Id] = CAST_MODEL_CHUNK(new MaterialName(chunk_buffer));
                 break;
             case CRCH_CHUNK_HEADER::ModelChunkFlags:
                 write_dragon_log("Found ModelChunkFlags\n");
-                Chunks[chunk_header.Id] = shared_ptr<AbstractModelChunk>(
-                        dynamic_cast<AbstractModelChunk*>(new ExportFlags(chunk_buffer)));
+                Chunks[chunk_header.Id] = CAST_MODEL_CHUNK(new ExportFlags(chunk_buffer));
                 break;
             case CRCH_CHUNK_HEADER::ModelChunkData:
                 write_dragon_log("Found ModelChunkData\n");
                 break;
-            case CRCH_CHUNK_HEADER::ModelChunkGeometry:
-                write_dragon_log("Found ModelChunkGeometry\n");
+            case CRCH_CHUNK_HEADER::ModelChunkSubmesh:
+                write_dragon_log("Found ModelChunkSubmesh\n");
+                Chunks[chunk_header.Id] = CAST_MODEL_CHUNK(new Submesh(chunk_buffer));
                 break;
             default:
                 write_dragon_log("%s (%X)\n", "Unhandled model chunk!", chunk_header.Type);
@@ -70,10 +69,10 @@ Model::Model(vector<char> buffer) {
 
 bool Model::check(vector<char> buffer) {
     uint32_t* pointer = reinterpret_cast<uint32_t*>(buffer.data());
-    return buffer.size() >= sizeof(CrChHeader) && pointer[0] == FOURCC_CRCH && pointer[1] == 0x746;
+    return buffer.size() >= sizeof(CRCH_HEADER) && pointer[0] == FOURCC_CRCH && pointer[1] == 0x746;
 }
 
-bool Model::get_chunk_header(uint32_t id, CrChChunkHeader& chunk) {
+bool Model::get_chunk_header(uint32_t id, CRCH_CHUNK_HEADER &chunk) {
     for(int i = 0; i < Chunks.size(); i++) {
         if(ChunkTable[i].Id == id) {
             chunk = ChunkTable[i];

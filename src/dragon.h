@@ -25,6 +25,10 @@
                     ((DWORD)(BYTE)(ch2) << 16) | ((DWORD)(BYTE)(ch3) << 24 ))
 #endif // MAKEFOURCC
 
+#ifndef FOURCC_DX10
+#define FOURCC_DX10  (MAKEFOURCC('D','X','1','0'))
+#endif
+
 #ifdef USE_NOESIS
 
 #include "noesis/pluginshare.h"
@@ -43,9 +47,45 @@
 
 using namespace std;
 
-DRAGON_EXPORT vector<char> read_file(filesystem::path path);
+template<typename T>
+inline vector<T> vector_cast_slice(char* ptr, int count) {
+    return vector<T>(reinterpret_cast<T*>(ptr), reinterpret_cast<T*>(ptr + sizeof(T) * count));
+}
 
-DRAGON_EXPORT void write_file(filesystem::path path, vector<char> buffer);
+template<typename T>
+inline vector<T> vector_cast_slice(char** ptr, int count) {
+    vector<T> data = vector_cast_slice<T>(*ptr, count);
+    *ptr += sizeof(T) * count;
+    return data;
+}
+
+template<typename T>
+inline T vector_cast(char* ptr, int index = 0) {
+    return reinterpret_cast<T*>(ptr)[index];
+}
+
+template<typename T>
+inline T vector_cast(char** ptr, int index = 0) {
+    T data = vector_cast<T>(*ptr, index);
+    *ptr += sizeof(T);
+    return data;
+}
+
+inline vector<char> read_file(filesystem::path path) {
+    ifstream file(path, ios::binary | ios::ate | ios::in);
+    ifstream::pos_type pos = file.tellg();
+    std::vector<char> bytes(pos);
+    file.seekg(0, ios::beg);
+    file.read(bytes.data(), pos);
+    return bytes;
+}
+
+inline void write_file(filesystem::path path, vector<char> buffer) {
+    if(buffer.empty())
+        return;
+    ofstream file(path, ios::binary | ios::out | ios::trunc);
+    file.write(buffer.data(), buffer.size());
+}
 
 DRAGON_EXPORT void open_dragon_log();
 
