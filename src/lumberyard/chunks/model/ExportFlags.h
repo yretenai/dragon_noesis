@@ -19,7 +19,7 @@ public:
             SingleVertex = 0x8,
             EightWeights = 0x10,
             Skinned = 0x20,
-            ExportedFromXSI = 0x1001,
+            ExportedFromXsi = 0x1001,
             ExportedFromMax = 0x1002,
             ExportedFromMaya = 0x1003
         };

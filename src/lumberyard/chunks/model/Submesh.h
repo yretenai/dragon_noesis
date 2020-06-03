@@ -28,7 +28,7 @@ public:
         int32_t IndexCount;
         int32_t FirstVertId;
         int32_t VertCount;
-        int32_t MaterialID;
+        int32_t MaterialId;
         float Radius;
         VECTOR3_SINGLE Center;
     };

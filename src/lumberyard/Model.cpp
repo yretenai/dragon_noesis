@@ -26,8 +26,7 @@ Model::Model(vector<char> buffer) {
         super_assert_dragon_log(buffer.size() >= chunk_header.Pointer + chunk_header.Size,
                                 "Buffer overflow when parsing model chunk",
                                 "Assertion failed -> length > chunk pointer + chunk size\n");
-        vector<char> chunk_buffer(buffer_ptr + chunk_header.Pointer,
-                                  buffer_ptr + chunk_header.Pointer + chunk_header.Size);
+        vector<char> chunk_buffer = vector_slice(buffer_ptr + chunk_header.Pointer, chunk_header.Size);
         switch(chunk_header.Type) {
             case CRCH_CHUNK_HEADER::ModelChunkMesh:
                 write_dragon_log("Found ModelChunkMesh\n");
@@ -85,14 +84,14 @@ bool Model::get_chunk_header(uint32_t id, CRCH_CHUNK_HEADER &chunk) {
 #ifdef USE_NOESIS
 
 noesisModel_t* Model::noesis_load(BYTE* buffer, int length, int &num_mdl, noeRAPI_t* rapi) {
-    vector<char> data_buffer(buffer, buffer + length);
+    vector<char> data_buffer = vector_slice(reinterpret_cast<char*>(buffer), length);
     Model model(data_buffer);
     return nullptr;
 }
 
 bool Model::noesis_check(BYTE* buffer, int length, [[maybe_unused]] noeRAPI_t* rapi) {
-    vector<char> data(buffer, buffer + length);
-    return Model::check(data);
+    vector<char> data_buffer = vector_slice(reinterpret_cast<char*>(buffer), length);
+    return Model::check(data_buffer);
 }
 
 #endif // USE_NOESIS

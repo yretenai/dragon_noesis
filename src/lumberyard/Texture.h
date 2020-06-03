@@ -33,7 +33,7 @@ public:
     static int noesis_tool([[maybe_unused]] int handle, [[maybe_unused]] void* user_data);
 
     static int noesis_tool_visibility([[maybe_unused]] int handle, const wchar_t* path, [[maybe_unused]] void* resv_a,
-                                      [[maybe_unused]] void* resv_b);
+                                       [[maybe_unused]] void* resv_b);
 
 #endif // USE_NOESIS
 };

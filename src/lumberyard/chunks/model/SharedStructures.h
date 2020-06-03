@@ -8,16 +8,16 @@
 #include <stdint.h>
 
 struct VERSION_STRUCT {
-    uint32_t a;
-    uint32_t b;
-    uint32_t c;
-    uint32_t d;
+    uint32_t A;
+    uint32_t B;
+    uint32_t C;
+    uint32_t D;
 };
 
 struct VECTOR3_SINGLE {
-    float x;
-    float y;
-    float z;
+    float X;
+    float Y;
+    float Z;
 };
 
 #endif //FMT_DRAGON_SHAREDSTRUCTURES_H

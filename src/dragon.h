@@ -59,6 +59,16 @@ inline vector<T> vector_cast_slice(char** ptr, int count) {
     return data;
 }
 
+inline vector<char> vector_slice(char* ptr, int count) {
+    return vector<char>(ptr, ptr + count);
+}
+
+inline vector<char> vector_slice(char** ptr, int count) {
+    vector<char> data = vector_slice(*ptr, count);
+    *ptr += count;
+    return data;
+}
+
 template<typename T>
 inline T vector_cast(char* ptr, int index = 0) {
     return reinterpret_cast<T*>(ptr)[index];
@@ -73,7 +83,7 @@ inline T vector_cast(char** ptr, int index = 0) {
 
 inline vector<char> read_file(filesystem::path path) {
     ifstream file(path, ios::binary | ios::ate | ios::in);
-    ifstream::pos_type pos = file.tellg();
+    uint32_t pos = file.tellg();
     std::vector<char> bytes(pos);
     file.seekg(0, ios::beg);
     file.read(bytes.data(), pos);

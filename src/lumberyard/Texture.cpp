@@ -13,7 +13,7 @@ Texture::Texture(filesystem::path path) {
     uint32_t size = 0x80;
     if(pointer[21] == FOURCC_DX10)
         size += 0x14;
-    Header = vector<char>(dds.data(), dds.data() + size);
+    Header = vector_slice(dds.data(), size);
 
     filesystem::path tmp(path);
     if(!is_alpha)
@@ -131,7 +131,7 @@ int Texture::noesis_tool([[maybe_unused]] int handle, [[maybe_unused]] void* use
 }
 
 int Texture::noesis_tool_visibility([[maybe_unused]] int handle, const wchar_t* path, [[maybe_unused]] void* resv_a,
-                                    [[maybe_unused]] void* resv_b) {
+                                     [[maybe_unused]] void* resv_b) {
     if(path == nullptr)
         return false;
 
