@@ -7,6 +7,7 @@
 #include "../../lumberyard/chunks/model/MaterialName.h"
 
 using namespace std;
+using namespace dragon;
 
 int main(int argc, char** argv) {
     open_dragon_log_stdout();
@@ -16,7 +17,7 @@ int main(int argc, char** argv) {
     }
     char* filepath = argv[1];
     std::vector<char> bytes = read_file(filepath);
-    Model model(bytes);
+    lumberyard::Model model(bytes);
     close_dragon_log();
     return 0;
 }

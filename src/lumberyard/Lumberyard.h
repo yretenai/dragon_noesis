@@ -12,4 +12,6 @@
 #include "Animation.h"
 #include "Texture.h"
 
+using namespace dragon;
+
 #endif //FMT_LUMBERYARD_LUMBERYARD_H

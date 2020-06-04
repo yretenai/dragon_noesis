@@ -3,3 +3,7 @@
 //
 
 #include "Animation.h"
+
+namespace dragon::lumberyard {
+
+}

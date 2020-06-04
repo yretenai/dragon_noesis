@@ -9,9 +9,10 @@
 
 #include "Lumberyard.h"
 
-class LUMBERYARD_EXPORT Actor {
+namespace dragon::lumberyard {
+    class LUMBERYARD_EXPORT Actor {
 
-};
-
+    };
+}
 
 #endif //FMT_LUMBERYARD_ACTOR_H

@@ -4,7 +4,10 @@
 
 #include "ExportFlags.h"
 
-ExportFlags::ExportFlags(vector<char> buffer) {
-    char* ptr = buffer.data();
-    Header = vector_cast<EXPORT_FLAGS_HEADER>(ptr);
+namespace dragon::lumberyard::chunk::model {
+    ExportFlags::ExportFlags(vector<char> buffer, uint32_t version) {
+        super_assert_dragon_log(version == 0x800, "version == 0x800");
+        char* ptr = buffer.data();
+        Header = vector_cast<EXPORT_FLAGS_HEADER>(ptr);
+    }
 }

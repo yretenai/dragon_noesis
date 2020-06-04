@@ -7,10 +7,12 @@
 
 #include "../../export.h"
 
-class LUMBERYARD_EXPORT AbstractModelChunk {
-public:
-    virtual ~AbstractModelChunk() noexcept {
-    }
-};
+namespace dragon::lumberyard::chunk::model {
+    class LUMBERYARD_EXPORT AbstractModelChunk {
+    public:
+        virtual ~AbstractModelChunk() noexcept {
+        }
+    };
+}
 
 #endif //FMT_DRAGON_ABSTRACTMODELCHUNK_H

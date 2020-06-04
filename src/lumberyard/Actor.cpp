@@ -3,3 +3,7 @@
 //
 
 #include "Actor.h"
+
+namespace dragon::lumberyard {
+
+}

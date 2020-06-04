@@ -11,6 +11,8 @@
 const char* g_pPluginName = "lumberyard";
 const char* g_pPluginDesc = "Lumberyard Asset Handler by yretenai";
 
+using namespace dragon::lumberyard;
+
 bool NPAPI_InitLocal() {
     open_dragon_log();
     write_dragon_log("lumberyard (fmt_dragon) v1.0.0\n");

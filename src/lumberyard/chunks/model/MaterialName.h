@@ -7,14 +7,15 @@
 
 #include "../../Lumberyard.h"
 
-class LUMBERYARD_EXPORT MaterialName : public AbstractModelChunk {
-public:
-    MaterialName(vector<char> buffer);
+namespace dragon::lumberyard::chunk::model {
+    class LUMBERYARD_EXPORT MaterialName : public AbstractModelChunk {
+    public:
+        MaterialName(vector<char> buffer, uint32_t version);
 
-    string Name;
-    vector<int32_t> Types;
-    vector<string> Materials;
-};
-
+        string Name;
+        vector<int32_t> Types;
+        vector<string> Materials;
+    };
+}
 
 #endif //FMT_LUMBERYARD_MATERIALNAME_H

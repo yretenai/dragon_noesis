@@ -29,7 +29,7 @@ endif()
 add_library(fmt_lumberyard SHARED
         lumberyard/Model.cpp lumberyard/Animation.cpp lumberyard/Actor.cpp
         lumberyard/Texture.cpp lumberyard/Lumberyard.cpp lumberyard/chunks/model/ExportFlags.cpp
-        lumberyard/chunks/model/MaterialName.cpp lumberyard/chunks/model/Submesh.cpp)
+        lumberyard/chunks/model/MaterialName.cpp lumberyard/chunks/model/Submesh.cpp lumberyard/chunks/model/DataStream.cpp lumberyard/chunks/model/DataStream.h)
 target_link_libraries(fmt_lumberyard fmt_dragon)
 
 if(${USE_NOESIS})
