@@ -21,7 +21,7 @@ Texture::Texture(filesystem::path path) {
     char* buffer = new char[3];
     for(uint32_t i = pointer[7]; i > 0; i--) {
         // try and find color texture
-        sprintf_s(buffer, 3, "%d", i);
+        sprintf(buffer, "%d", i);
         tmp.replace_extension(buffer);
         if(is_alpha)
             tmp += "a";
@@ -39,8 +39,8 @@ vector<char> Texture::cook() {
     vector<char> data(Header.size() + Data.size());
     char* pointer = data.data();
     // oh god.
-    memcpy_s(pointer, Header.size(), Header.data(), Header.size());
-    memcpy_s(pointer + Header.size(), Data.size(), Data.data(), Data.size());
+    memcpy(pointer, Header.data(), Header.size());
+    memcpy(pointer + Header.size(), Data.data(), Data.size());
 
     uint32_t* ints = reinterpret_cast<uint32_t*>(pointer);
     ints[7] = 1; // dwMipCount

@@ -2,8 +2,8 @@
 // Created by yretenai on 6/3/2020.
 //
 
-#ifndef FMT_DRAGON_SUBMESH_H
-#define FMT_DRAGON_SUBMESH_H
+#ifndef FMT_LUMBERYARD_SUBMESH_H
+#define FMT_LUMBERYARD_SUBMESH_H
 
 #include "../../Lumberyard.h"
 #include "SharedStructures.h"
@@ -48,4 +48,4 @@ public:
 };
 
 
-#endif //FMT_DRAGON_SUBMESH_H
+#endif //FMT_LUMBERYARD_SUBMESH_H

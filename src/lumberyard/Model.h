@@ -4,8 +4,8 @@
 
 #pragma once
 
-#ifndef FMT_DRAGON_MODEL_H
-#define FMT_DRAGON_MODEL_H
+#ifndef FMT_LUMBERYARD_MODEL_H
+#define FMT_LUMBERYARD_MODEL_H
 
 #include "Lumberyard.h"
 #include "chunks/model/AbstractModelChunk.h"
@@ -49,7 +49,7 @@ public:
     vector<CRCH_CHUNK_HEADER> ChunkTable;
     map<uint32_t, shared_ptr<AbstractModelChunk>> Chunks;
 
-    bool Model::get_chunk_header(uint32_t id, CRCH_CHUNK_HEADER &chunk);
+    bool get_chunk_header(uint32_t id, CRCH_CHUNK_HEADER &chunk);
 
     static bool check(vector<char> buffer);
 
@@ -62,4 +62,4 @@ public:
 #endif // USE_NOESIS
 };
 
-#endif //FMT_DRAGON_MODEL_H
+#endif //FMT_LUMBERYARD_MODEL_H

@@ -4,8 +4,8 @@
 
 #pragma once
 
-#ifndef FMT_DRAGON_ACTOR_H
-#define FMT_DRAGON_ACTOR_H
+#ifndef FMT_LUMBERYARD_ACTOR_H
+#define FMT_LUMBERYARD_ACTOR_H
 
 #include "Lumberyard.h"
 
@@ -14,4 +14,4 @@ class LUMBERYARD_EXPORT Actor {
 };
 
 
-#endif //FMT_DRAGON_ACTOR_H
+#endif //FMT_LUMBERYARD_ACTOR_H

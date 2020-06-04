@@ -2,8 +2,8 @@
 // Created by yretenai on 6/2/2020.
 //
 
-#ifndef FMT_DRAGON_EXPORTFLAGS_H
-#define FMT_DRAGON_EXPORTFLAGS_H
+#ifndef FMT_LUMBERYARD_EXPORTFLAGS_H
+#define FMT_LUMBERYARD_EXPORTFLAGS_H
 
 #include "../../Lumberyard.h"
 #include "SharedStructures.h"
@@ -38,4 +38,4 @@ public:
 };
 
 
-#endif //FMT_DRAGON_EXPORTFLAGS_H
+#endif //FMT_LUMBERYARD_EXPORTFLAGS_H

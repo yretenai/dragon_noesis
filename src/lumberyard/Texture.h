@@ -2,8 +2,8 @@
 // Created by yretenai on 5/31/2020.
 //
 
-#ifndef FMT_DRAGON_TEXTURE_H
-#define FMT_DRAGON_TEXTURE_H
+#ifndef FMT_LUMBERYARD_TEXTURE_H
+#define FMT_LUMBERYARD_TEXTURE_H
 
 #include "../dragon.h"
 
@@ -39,4 +39,4 @@ public:
 };
 
 
-#endif //FMT_DRAGON_TEXTURE_H
+#endif //FMT_LUMBERYARD_TEXTURE_H

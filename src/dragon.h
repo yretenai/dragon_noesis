@@ -12,38 +12,35 @@
 #include <cstdio>
 #include <cstdint>
 #include <stdexcept>
-#include <vector>
 #include <string>
+#include <vector>
+#include <map>
 #include <filesystem>
 #include <iostream>
 #include <fstream>
-#include <map>
 
 #ifndef MAKEFOURCC
-#define MAKEFOURCC(ch0, ch1, ch2, ch3)                                        \
-                    ((DWORD)(BYTE)(ch0) | ((DWORD)(BYTE)(ch1) << 8) |         \
-                    ((DWORD)(BYTE)(ch2) << 16) | ((DWORD)(BYTE)(ch3) << 24 ))
+#define MAKEFOURCC(ch0, ch1, ch2, ch3)                                                    \
+                    ((uint32_t)(uint8_t)(ch0) | ((uint32_t)(uint8_t)(ch1) << 8) |         \
+                    ((uint32_t)(uint8_t)(ch2) << 16) | ((uint32_t)(uint8_t)(ch3) << 24 ))
 #endif // MAKEFOURCC
 
 #ifndef FOURCC_DX10
 #define FOURCC_DX10  (MAKEFOURCC('D','X','1','0'))
 #endif
 
+#ifdef WIN32
 #ifdef USE_NOESIS
 
 #include "noesis/pluginshare.h"
 
 #else // USE_NOESIS
-#define WIN32_LEAN_AND_MEAN
 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <malloc.h>
-#include <assert.h>
-#include <new>
 
 #endif // USE_NOESIS
+#endif
 
 using namespace std;
 
@@ -82,11 +79,11 @@ inline T vector_cast(char** ptr, int index = 0) {
 }
 
 inline vector<char> read_file(filesystem::path path) {
-    ifstream file(path, ios::binary | ios::ate | ios::in);
-    uint32_t pos = file.tellg();
-    std::vector<char> bytes(pos);
+    ifstream file(path, ios::binary | ios::in);
+    ifstream::off_type size = (ifstream::off_type) filesystem::file_size(path);
+    std::vector<char> bytes(size);
     file.seekg(0, ios::beg);
-    file.read(bytes.data(), pos);
+    file.read(bytes.data(), size);
     return bytes;
 }
 

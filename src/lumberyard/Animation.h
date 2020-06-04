@@ -4,8 +4,8 @@
 
 #pragma once
 
-#ifndef FMT_DRAGON_ANIMATION_H
-#define FMT_DRAGON_ANIMATION_H
+#ifndef FMT_LUMBERYARD_ANIMATION_H
+#define FMT_LUMBERYARD_ANIMATION_H
 
 #include "Lumberyard.h"
 
@@ -14,4 +14,4 @@ class LUMBERYARD_EXPORT Animation {
 };
 
 
-#endif //FMT_DRAGON_ANIMATION_H
+#endif //FMT_LUMBERYARD_ANIMATION_H

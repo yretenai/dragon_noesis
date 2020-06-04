@@ -2,8 +2,8 @@
 // Created by yretenai on 6/2/2020.
 //
 
-#ifndef FMT_DRAGON_MATERIALNAME_H
-#define FMT_DRAGON_MATERIALNAME_H
+#ifndef FMT_LUMBERYARD_MATERIALNAME_H
+#define FMT_LUMBERYARD_MATERIALNAME_H
 
 #include "../../Lumberyard.h"
 
@@ -17,4 +17,4 @@ public:
 };
 
 
-#endif //FMT_DRAGON_MATERIALNAME_H
+#endif //FMT_LUMBERYARD_MATERIALNAME_H

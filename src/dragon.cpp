@@ -6,9 +6,11 @@
 
 FILE* DragonLog;
 
+#define _CRT_SECURE_NO_WARNINGS
+
 void open_dragon_log() {
-    if((DragonLog == nullptr || DragonLog == stdout) && !fopen_s(&DragonLog, "fmt_dragon.log", "w")) {
-        DragonLog = nullptr;
+    if(DragonLog == nullptr || DragonLog == stdout) {
+        DragonLog = fopen("fmt_dragon.log", "w");
     }
 }
 
@@ -58,6 +60,10 @@ void super_assert_dragon_log(bool check, const char* error, const char* fmt, ...
                 va_end(args);
         flush_dragon_log();
         close_dragon_log();
+#ifdef WIN32
         throw exception(error);
+#else
+        throw exception();
+#endif
     }
 }

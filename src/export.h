@@ -1,42 +1,14 @@
+//
+// Created by yretenai on 6/4/2020.
+//
 
-#ifndef DRAGON_EXPORT_H
-#define DRAGON_EXPORT_H
+#pragma once
 
-#ifdef DRAGON_STATIC_DEFINE
-#  define DRAGON_EXPORT
-#  define DRAGON_NO_EXPORT
+#ifndef FMT_DRAGON_EXPORT_H
+#define FMT_DRAGON_EXPORT_H
+#if WIN32
+#include "export_win32.h"
 #else
-#  ifndef DRAGON_EXPORT
-#    ifdef fmt_dragon_EXPORTS
-        /* We are building this library */
-#      define DRAGON_EXPORT __declspec(dllexport)
-#    else
-        /* We are using this library */
-#      define DRAGON_EXPORT __declspec(dllimport)
-#    endif
-#  endif
-
-#  ifndef DRAGON_NO_EXPORT
-#    define DRAGON_NO_EXPORT 
-#  endif
+#include "export_clang.h"
 #endif
-
-#ifndef DRAGON_DEPRECATED
-#  define DRAGON_DEPRECATED __declspec(deprecated)
 #endif
-
-#ifndef DRAGON_DEPRECATED_EXPORT
-#  define DRAGON_DEPRECATED_EXPORT DRAGON_EXPORT DRAGON_DEPRECATED
-#endif
-
-#ifndef DRAGON_DEPRECATED_NO_EXPORT
-#  define DRAGON_DEPRECATED_NO_EXPORT DRAGON_NO_EXPORT DRAGON_DEPRECATED
-#endif
-
-#if 1 /* DEFINE_NO_DEPRECATED */
-#  ifndef DRAGON_NO_DEPRECATED
-#    define DRAGON_NO_DEPRECATED
-#  endif
-#endif
-
-#endif /* DRAGON_EXPORT_H */
