@@ -4,14 +4,12 @@
 
 #include "../../dragon.h"
 #include "../../lumberyard/Lumberyard.h"
-#include "../../lumberyard/chunks/model/MaterialName.h"
 
-using namespace std;
 using namespace dragon;
 
 int main(int argc, char** argv) {
     open_dragon_log_stdout();
-    if(argc < 2) {
+    if (argc < 2) {
         write_dragon_log("Usage: %s path\n", argv[0]);
         return 1;
     }

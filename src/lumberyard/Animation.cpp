@@ -4,6 +4,4 @@
 
 #include "Animation.h"
 
-namespace dragon::lumberyard {
-
-}
+namespace dragon::lumberyard {}

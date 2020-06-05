@@ -33,4 +33,8 @@
 
 # CMake Build Environment
 cmake-build-*
+src/cmake
 vcs.xml
+
+export_win32.h
+export_clang.h

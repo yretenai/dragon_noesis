@@ -2,19 +2,22 @@
 // Created by yretenai on 6/3/2020.
 //
 
+#pragma once
+
 #ifndef FMT_LUMBERYARD_SUBMESH_H
 #define FMT_LUMBERYARD_SUBMESH_H
 
-#include "../../Lumberyard.h"
-#include "SharedStructures.h"
+#include "ModelChunks.h"
 
 namespace dragon::lumberyard::chunk::model {
     class LUMBERYARD_EXPORT Submesh : public AbstractModelChunk {
-    public:
+      public:
 #pragma pack(push, 1)
         struct SUBMESH_HEADER {
             enum FLAGS : uint32_t {
-                HasDecompMat = 0x1, BoneIndices = 0x2, SubsetTexelDensity = 0x4,
+                HasDecompMat = 0x1,
+                BoneIndices = 0x2,
+                SubsetTexelDensity = 0x4,
             };
 
             FLAGS Flags;
@@ -38,13 +41,13 @@ namespace dragon::lumberyard::chunk::model {
         };
 #pragma pack(pop)
 
-        Submesh(vector<char> buffer, uint32_t version);
+        Submesh(std::vector<char> buffer, uint32_t version);
 
         SUBMESH_HEADER Header;
-        vector<SUBMESH_DATA> Submeshes;
-        vector<SUBMESH_BONE> Bones;
-        vector<float> TexelDensity;
+        std::vector<SUBMESH_DATA> Submeshes;
+        std::vector<SUBMESH_BONE> Bones;
+        std::vector<float> TexelDensity;
     };
-}
+} // namespace dragon::lumberyard::chunk::model
 
-#endif //FMT_LUMBERYARD_SUBMESH_H
+#endif // FMT_LUMBERYARD_SUBMESH_H

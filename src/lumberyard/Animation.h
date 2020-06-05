@@ -10,9 +10,7 @@
 #include "Lumberyard.h"
 
 namespace dragon::lumberyard {
-    class LUMBERYARD_EXPORT Animation {
+    class LUMBERYARD_EXPORT Animation {};
+} // namespace dragon::lumberyard
 
-    };
-}
-
-#endif //FMT_LUMBERYARD_ANIMATION_H
+#endif // FMT_LUMBERYARD_ANIMATION_H

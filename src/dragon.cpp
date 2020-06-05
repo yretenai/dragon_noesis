@@ -10,25 +10,25 @@ namespace dragon {
 #define _CRT_SECURE_NO_WARNINGS
 
     void open_dragon_log() {
-        if(DragonLog == nullptr || DragonLog == stdout) {
+        if (DragonLog == nullptr || DragonLog == stdout) {
             DragonLog = fopen("fmt_dragon.log", "w");
         }
     }
 
     void close_dragon_log() {
-        if(DragonLog != nullptr && DragonLog != stdout) {
+        if (DragonLog != nullptr && DragonLog != stdout) {
             fclose(DragonLog);
         }
     }
 
     void flush_dragon_log() {
-        if(DragonLog != nullptr) {
+        if (DragonLog != nullptr) {
             fflush(DragonLog);
         }
     }
 
     void open_dragon_log_stdout() {
-        if(DragonLog != nullptr) {
+        if (DragonLog != nullptr) {
             flush_dragon_log();
             close_dragon_log();
         }
@@ -36,30 +36,30 @@ namespace dragon {
     }
 
     void write_dragon_log(const char* fmt, ...) {
-        if(DragonLog != nullptr) {
+        if (DragonLog != nullptr) {
             va_list args;
-                    va_start(args, fmt);
+            va_start(args, fmt);
             vfprintf(DragonLog, fmt, args);
-                    va_end(args);
+            va_end(args);
         }
     }
 
     void assert_dragon_log(bool check, const char* error) {
-        if(!check) {
+        if (!check) {
             write_dragon_log(error);
         }
     }
 
     void super_assert_dragon_log(bool check, const char* error) {
-        if(!check) {
+        if (!check) {
             write_dragon_log(error);
             flush_dragon_log();
             close_dragon_log();
 #ifdef WIN32
-            throw exception(error);
+            throw std::exception(error);
 #else
-            throw exception();
+            throw std::exception();
 #endif
         }
     }
-}
+} // namespace dragon

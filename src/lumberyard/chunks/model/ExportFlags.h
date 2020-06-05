@@ -2,15 +2,16 @@
 // Created by yretenai on 6/2/2020.
 //
 
+#pragma once
+
 #ifndef FMT_LUMBERYARD_EXPORTFLAGS_H
 #define FMT_LUMBERYARD_EXPORTFLAGS_H
 
-#include "../../Lumberyard.h"
-#include "SharedStructures.h"
+#include "ModelChunks.h"
 
 namespace dragon::lumberyard::chunk::model {
     class LUMBERYARD_EXPORT ExportFlags : public AbstractModelChunk {
-    public:
+      public:
 #pragma pack(push, 1)
         struct EXPORT_FLAGS_HEADER {
             enum FLAGS : uint32_t {
@@ -33,10 +34,10 @@ namespace dragon::lumberyard::chunk::model {
         };
 #pragma pack(pop)
 
-        ExportFlags(vector<char> buffer, uint32_t version);
+        ExportFlags(std::vector<char> buffer, uint32_t version);
 
         EXPORT_FLAGS_HEADER Header;
     };
-}
+} // namespace dragon::lumberyard::chunk::model
 
-#endif //FMT_LUMBERYARD_EXPORTFLAGS_H
+#endif // FMT_LUMBERYARD_EXPORTFLAGS_H

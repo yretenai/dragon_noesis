@@ -11,8 +11,9 @@
 
 namespace dragon::lumberyard {
     class LUMBERYARD_EXPORT Actor {
-
+      public:
+        Actor(std::vector<char> buffer);
     };
-}
+} // namespace dragon::lumberyard
 
-#endif //FMT_LUMBERYARD_ACTOR_H
+#endif // FMT_LUMBERYARD_ACTOR_H

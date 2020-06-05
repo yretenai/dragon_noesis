@@ -4,6 +4,4 @@
 
 #include "DataStream.h"
 
-namespace dragon::lumberyard::chunk::model {
-
-}
+namespace dragon::lumberyard::chunk::model {}

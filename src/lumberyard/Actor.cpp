@@ -4,6 +4,4 @@
 
 #include "Actor.h"
 
-namespace dragon::lumberyard {
-
-}
+namespace dragon::lumberyard {}

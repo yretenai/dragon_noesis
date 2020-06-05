@@ -2,6 +2,8 @@
 // Created by yretenai on 6/2/2020.
 //
 
+#pragma once
+
 #ifndef FMT_LUMBERYARD_SHAREDSTRUCTURES_H
 #define FMT_LUMBERYARD_SHAREDSTRUCTURES_H
 
@@ -20,6 +22,6 @@ namespace dragon::lumberyard::chunk::model {
         float Y;
         float Z;
     };
-}
+} // namespace dragon::lumberyard::chunk::model
 
-#endif //FMT_LUMBERYARD_SHAREDSTRUCTURES_H
+#endif // FMT_LUMBERYARD_SHAREDSTRUCTURES_H
