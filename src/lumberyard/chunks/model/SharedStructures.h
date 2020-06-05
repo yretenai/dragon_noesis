@@ -50,6 +50,53 @@ namespace dragon::lumberyard::chunk::model {
         uint32_t ChunkCount;
         uint32_t ChunkTablePointer;
     };
+
+    struct EXPORT_FLAGS_HEADER {
+        enum FLAGS : uint32_t {
+            MergeAllNodes = 0x1,
+            HaveAllLods = 0x2,
+            CustomNormals = 0x4,
+            SingleVertex = 0x8,
+            EightWeights = 0x10,
+            Skinned = 0x20,
+            ExportedFromXsi = 0x1001,
+            ExportedFromMax = 0x1002,
+            ExportedFromMaya = 0x1003
+        };
+
+        FLAGS Flags;
+        VERSION_STRUCT Version;
+        char VersionString[16];
+        uint32_t ToolId;
+        uint32_t ToolVersion;
+    };
+
+    struct SUBMESH_HEADER {
+        enum FLAGS : uint32_t {
+            HasDecompMat = 0x1,
+            BoneIndices = 0x2,
+            SubsetTexelDensity = 0x4,
+        };
+
+        FLAGS Flags;
+        int32_t Count;
+        int32_t Reserved[2];
+    };
+
+    struct SUBMESH_DATA {
+        int32_t FirstIndexId;
+        int32_t IndexCount;
+        int32_t FirstVertId;
+        int32_t VertCount;
+        int32_t MaterialId;
+        float Radius;
+        VECTOR3_SINGLE Center;
+    };
+
+    struct SUBMESH_BONE {
+        uint32_t Count;
+        uint16_t IDs[0x80];
+    };
 #pragma pack(pop)
 } // namespace dragon::lumberyard::chunk::model
 
