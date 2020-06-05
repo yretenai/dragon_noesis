@@ -5,8 +5,10 @@
 #include "ExportFlags.h"
 
 namespace dragon::lumberyard::chunk::model {
-    ExportFlags::ExportFlags(std::vector<char> buffer, uint32_t version) {
-        super_assert_dragon_log(version == 0x800, "version == 0x800");
+    ExportFlags::ExportFlags(std::vector<char> buffer,
+                             CRCH_CHUNK_HEADER chunk_header) {
+        Chunk = chunk_header;
+        super_assert_dragon_log(Chunk.Version == 0x1, "version == 0x1");
         char* ptr = buffer.data();
         Header = vector_cast<EXPORT_FLAGS_HEADER>(ptr);
     }

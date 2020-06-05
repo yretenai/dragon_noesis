@@ -7,7 +7,8 @@
 #ifndef FMT_LUMBERYARD_ACTOR_H
 #define FMT_LUMBERYARD_ACTOR_H
 
-#include "Lumberyard.h"
+#include "../dragon.h"
+#include "export.h"
 
 namespace dragon::lumberyard {
     class LUMBERYARD_EXPORT Actor {

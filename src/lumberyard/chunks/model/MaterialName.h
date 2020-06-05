@@ -7,12 +7,12 @@
 #ifndef FMT_LUMBERYARD_MATERIALNAME_H
 #define FMT_LUMBERYARD_MATERIALNAME_H
 
-#include "ModelChunks.h"
+#include "AbstractModelChunk.h"
 
 namespace dragon::lumberyard::chunk::model {
     class LUMBERYARD_EXPORT MaterialName : public AbstractModelChunk {
       public:
-        MaterialName(std::vector<char> buffer, uint32_t version);
+        MaterialName(std::vector<char> buffer, CRCH_CHUNK_HEADER chunk_header);
 
         std::string Name;
         std::vector<int32_t> Types;

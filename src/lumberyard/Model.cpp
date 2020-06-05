@@ -4,11 +4,6 @@
 
 #include "Model.h"
 
-#include "../dragon.h"
-#include "chunks/model/ExportFlags.h"
-#include "chunks/model/MaterialName.h"
-#include "chunks/model/Submesh.h"
-
 using namespace dragon::lumberyard::chunk::model;
 
 #define CAST_MODEL_CHUNK(chunk)                                                \
@@ -56,20 +51,20 @@ namespace dragon::lumberyard {
             case CRCH_CHUNK_HEADER::ModelChunkMaterialName:
                 write_dragon_log("Found ModelChunkMaterialName\n");
                 Chunks[chunk_header.Id] = CAST_MODEL_CHUNK(
-                    new MaterialName(chunk_buffer, chunk_header.Version));
+                    new MaterialName(chunk_buffer, chunk_header));
                 break;
             case CRCH_CHUNK_HEADER::ModelChunkFlags:
                 write_dragon_log("Found ModelChunkFlags\n");
                 Chunks[chunk_header.Id] = CAST_MODEL_CHUNK(
-                    new ExportFlags(chunk_buffer, chunk_header.Version));
+                    new ExportFlags(chunk_buffer, chunk_header));
                 break;
             case CRCH_CHUNK_HEADER::ModelChunkData:
                 write_dragon_log("Found ModelChunkData\n");
                 break;
             case CRCH_CHUNK_HEADER::ModelChunkSubmesh:
                 write_dragon_log("Found ModelChunkSubmesh\n");
-                Chunks[chunk_header.Id] = CAST_MODEL_CHUNK(
-                    new Submesh(chunk_buffer, chunk_header.Version));
+                Chunks[chunk_header.Id] =
+                    CAST_MODEL_CHUNK(new Submesh(chunk_buffer, chunk_header));
                 break;
             default:
                 write_dragon_log("%s (%X)\n", "Unhandled model chunk!",
@@ -94,6 +89,17 @@ namespace dragon::lumberyard {
             }
         }
         return false;
+    }
+
+    std::vector<std::shared_ptr<chunk::model::AbstractModelChunk>>
+    Model::get_chunks(chunk::model::CRCH_CHUNK_HEADER::CRCH_CHUNK_TYPE type) {
+        std::vector<std::shared_ptr<chunk::model::AbstractModelChunk>> chunks;
+        for (uint32_t i = 0; i < Chunks.size(); i++) {
+            if (ChunkTable[i].Type == type) {
+                chunks.push_back(Chunks[ChunkTable[i].Id]);
+            }
+        }
+        return chunks;
     }
 
 #ifdef USE_NOESIS

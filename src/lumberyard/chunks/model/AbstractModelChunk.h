@@ -7,11 +7,14 @@
 #ifndef FMT_DRAGON_ABSTRACTMODELCHUNK_H
 #define FMT_DRAGON_ABSTRACTMODELCHUNK_H
 
+#include "../../../dragon.h"
 #include "../../export.h"
+#include "SharedStructures.h"
 
 namespace dragon::lumberyard::chunk::model {
     class LUMBERYARD_EXPORT AbstractModelChunk {
       public:
+        CRCH_CHUNK_HEADER Chunk;
         virtual ~AbstractModelChunk() noexcept {}
     };
 } // namespace dragon::lumberyard::chunk::model

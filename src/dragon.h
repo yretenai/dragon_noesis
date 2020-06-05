@@ -8,7 +8,6 @@
 #define FMT_DRAGON_DRAGON_H
 
 #include "export.h"
-
 #include <cstdint>
 #include <cstdio>
 #include <filesystem>

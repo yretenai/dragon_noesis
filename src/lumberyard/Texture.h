@@ -8,6 +8,7 @@
 #define FMT_LUMBERYARD_TEXTURE_H
 
 #include "../dragon.h"
+#include "export.h"
 
 #define FOURCC_DDS (MAKEFOURCC('D', 'D', 'S', ' '))
 #define FOURCC_FYRC (MAKEFOURCC('F', 'Y', 'R', 'C'))

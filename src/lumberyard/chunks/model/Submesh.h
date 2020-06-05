@@ -7,7 +7,7 @@
 #ifndef FMT_LUMBERYARD_SUBMESH_H
 #define FMT_LUMBERYARD_SUBMESH_H
 
-#include "ModelChunks.h"
+#include "AbstractModelChunk.h"
 
 namespace dragon::lumberyard::chunk::model {
     class LUMBERYARD_EXPORT Submesh : public AbstractModelChunk {
@@ -41,7 +41,7 @@ namespace dragon::lumberyard::chunk::model {
         };
 #pragma pack(pop)
 
-        Submesh(std::vector<char> buffer, uint32_t version);
+        Submesh(std::vector<char> buffer, CRCH_CHUNK_HEADER chunk_header);
 
         SUBMESH_HEADER Header;
         std::vector<SUBMESH_DATA> Submeshes;

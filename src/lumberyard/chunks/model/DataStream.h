@@ -7,7 +7,7 @@
 #ifndef FMT_DRAGON_DATASTREAM_H
 #define FMT_DRAGON_DATASTREAM_H
 
-#include "ModelChunks.h"
+#include "AbstractModelChunk.h"
 
 namespace dragon::lumberyard::chunk::model {
     class LUMBERYARD_EXPORT DataStream : public AbstractModelChunk {};

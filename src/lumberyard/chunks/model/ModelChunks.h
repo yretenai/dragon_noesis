@@ -7,11 +7,10 @@
 #ifndef FMT_LUMBERYARD_MODELCHUNKS_H
 #define FMT_LUMBERYARD_MODELCHUNKS_H
 
-#include "../../Lumberyard.h"
-#include "SharedStructures.h"
 #include "DataStream.h"
 #include "ExportFlags.h"
 #include "MaterialName.h"
+#include "SharedStructures.h"
 #include "Submesh.h"
 
 #endif // FMT_LUMBERYARD_MODELCHUNKS_H

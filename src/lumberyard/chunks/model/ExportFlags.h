@@ -7,7 +7,7 @@
 #ifndef FMT_LUMBERYARD_EXPORTFLAGS_H
 #define FMT_LUMBERYARD_EXPORTFLAGS_H
 
-#include "ModelChunks.h"
+#include "AbstractModelChunk.h"
 
 namespace dragon::lumberyard::chunk::model {
     class LUMBERYARD_EXPORT ExportFlags : public AbstractModelChunk {
@@ -34,7 +34,7 @@ namespace dragon::lumberyard::chunk::model {
         };
 #pragma pack(pop)
 
-        ExportFlags(std::vector<char> buffer, uint32_t version);
+        ExportFlags(std::vector<char> buffer, CRCH_CHUNK_HEADER chunk_header);
 
         EXPORT_FLAGS_HEADER Header;
     };

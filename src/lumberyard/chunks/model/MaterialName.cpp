@@ -5,8 +5,10 @@
 #include "MaterialName.h"
 
 namespace dragon::lumberyard::chunk::model {
-    MaterialName::MaterialName(std::vector<char> buffer, uint32_t version) {
-        super_assert_dragon_log(version == 0x802, "version == 0x802");
+    MaterialName::MaterialName(std::vector<char> buffer,
+                               CRCH_CHUNK_HEADER chunk_header) {
+        Chunk = chunk_header;
+        super_assert_dragon_log(Chunk.Version == 0x802, "version == 0x802");
         char* ptr = buffer.data();
         Name = std::string(ptr, ptr + 0x80);
         ptr += 0x80;

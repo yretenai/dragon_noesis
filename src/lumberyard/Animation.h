@@ -7,7 +7,8 @@
 #ifndef FMT_LUMBERYARD_ANIMATION_H
 #define FMT_LUMBERYARD_ANIMATION_H
 
-#include "Lumberyard.h"
+#include "../dragon.h"
+#include "export.h"
 
 namespace dragon::lumberyard {
     class LUMBERYARD_EXPORT Animation {};

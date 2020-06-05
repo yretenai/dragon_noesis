@@ -5,8 +5,9 @@
 #include "Submesh.h"
 
 namespace dragon::lumberyard::chunk::model {
-    Submesh::Submesh(std::vector<char> buffer, uint32_t version) {
-        super_assert_dragon_log(version == 0x800, "version == 0x800");
+    Submesh::Submesh(std::vector<char> buffer, CRCH_CHUNK_HEADER chunk_header) {
+        Chunk = chunk_header;
+        super_assert_dragon_log(Chunk.Version == 0x800, "version == 0x800");
         char* ptr = buffer.data();
         Header = vector_cast<SUBMESH_HEADER>(&ptr);
         Submeshes = vector_cast_slice<SUBMESH_DATA>(&ptr, Header.Count);
