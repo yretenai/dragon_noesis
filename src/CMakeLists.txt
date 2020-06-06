@@ -20,7 +20,7 @@ set(USE_NOESIS OFF CACHE BOOL "Use and Export Noesis functions")
 
 include(GenerateExportHeader)
 
-add_library(fmt_dragon SHARED dragon.cpp dragon.h)
+add_library(fmt_dragon SHARED dragon.cpp dragon.h Array.h)
 if(${MSVC})
     generate_export_header(fmt_dragon BASE_NAME DRAGON DEFINE_NO_DEPRECATED EXPORT_FILE_NAME ${PROJECT_SOURCE_DIR}/export_win32.h)
 else()

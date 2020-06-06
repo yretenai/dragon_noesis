@@ -6,7 +6,7 @@
 
 namespace dragon::lumberyard {
     Texture::Texture(std::filesystem::path path) {
-        std::vector<char> dds = read_file(path);
+        Array<char> dds = read_file(path);
         bool is_alpha =
             path.has_extension() && path.extension().compare(".a") == 0;
         uint32_t* pointer = reinterpret_cast<uint32_t*>(dds.data());
@@ -15,7 +15,7 @@ namespace dragon::lumberyard {
         uint32_t size = 0x80;
         if (pointer[21] == FOURCC_DX10)
             size += 0x14;
-        Header = vector_slice(dds.data(), size);
+        Header = dds.slice(0, size);
 
         std::filesystem::path tmp(path);
         if (!is_alpha)
@@ -35,10 +35,10 @@ namespace dragon::lumberyard {
         delete[] buffer;
     }
 
-    std::vector<char> Texture::cook() {
+    Array<char> Texture::cook() {
         if (Header.empty() || Data.empty())
-            return std::vector<char>();
-        std::vector<char> data(Header.size() + Data.size());
+            return Array<char>();
+        Array<char> data(Header.size() + Data.size());
         char* pointer = data.data();
         // oh god.
         memcpy(pointer, Header.data(), Header.size());
@@ -50,9 +50,9 @@ namespace dragon::lumberyard {
         return data;
     }
 
-    bool Texture::check(std::vector<char> buffer) {
-        uint32_t* pointer = reinterpret_cast<uint32_t*>(buffer.data());
-        return buffer.size() >= 0x80 && pointer[0] == FOURCC_DDS &&
+    bool Texture::check(Array<char>* buffer) {
+        uint32_t* pointer = reinterpret_cast<uint32_t*>(buffer->data());
+        return buffer->size() >= 0x80 && pointer[0] == FOURCC_DDS &&
                pointer[1] == 0x7C && pointer[31] == FOURCC_FYRC;
     }
 
@@ -78,7 +78,7 @@ namespace dragon::lumberyard {
 
         Texture texture(wpath);
 
-        std::vector<char> data = texture.cook();
+        Array<char> data = texture.cook();
         if (data.empty())
             return false;
         noesisTex_t* tex = rapi->Noesis_LoadTexByHandler(
@@ -129,10 +129,10 @@ namespace dragon::lumberyard {
             wpath.replace_extension(".cooked-alpha.dds");
         else
             wpath.replace_extension(".cooked.dds");
-        std::vector<char> data = texture.cook();
+        Array<char> data = texture.cook();
         if (data.empty())
             return 0;
-        write_file(wpath, data);
+        write_file(wpath, &data);
 
         return 1;
     }
@@ -158,8 +158,8 @@ namespace dragon::lumberyard {
         if (!is_alpha)
             wpath.replace_extension();
 
-        std::vector<char> data = read_file(wpath);
-        return Texture::check(data);
+        Array<char> data = read_file(wpath);
+        return Texture::check(&data);
     }
 
 #endif // USE_NOESIS

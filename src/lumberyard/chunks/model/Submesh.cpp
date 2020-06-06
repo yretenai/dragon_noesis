@@ -5,19 +5,19 @@
 #include "Submesh.h"
 
 namespace dragon::lumberyard::chunk::model {
-    Submesh::Submesh(std::vector<char> buffer, CRCH_CHUNK_HEADER chunk_header) {
+    Submesh::Submesh(Array<char>* buffer, CRCH_CHUNK_HEADER chunk_header) {
         Chunk = chunk_header;
         super_assert_dragon_log(Chunk.Version == 0x800, "version == 0x800");
-        char* ptr = buffer.data();
-        Header = vector_cast<SUBMESH_HEADER>(&ptr);
-        Submeshes = vector_cast_slice<SUBMESH_DATA>(&ptr, Header.Count);
+        int ptr = 0;
+        Header = buffer->lpcast<SUBMESH_HEADER>(&ptr);
+        Submeshes = buffer->lpcast<SUBMESH_DATA>(&ptr, Header.Count);
         if ((Header.Flags & SUBMESH_HEADER::BoneIndices) ==
             SUBMESH_HEADER::BoneIndices) {
-            Bones = vector_cast_slice<SUBMESH_BONE>(&ptr, Header.Count);
+            Bones = buffer->lpcast<SUBMESH_BONE>(&ptr, Header.Count);
         }
         if ((Header.Flags & SUBMESH_HEADER::SubsetTexelDensity) ==
             SUBMESH_HEADER::SubsetTexelDensity) {
-            TexelDensity = vector_cast_slice<float>(&ptr, Header.Count);
+            TexelDensity = buffer->lpcast<float>(&ptr, Header.Count);
         }
     }
 } // namespace dragon::lumberyard::chunk::model

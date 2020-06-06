@@ -8,9 +8,11 @@
 #pragma ide diagnostic ignored "OCInconsistentNamingInspection"
 
 #ifdef USE_NOESIS
+
 const char* g_pPluginName = "lumberyard";
 const char* g_pPluginDesc = "Lumberyard Asset Handler by yretenai";
 
+using namespace dragon;
 using namespace dragon::lumberyard;
 
 bool NPAPI_InitLocal() {

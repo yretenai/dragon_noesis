@@ -5,19 +5,20 @@
 #include "MaterialName.h"
 
 namespace dragon::lumberyard::chunk::model {
-    MaterialName::MaterialName(std::vector<char> buffer,
+    MaterialName::MaterialName(Array<char>* buffer,
                                CRCH_CHUNK_HEADER chunk_header) {
         Chunk = chunk_header;
         super_assert_dragon_log(Chunk.Version == 0x802, "version == 0x802");
-        char* ptr = buffer.data();
+        char* ptr = buffer->data();
         Name = std::string(ptr, ptr + 0x80);
-        ptr += 0x80;
-        uint32_t count = vector_cast<uint32_t>(&ptr);
-        Types = vector_cast_slice<int32_t>(&ptr, count);
-        Materials = std::vector<std::string>(count);
+        int offset = 0x80;
+        uint32_t count = buffer->lpcast<uint32_t>(&offset);
+        Types = buffer->lpcast<int32_t>(&offset, count);
+        Materials = Array<std::string>(count);
         if (count == 1) {
             Materials[0] = Name;
         } else {
+            ptr += offset;
             for (uint32_t i = 0; i < count; i++) {
                 std::string material(ptr);
                 Materials[i] = material;

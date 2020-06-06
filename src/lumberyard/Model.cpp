@@ -11,27 +11,26 @@ using namespace dragon::lumberyard::chunk::model;
         dynamic_cast<AbstractModelChunk*>(chunk))
 
 namespace dragon::lumberyard {
-    Model::Model(std::vector<char> buffer) {
+    Model::Model(Array<char>* buffer) {
         super_assert_dragon_log(
-            buffer.size() >= sizeof(CRCH_HEADER),
+            buffer->size() >= sizeof(CRCH_HEADER),
             "Assertion failed -> length > sizeof CrChHeader\n");
-        char* buffer_ptr = buffer.data();
-        Header = vector_cast<CRCH_HEADER>(buffer_ptr);
+        Header = buffer->cast<CRCH_HEADER>(0);
         if (Header.ChunkCount == 0)
             return;
         super_assert_dragon_log(
-            buffer.size() >= Header.ChunkTablePointer +
-                                 sizeof(CRCH_CHUNK_HEADER) * Header.ChunkCount,
+            buffer->size() >= Header.ChunkTablePointer +
+                                  sizeof(CRCH_CHUNK_HEADER) * Header.ChunkCount,
             "Assertion failed -> length > chunks * sizeof CrChChunkHeader\n");
-        ChunkTable = vector_cast_slice<CRCH_CHUNK_HEADER>(
-            buffer_ptr + Header.ChunkTablePointer, Header.ChunkCount);
+        ChunkTable = buffer->cast<CRCH_CHUNK_HEADER>(Header.ChunkTablePointer,
+                                                     Header.ChunkCount);
         Chunks = std::map<uint32_t, std::shared_ptr<AbstractModelChunk>>();
         for (CRCH_CHUNK_HEADER chunk_header : ChunkTable) {
             super_assert_dragon_log(
-                buffer.size() >= chunk_header.Pointer + chunk_header.Size,
+                buffer->size() >= chunk_header.Pointer + chunk_header.Size,
                 "Assertion failed -> length > chunk pointer + chunk size\n");
-            std::vector<char> chunk_buffer = vector_slice(
-                buffer_ptr + chunk_header.Pointer, chunk_header.Size);
+            Array<char> chunk_buffer =
+                buffer->slice(chunk_header.Pointer, chunk_header.Size);
             switch (chunk_header.Type) {
             case CRCH_CHUNK_HEADER::ModelChunkMesh:
                 write_dragon_log("Found ModelChunkMesh\n");
@@ -51,12 +50,12 @@ namespace dragon::lumberyard {
             case CRCH_CHUNK_HEADER::ModelChunkMaterialName:
                 write_dragon_log("Found ModelChunkMaterialName\n");
                 Chunks[chunk_header.Id] = CAST_MODEL_CHUNK(
-                    new MaterialName(chunk_buffer, chunk_header));
+                    new MaterialName(&chunk_buffer, chunk_header));
                 break;
             case CRCH_CHUNK_HEADER::ModelChunkFlags:
                 write_dragon_log("Found ModelChunkFlags\n");
                 Chunks[chunk_header.Id] = CAST_MODEL_CHUNK(
-                    new ExportFlags(chunk_buffer, chunk_header));
+                    new ExportFlags(&chunk_buffer, chunk_header));
                 break;
             case CRCH_CHUNK_HEADER::ModelChunkData:
                 write_dragon_log("Found ModelChunkData\n");
@@ -64,7 +63,7 @@ namespace dragon::lumberyard {
             case CRCH_CHUNK_HEADER::ModelChunkSubmesh:
                 write_dragon_log("Found ModelChunkSubmesh\n");
                 Chunks[chunk_header.Id] =
-                    CAST_MODEL_CHUNK(new Submesh(chunk_buffer, chunk_header));
+                    CAST_MODEL_CHUNK(new Submesh(&chunk_buffer, chunk_header));
                 break;
             default:
                 write_dragon_log("%s (%X)\n", "Unhandled model chunk!",
@@ -75,9 +74,9 @@ namespace dragon::lumberyard {
         }
     }
 
-    bool Model::check(std::vector<char> buffer) {
-        uint32_t* pointer = reinterpret_cast<uint32_t*>(buffer.data());
-        return buffer.size() >= sizeof(CRCH_HEADER) &&
+    bool Model::check(Array<char>* buffer) {
+        uint32_t* pointer = reinterpret_cast<uint32_t*>(buffer->data());
+        return buffer->size() >= sizeof(CRCH_HEADER) &&
                pointer[0] == FOURCC_CRCH && pointer[1] == 0x746;
     }
 
@@ -91,32 +90,21 @@ namespace dragon::lumberyard {
         return false;
     }
 
-    std::vector<std::shared_ptr<chunk::model::AbstractModelChunk>>
-    Model::get_chunks(chunk::model::CRCH_CHUNK_HEADER::CRCH_CHUNK_TYPE type) {
-        std::vector<std::shared_ptr<chunk::model::AbstractModelChunk>> chunks;
-        for (uint32_t i = 0; i < Chunks.size(); i++) {
-            if (ChunkTable[i].Type == type) {
-                chunks.push_back(Chunks[ChunkTable[i].Id]);
-            }
-        }
-        return chunks;
-    }
-
 #ifdef USE_NOESIS
 
     noesisModel_t* Model::noesis_load(BYTE* buffer, int length, int& num_mdl,
                                       noeRAPI_t* rapi) {
-        std::vector<char> data_buffer =
-            vector_slice(reinterpret_cast<char*>(buffer), length);
-        Model model(data_buffer);
+        Array<char> data_buffer =
+            Array<char>(reinterpret_cast<char*>(buffer), length);
+        Model model(&data_buffer);
         return nullptr;
     }
 
     bool Model::noesis_check(BYTE* buffer, int length,
                              [[maybe_unused]] noeRAPI_t* rapi) {
-        std::vector<char> data_buffer =
-            vector_slice(reinterpret_cast<char*>(buffer), length);
-        return Model::check(data_buffer);
+        Array<char> data_buffer =
+            Array<char>(reinterpret_cast<char*>(buffer), length);
+        return Model::check(&data_buffer);
     }
 
 #endif // USE_NOESIS

@@ -18,12 +18,12 @@ namespace dragon::lumberyard {
       public:
         Texture(std::filesystem::path path);
 
-        std::vector<char> cook();
+        Array<char> cook();
 
-        std::vector<char> Header;
-        std::vector<char> Data;
+        Array<char> Header;
+        Array<char> Data;
 
-        static bool check(std::vector<char> buffer);
+        static bool check(Array<char>* buffer);
 
 #ifdef USE_NOESIS
 

@@ -14,8 +14,8 @@ int main(int argc, char** argv) {
         return 1;
     }
     char* filepath = argv[1];
-    std::vector<char> bytes = read_file(filepath);
-    lumberyard::Model model(bytes);
+    Array<char> bytes = read_file(filepath);
+    lumberyard::Model model(&bytes);
     close_dragon_log();
     return 0;
 }

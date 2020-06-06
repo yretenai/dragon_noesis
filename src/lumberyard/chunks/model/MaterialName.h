@@ -12,11 +12,11 @@
 namespace dragon::lumberyard::chunk::model {
     class LUMBERYARD_EXPORT MaterialName : public AbstractModelChunk {
       public:
-        MaterialName(std::vector<char> buffer, CRCH_CHUNK_HEADER chunk_header);
+        MaterialName(Array<char>* buffer, CRCH_CHUNK_HEADER chunk_header);
 
         std::string Name;
-        std::vector<int32_t> Types;
-        std::vector<std::string> Materials;
+        Array<int32_t> Types;
+        Array<std::string> Materials;
     };
 } // namespace dragon::lumberyard::chunk::model
 

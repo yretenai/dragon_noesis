@@ -12,12 +12,12 @@
 namespace dragon::lumberyard::chunk::model {
     class LUMBERYARD_EXPORT Submesh : public AbstractModelChunk {
       public:
-        Submesh(std::vector<char> buffer, CRCH_CHUNK_HEADER chunk_header);
+        Submesh(Array<char>* buffer, CRCH_CHUNK_HEADER chunk_header);
 
         SUBMESH_HEADER Header;
-        std::vector<SUBMESH_DATA> Submeshes;
-        std::vector<SUBMESH_BONE> Bones;
-        std::vector<float> TexelDensity;
+        Array<SUBMESH_DATA> Submeshes;
+        Array<SUBMESH_BONE> Bones;
+        Array<float> TexelDensity;
     };
 } // namespace dragon::lumberyard::chunk::model
 

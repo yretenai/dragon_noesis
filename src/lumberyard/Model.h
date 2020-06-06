@@ -15,20 +15,17 @@
 namespace dragon::lumberyard {
     class LUMBERYARD_EXPORT Model {
       public:
-        Model(std::vector<char> buffer);
+        Model(Array<char>* buffer);
 
         chunk::model::CRCH_HEADER Header;
-        std::vector<chunk::model::CRCH_CHUNK_HEADER> ChunkTable;
+        Array<chunk::model::CRCH_CHUNK_HEADER> ChunkTable;
         std::map<uint32_t, std::shared_ptr<chunk::model::AbstractModelChunk>>
             Chunks;
 
         bool get_chunk_header(uint32_t id,
                               chunk::model::CRCH_CHUNK_HEADER& chunk);
 
-        std::vector<std::shared_ptr<chunk::model::AbstractModelChunk>>
-        get_chunks(chunk::model::CRCH_CHUNK_HEADER::CRCH_CHUNK_TYPE type);
-
-        static bool check(std::vector<char> buffer);
+        static bool check(Array<char>* buffer);
 
 #ifdef USE_NOESIS
 

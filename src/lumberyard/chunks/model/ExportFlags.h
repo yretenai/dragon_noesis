@@ -12,7 +12,7 @@
 namespace dragon::lumberyard::chunk::model {
     class LUMBERYARD_EXPORT ExportFlags : public AbstractModelChunk {
       public:
-        ExportFlags(std::vector<char> buffer, CRCH_CHUNK_HEADER chunk_header);
+        ExportFlags(Array<char>* buffer, CRCH_CHUNK_HEADER chunk_header);
 
         EXPORT_FLAGS_HEADER Header;
     };
