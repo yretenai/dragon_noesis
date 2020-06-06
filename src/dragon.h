@@ -7,8 +7,8 @@
 #ifndef FMT_DRAGON_DRAGON_H
 #define FMT_DRAGON_DRAGON_H
 
-#include "export.h"
 #include "Array.h"
+#include "export.h"
 #include <cstdint>
 #include <cstdio>
 #include <filesystem>
@@ -44,15 +44,14 @@
 namespace dragon {
     inline Array<char> read_file(std::filesystem::path path) {
         std::ifstream file(path, std::ios::binary | std::ios::in);
-        uint32_t size = (uint32_t) std::filesystem::file_size(path);
+        uint32_t size = (uint32_t)std::filesystem::file_size(path);
         Array<char> bytes(size);
         file.seekg(0, std::ios::beg);
         file.read(bytes.data(), size);
         return bytes;
     }
 
-    inline void write_file(std::filesystem::path path,
-                           Array<char>* buffer) {
+    inline void write_file(std::filesystem::path path, Array<char>* buffer) {
         if (buffer->empty())
             return;
         std::ofstream file(path,
@@ -68,11 +67,11 @@ namespace dragon {
 
     DRAGON_EXPORT void open_dragon_log_stdout();
 
-    DRAGON_EXPORT void write_dragon_log(const char *fmt, ...);
+    DRAGON_EXPORT void write_dragon_log(const char* fmt, ...);
 
-    DRAGON_EXPORT void assert_dragon_log(bool check, const char *error);
+    DRAGON_EXPORT void assert_dragon_log(bool check, const char* error);
 
-    DRAGON_EXPORT void super_assert_dragon_log(bool check, const char *error);
+    DRAGON_EXPORT void super_assert_dragon_log(bool check, const char* error);
 } // namespace dragon
 
 #endif // FMT_DRAGON_DRAGON_H

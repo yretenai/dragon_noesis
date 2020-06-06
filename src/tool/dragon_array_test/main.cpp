@@ -6,29 +6,26 @@
 
 using namespace dragon;
 
-Array<int> test1() {
-    return Array<int>(3);
-}
+Array<int> test1() { return Array<int>(3); }
 
 Array<int> test2() {
-    short tmp[] = { 1, 0, 2, 0, 3, 0 };
+    short tmp[] = {1, 0, 2, 0, 3, 0};
     return Array<int>::cast<short>(tmp, 6);
 }
 
 Array<int> test3() {
-    int tmp[] = { 1, 2, 3 };
+    int tmp[] = {1, 2, 3};
     return Array<int>(tmp, 3);
 }
 
 Array<short> test4() {
-    short tmp[] = { 1, 0, 2, 0, 3, 0 };
+    short tmp[] = {1, 0, 2, 0, 3, 0};
     return Array<short>(tmp, 6);
 }
 
-template<typename T>
-void print(Array<T>& test) {
+template <typename T> void print(Array<T>& test) {
     printf("test\n");
-    for(int v : test) {
+    for (int v : test) {
         printf("%d\n", v);
     }
 }
