@@ -24,7 +24,7 @@ namespace dragon::lumberyard {
             "Assertion failed -> length > chunks * sizeof CrChChunkHeader\n");
         ChunkTable = buffer->cast<CRCH_CHUNK_HEADER>(Header.ChunkTablePointer,
                                                      Header.ChunkCount);
-        Chunks = std::map<uint32_t, std::shared_ptr<AbstractModelChunk>>();
+        Chunks = std::map<CHUNK_ID, std::shared_ptr<AbstractModelChunk>>();
         for (CRCH_CHUNK_HEADER chunk_header : ChunkTable) {
             super_assert_dragon_log(
                 buffer->size() >= chunk_header.Pointer + chunk_header.Size,
@@ -34,18 +34,13 @@ namespace dragon::lumberyard {
             switch (chunk_header.Type) {
             case CRCH_CHUNK_HEADER::ModelChunkMesh:
                 write_dragon_log("Found ModelChunkMesh\n");
-                break;
-            case CRCH_CHUNK_HEADER::ModelChunkMaterialList:
-                write_dragon_log("Found ModelChunkMaterialList\n");
+                Chunks[chunk_header.Id] =
+                    CAST_MODEL_CHUNK(new Mesh(&chunk_buffer, chunk_header));
                 break;
             case CRCH_CHUNK_HEADER::ModelChunkNode:
                 write_dragon_log("Found ModelChunkNode\n");
-                break;
-            case CRCH_CHUNK_HEADER::ModelChunkMaterial:
-                write_dragon_log("Found ModelChunkMaterial\n");
-                break;
-            case CRCH_CHUNK_HEADER::ModelChunkMeta:
-                write_dragon_log("Found ModelChunkMeta\n");
+                Chunks[chunk_header.Id] =
+                    CAST_MODEL_CHUNK(new Node(&chunk_buffer, chunk_header));
                 break;
             case CRCH_CHUNK_HEADER::ModelChunkMaterialName:
                 write_dragon_log("Found ModelChunkMaterialName\n");
@@ -59,6 +54,8 @@ namespace dragon::lumberyard {
                 break;
             case CRCH_CHUNK_HEADER::ModelChunkData:
                 write_dragon_log("Found ModelChunkData\n");
+                Chunks[chunk_header.Id] = CAST_MODEL_CHUNK(
+                    new DataStream(&chunk_buffer, chunk_header));
                 break;
             case CRCH_CHUNK_HEADER::ModelChunkSubmesh:
                 write_dragon_log("Found ModelChunkSubmesh\n");

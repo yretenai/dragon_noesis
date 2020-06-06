@@ -9,10 +9,8 @@
 
 #include "DataStream.h"
 #include "ExportFlags.h"
-#include "MaterialList.h"
 #include "MaterialName.h"
 #include "Mesh.h"
-#include "Meta.h"
 #include "Node.h"
 #include "Submesh.h"
 
