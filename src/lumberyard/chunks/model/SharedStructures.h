@@ -116,12 +116,7 @@ namespace dragon::lumberyard::chunk::model {
     };
 
     struct MESH_HEADER {
-        enum struct FLAGS : uint32_t {
-            IsEmpty = 1,
-            HasTexMappingDensity = 2,
-            ExtraWeights = 4,
-            FaceArea = 8
-        };
+        enum struct FLAGS : uint32_t { IsEmpty = 1, HasTexMappingDensity = 2, ExtraWeights = 4, FaceArea = 8 };
 
         FLAGS Flags;
         uint32_t Flags2;
@@ -132,8 +127,7 @@ namespace dragon::lumberyard::chunk::model {
 
         CHUNK_ID SubmeshChunkId;
         CHUNK_ID VertexAnimId;
-        CHUNK_ID StreamChunkId[static_cast<int>(
-            DATA_STREAM_HEADER::TYPE::NumTypes)][8];
+        CHUNK_ID StreamChunkId[static_cast<int>(DATA_STREAM_HEADER::TYPE::NumTypes)][8];
         CHUNK_ID PhysicsDataChunkId[4];
 
         BOUNDING_BOX_SINGLE BoundingBox;

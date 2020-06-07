@@ -31,14 +31,11 @@ namespace dragon {
             }
 
             bool operator==(const Iterator& rhs) const {
-                return Parent->Pointer == rhs.Parent->Pointer &&
-                       Index == rhs.Index &&
+                return Parent->Pointer == rhs.Parent->Pointer && Index == rhs.Index &&
                        Parent->size() == rhs.Parent->size();
             }
 
-            bool operator!=(const Iterator& rhs) const {
-                return !(*this == rhs);
-            }
+            bool operator!=(const Iterator& rhs) const { return !(*this == rhs); }
 
             T operator*() const { return Parent->get(Index); }
 
@@ -59,9 +56,7 @@ namespace dragon {
 
         Array() : Array(0) {}
 
-        Array(T* buffer, size_t size) : Array(size) {
-            std::copy_n(buffer, Length, Pointer.get());
-        }
+        Array(T* buffer, size_t size) : Array(size) { std::copy_n(buffer, Length, Pointer.get()); }
 
         Array(size_t size) {
             Pointer = std::unique_ptr<T[]>(new T[size]);
@@ -71,8 +66,7 @@ namespace dragon {
         }
 
         template <typename U> static Array<T> cast(U* buffer, size_t size) {
-            return Array<T>(reinterpret_cast<T*>(buffer),
-                            size * sizeof(U) / sizeof(T));
+            return Array<T>(reinterpret_cast<T*>(buffer), size * sizeof(U) / sizeof(T));
         }
 
         T& operator[](int index) const { return get(index); }
@@ -98,8 +92,7 @@ namespace dragon {
         }
 
         template <typename U> Array<U> cast(int index, int size) {
-            if (index < 0 || index >= Length || size < 0 ||
-                index + size > Length) {
+            if (index < 0 || index >= Length || size < 0 || index + size > Length) {
                 throw std::exception();
             }
             return Array<U>(reinterpret_cast<U*>(Pointer.get() + index), size);
@@ -112,8 +105,7 @@ namespace dragon {
         }
 
         Array<T> slice(int index, int size) {
-            if (index < 0 || index >= Length || size < 0 ||
-                index + size > Length) {
+            if (index < 0 || index >= Length || size < 0 || index + size > Length) {
                 throw std::exception();
             }
             return Array<T>((Pointer.get() + index), size);

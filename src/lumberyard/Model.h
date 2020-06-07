@@ -19,27 +19,20 @@ namespace dragon::lumberyard {
 
         chunk::model::CRCH_HEADER Header;
         Array<chunk::model::CRCH_CHUNK_HEADER> ChunkTable;
-        std::map<chunk::model::CHUNK_ID,
-                 std::shared_ptr<chunk::model::AbstractModelChunk>>
-            Chunks;
+        std::map<chunk::model::CHUNK_ID, std::shared_ptr<chunk::model::AbstractModelChunk>> Chunks;
 
-        bool get_chunk_header(uint32_t id,
-                              chunk::model::CRCH_CHUNK_HEADER& chunk);
+        bool get_chunk_header(uint32_t id, chunk::model::CRCH_CHUNK_HEADER& chunk);
 
-        void get_chunks_of_type(
-            chunk::model::CRCH_CHUNK_HEADER::TYPE type,
-            std::vector<std::shared_ptr<chunk::model::AbstractModelChunk>>*
-                chunks);
+        void get_chunks_of_type(chunk::model::CRCH_CHUNK_HEADER::TYPE type,
+                                std::vector<std::shared_ptr<chunk::model::AbstractModelChunk>>* chunks);
 
         static bool check(Array<char>* buffer);
 
 #ifdef USE_NOESIS
 
-        static noesisModel_t* noesis_load(BYTE* buffer, int length,
-                                          int& num_mdl, noeRAPI_t* rapi);
+        static noesisModel_t* noesis_load(BYTE* buffer, int length, int& num_mdl, noeRAPI_t* rapi);
 
-        static bool noesis_check(BYTE* buffer, int length,
-                                 [[maybe_unused]] noeRAPI_t* rapi);
+        static bool noesis_check(BYTE* buffer, int length, [[maybe_unused]] noeRAPI_t* rapi);
 
 #endif // USE_NOESIS
     };

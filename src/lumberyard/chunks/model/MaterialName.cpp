@@ -5,8 +5,7 @@
 #include "MaterialName.h"
 
 namespace dragon::lumberyard::chunk::model {
-    MaterialName::MaterialName(Array<char>* buffer,
-                               CRCH_CHUNK_HEADER chunk_header) {
+    MaterialName::MaterialName(Array<char>* buffer, CRCH_CHUNK_HEADER chunk_header) {
         Chunk = chunk_header;
         assert(Chunk.Version == 0x802);
         char* ptr = buffer->data();

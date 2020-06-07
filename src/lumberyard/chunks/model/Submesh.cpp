@@ -11,13 +11,11 @@ namespace dragon::lumberyard::chunk::model {
         int ptr = 0;
         Header = buffer->lpcast<SUBMESH_HEADER>(&ptr);
         Submeshes = buffer->lpcast<SUBMESH_DATA>(&ptr, Header.Count);
-        if (((uint32_t)Header.Flags &
-             (uint32_t)SUBMESH_HEADER::FLAGS::BoneIndices) ==
+        if (((uint32_t)Header.Flags & (uint32_t)SUBMESH_HEADER::FLAGS::BoneIndices) ==
             (uint32_t)SUBMESH_HEADER::FLAGS::BoneIndices) {
             Bones = buffer->lpcast<SUBMESH_BONE>(&ptr, Header.Count);
         }
-        if (((uint32_t)Header.Flags &
-             (uint32_t)SUBMESH_HEADER::FLAGS::SubsetTexelDensity) ==
+        if (((uint32_t)Header.Flags & (uint32_t)SUBMESH_HEADER::FLAGS::SubsetTexelDensity) ==
             (uint32_t)SUBMESH_HEADER::FLAGS::SubsetTexelDensity) {
             TexelDensity = buffer->lpcast<float>(&ptr, Header.Count);
         }

@@ -5,8 +5,7 @@
 #include "ExportFlags.h"
 
 namespace dragon::lumberyard::chunk::model {
-    ExportFlags::ExportFlags(Array<char>* buffer,
-                             CRCH_CHUNK_HEADER chunk_header) {
+    ExportFlags::ExportFlags(Array<char>* buffer, CRCH_CHUNK_HEADER chunk_header) {
         Chunk = chunk_header;
         assert(Chunk.Version == 0x1);
         Header = buffer->cast<EXPORT_FLAGS_HEADER>(0);

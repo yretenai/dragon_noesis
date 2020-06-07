@@ -11,10 +11,7 @@ namespace dragon::lumberyard::chunk::model {
         Name = std::string(buffer->slice(0, 64).data());
         Header = buffer->cast<NODE_HEADER>(64);
         if (Header.PropertyStringLength > 0) {
-            Property = std::string(buffer
-                                       ->slice(64 + sizeof(NODE_HEADER),
-                                               Header.PropertyStringLength)
-                                       .data());
+            Property = std::string(buffer->slice(64 + sizeof(NODE_HEADER), Header.PropertyStringLength).data());
         }
     }
 } // namespace dragon::lumberyard::chunk::model
