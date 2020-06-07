@@ -56,8 +56,7 @@ namespace dragon::lumberyard {
 
 #if USE_NOESIS
 
-    bool Texture::noesis_load([[maybe_unused]] BYTE* buffer, [[maybe_unused]] int length,
-                              CArrayList<noesisTex_t*>& noe_tex, noeRAPI_t* rapi) {
+    bool Texture::noesis_load([[maybe_unused]] BYTE* buffer, [[maybe_unused]] int length, CArrayList<noesisTex_t*>& noe_tex, noeRAPI_t* rapi) {
         wchar_t* path = new wchar_t[MAX_NOESIS_PATH];
         g_nfn->NPAPI_GetSelectedFile(path);
         if (wcslen(path) < 2) {
@@ -77,8 +76,7 @@ namespace dragon::lumberyard {
         Array<char> data = texture.cook();
         if (data.empty())
             return false;
-        noesisTex_t* tex =
-            rapi->Noesis_LoadTexByHandler(reinterpret_cast<BYTE*>(data.data()), data.size(), (char*)".dds");
+        noesisTex_t* tex = rapi->Noesis_LoadTexByHandler(reinterpret_cast<BYTE*>(data.data()), data.size(), (char*)".dds");
         if (tex == nullptr)
             return false;
         noe_tex.Append(tex);
@@ -86,8 +84,7 @@ namespace dragon::lumberyard {
         return true;
     }
 
-    bool Texture::noesis_check([[maybe_unused]] BYTE* buffer, [[maybe_unused]] int length,
-                               [[maybe_unused]] noeRAPI_t* rapi) {
+    bool Texture::noesis_check([[maybe_unused]] BYTE* buffer, [[maybe_unused]] int length, [[maybe_unused]] noeRAPI_t* rapi) {
         wchar_t* path = new wchar_t[MAX_NOESIS_PATH];
         g_nfn->NPAPI_GetSelectedFile(path);
         if (wcslen(path) < 2) {

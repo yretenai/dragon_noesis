@@ -27,16 +27,14 @@ namespace dragon::lumberyard {
 
 #ifdef USE_NOESIS
 
-        static bool noesis_load([[maybe_unused]] BYTE* buffer, [[maybe_unused]] int length,
-                                CArrayList<noesisTex_t*>& noe_tex, noeRAPI_t* rapi);
+        static bool noesis_load([[maybe_unused]] BYTE* buffer, [[maybe_unused]] int length, CArrayList<noesisTex_t*>& noe_tex, noeRAPI_t* rapi);
 
-        static bool noesis_check([[maybe_unused]] BYTE* buffer, [[maybe_unused]] int length,
-                                 [[maybe_unused]] noeRAPI_t* rapi);
+        static bool noesis_check([[maybe_unused]] BYTE* buffer, [[maybe_unused]] int length, [[maybe_unused]] noeRAPI_t* rapi);
 
         static int noesis_tool([[maybe_unused]] int handle, [[maybe_unused]] void* user_data);
 
-        static int noesis_tool_visibility([[maybe_unused]] int handle, const wchar_t* path,
-                                          [[maybe_unused]] void* resv_a, [[maybe_unused]] void* resv_b);
+        static int noesis_tool_visibility([[maybe_unused]] int handle, const wchar_t* path, [[maybe_unused]] void* resv_a,
+                                          [[maybe_unused]] void* resv_b);
 
 #endif // USE_NOESIS
     };

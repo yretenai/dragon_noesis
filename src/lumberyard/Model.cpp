@@ -64,8 +64,7 @@ namespace dragon::lumberyard {
         return false;
     }
 
-    void Model::get_chunks_of_type(CRCH_CHUNK_HEADER::TYPE type,
-                                   std::vector<std::shared_ptr<AbstractModelChunk>>* chunks) {
+    void Model::get_chunks_of_type(CRCH_CHUNK_HEADER::TYPE type, std::vector<std::shared_ptr<AbstractModelChunk>>* chunks) {
         for (uint32_t i = 0; i < Chunks.size(); i++) {
             if (ChunkTable[i].Type == type) {
                 chunks->push_back(Chunks[ChunkTable[i].Id]);
@@ -95,10 +94,9 @@ namespace dragon::lumberyard {
             }
 
             {
-                DataStream* stream = CAST_ABSTRACT_CHUNK(
-                    DataStream, model.Chunks[mesh->Header.StreamChunkId[(int)DATA_STREAM_HEADER::TYPE::Position][0]]);
-                rapi->rpgBindPositionBufferSafe(stream->Buffer.data(), RPGEODATA_FLOAT, stream->Header.Size,
-                                                stream->Buffer.size());
+                DataStream* stream =
+                    CAST_ABSTRACT_CHUNK(DataStream, model.Chunks[mesh->Header.StreamChunkId[(int)DATA_STREAM_HEADER::TYPE::Position][0]]);
+                rapi->rpgBindPositionBufferSafe(stream->Buffer.data(), RPGEODATA_FLOAT, stream->Header.Size, stream->Buffer.size());
             }
 
             int uvLayer = 0;
@@ -108,14 +106,12 @@ namespace dragon::lumberyard {
                 }
                 DataStream* stream = CAST_ABSTRACT_CHUNK(DataStream, model.Chunks[id]);
                 if (uvLayer == 0) {
-                    rapi->rpgBindUV1BufferSafe(stream->Buffer.data(), RPGEODATA_FLOAT, stream->Header.Size,
-                                               stream->Buffer.size());
+                    rapi->rpgBindUV1BufferSafe(stream->Buffer.data(), RPGEODATA_FLOAT, stream->Header.Size, stream->Buffer.size());
                 } else if (uvLayer == 1) {
-                    rapi->rpgBindUV2BufferSafe(stream->Buffer.data(), RPGEODATA_FLOAT, stream->Header.Size,
-                                               stream->Buffer.size());
+                    rapi->rpgBindUV2BufferSafe(stream->Buffer.data(), RPGEODATA_FLOAT, stream->Header.Size, stream->Buffer.size());
                 } else {
-                    rapi->rpgBindUVXBufferSafe(stream->Buffer.data(), RPGEODATA_FLOAT, stream->Header.Size, uvLayer,
-                                               stream->Header.Count, stream->Buffer.size());
+                    rapi->rpgBindUVXBufferSafe(stream->Buffer.data(), RPGEODATA_FLOAT, stream->Header.Size, uvLayer, stream->Header.Count,
+                                               stream->Buffer.size());
                 }
                 uvLayer++;
             }
@@ -123,17 +119,15 @@ namespace dragon::lumberyard {
             // TODO: Color -- Multiple color streams have to be strided.
 
             if (mesh->Header.StreamChunkId[(int)DATA_STREAM_HEADER::TYPE::Normal][0] != 0) {
-                DataStream* stream = CAST_ABSTRACT_CHUNK(
-                    DataStream, model.Chunks[mesh->Header.StreamChunkId[(int)DATA_STREAM_HEADER::TYPE::Normal][0]]);
-                rapi->rpgBindNormalBufferSafe(stream->Buffer.data(), RPGEODATA_FLOAT, stream->Header.Size,
-                                              stream->Buffer.size());
+                DataStream* stream =
+                    CAST_ABSTRACT_CHUNK(DataStream, model.Chunks[mesh->Header.StreamChunkId[(int)DATA_STREAM_HEADER::TYPE::Normal][0]]);
+                rapi->rpgBindNormalBufferSafe(stream->Buffer.data(), RPGEODATA_FLOAT, stream->Header.Size, stream->Buffer.size());
             }
 
             if (mesh->Header.StreamChunkId[(int)DATA_STREAM_HEADER::TYPE::Tangent][0] != 0) {
-                DataStream* stream = CAST_ABSTRACT_CHUNK(
-                    DataStream, model.Chunks[mesh->Header.StreamChunkId[(int)DATA_STREAM_HEADER::TYPE::Tangent][0]]);
-                rapi->rpgBindTangentBufferSafe(stream->Buffer.data(), RPGEODATA_FLOAT, stream->Header.Size,
-                                               stream->Buffer.size());
+                DataStream* stream =
+                    CAST_ABSTRACT_CHUNK(DataStream, model.Chunks[mesh->Header.StreamChunkId[(int)DATA_STREAM_HEADER::TYPE::Tangent][0]]);
+                rapi->rpgBindTangentBufferSafe(stream->Buffer.data(), RPGEODATA_FLOAT, stream->Header.Size, stream->Buffer.size());
             }
 
             MaterialName* materials = nullptr;
@@ -141,8 +135,8 @@ namespace dragon::lumberyard {
                 materials = CAST_ABSTRACT_CHUNK(MaterialName, model.Chunks[node->Header.MaterialId]);
             }
 
-            DataStream* indiceBuffer = CAST_ABSTRACT_CHUNK(
-                DataStream, model.Chunks[mesh->Header.StreamChunkId[(int)DATA_STREAM_HEADER::TYPE::Index][0]]);
+            DataStream* indiceBuffer =
+                CAST_ABSTRACT_CHUNK(DataStream, model.Chunks[mesh->Header.StreamChunkId[(int)DATA_STREAM_HEADER::TYPE::Index][0]]);
             Submesh* submeshes = CAST_ABSTRACT_CHUNK(Submesh, model.Chunks[mesh->Header.SubmeshChunkId]);
             for (SUBMESH_DATA submesh : submeshes->Submeshes) {
                 rapi->rpgSetName(const_cast<char*>(node->Name.c_str()));
@@ -150,8 +144,8 @@ namespace dragon::lumberyard {
                     rapi->rpgSetMaterial(const_cast<char*>(materials->Materials[submesh.MaterialId].c_str()));
                 }
                 rapi->rpgCommitTriangles(indiceBuffer->Buffer.data() + submesh.FirstIndexId * indiceBuffer->Header.Size,
-                                         indiceBuffer->Header.Size == 4 ? RPGEODATA_UINT : RPGEODATA_USHORT,
-                                         submesh.IndexCount, RPGEO_TRIANGLE, true);
+                                         indiceBuffer->Header.Size == 4 ? RPGEODATA_UINT : RPGEODATA_USHORT, submesh.IndexCount, RPGEO_TRIANGLE,
+                                         true);
             }
             models.Append(rapi->rpgConstructModel());
         }

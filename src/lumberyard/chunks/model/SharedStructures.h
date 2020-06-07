@@ -43,14 +43,7 @@ namespace dragon::lumberyard::chunk::model {
     typedef int32_t CHUNK_ID;
 
     struct CRCH_CHUNK_HEADER {
-        enum struct TYPE : uint16_t {
-            Mesh = 0x1000,
-            Node = 0x100B,
-            MaterialName = 0x1014,
-            Flags = 0x1015,
-            DataStream = 0x1016,
-            Submesh = 0x1017
-        };
+        enum struct TYPE : uint16_t { Mesh = 0x1000, Node = 0x100B, MaterialName = 0x1014, Flags = 0x1015, DataStream = 0x1016, Submesh = 0x1017 };
 
         TYPE Type;
         uint16_t Version;

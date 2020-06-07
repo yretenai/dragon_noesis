@@ -19,9 +19,8 @@
 #include <string>
 
 #ifndef MAKEFOURCC
-#define MAKEFOURCC(ch0, ch1, ch2, ch3)                                                                                 \
-    ((uint32_t)(uint8_t)(ch0) | ((uint32_t)(uint8_t)(ch1) << 8) | ((uint32_t)(uint8_t)(ch2) << 16) |                   \
-     ((uint32_t)(uint8_t)(ch3) << 24))
+#define MAKEFOURCC(ch0, ch1, ch2, ch3) \
+    ((uint32_t)(uint8_t)(ch0) | ((uint32_t)(uint8_t)(ch1) << 8) | ((uint32_t)(uint8_t)(ch2) << 16) | ((uint32_t)(uint8_t)(ch3) << 24))
 #endif // MAKEFOURCC
 
 #ifndef FOURCC_DX10
@@ -50,11 +49,11 @@
 #endif
 
 #ifdef USE_NOESIS
-#define LOG(msg)                                                                                                       \
-    do {                                                                                                               \
-        std::stringstream s;                                                                                           \
-        s << "[" << LIBRARY_NAME << "][" << __PRETTY_FUNCTION__ << "] " << msg << std::endl;                           \
-        g_nfn->NPAPI_DebugLogStr(const_cast<char*>(s.str().c_str()));                                                  \
+#define LOG(msg)                                                                             \
+    do {                                                                                     \
+        std::stringstream s;                                                                 \
+        s << "[" << LIBRARY_NAME << "][" << __PRETTY_FUNCTION__ << "] " << msg << std::endl; \
+        g_nfn->NPAPI_DebugLogStr(const_cast<char*>(s.str().c_str()));                        \
     } while (0)
 #else
 #define LOG(msg) (std::cout << __FUNCTION__ << ": " << msg << std::endl)

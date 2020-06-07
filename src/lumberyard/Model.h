@@ -23,8 +23,7 @@ namespace dragon::lumberyard {
 
         bool get_chunk_header(uint32_t id, chunk::model::CRCH_CHUNK_HEADER& chunk);
 
-        void get_chunks_of_type(chunk::model::CRCH_CHUNK_HEADER::TYPE type,
-                                std::vector<std::shared_ptr<chunk::model::AbstractModelChunk>>* chunks);
+        void get_chunks_of_type(chunk::model::CRCH_CHUNK_HEADER::TYPE type, std::vector<std::shared_ptr<chunk::model::AbstractModelChunk>>* chunks);
 
         static bool check(Array<char>* buffer);
 

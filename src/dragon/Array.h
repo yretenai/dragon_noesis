@@ -31,8 +31,7 @@ namespace dragon {
             }
 
             bool operator==(const Iterator& rhs) const {
-                return Parent->Pointer == rhs.Parent->Pointer && Index == rhs.Index &&
-                       Parent->size() == rhs.Parent->size();
+                return Parent->Pointer == rhs.Parent->Pointer && Index == rhs.Index && Parent->size() == rhs.Parent->size();
             }
 
             bool operator!=(const Iterator& rhs) const { return !(*this == rhs); }
