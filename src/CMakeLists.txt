@@ -20,6 +20,7 @@ set(USE_NOESIS OFF CACHE BOOL "Use and Export Noesis functions")
 
 include(GenerateExportHeader)
 
-add_subdirectory("vendor" EXCLUDE_FROM_ALL)
+include_directories(vendor)
+
 add_subdirectory("lumberyard")
 add_subdirectory("tool" EXCLUDE_FROM_ALL)

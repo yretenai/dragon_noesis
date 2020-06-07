@@ -13,7 +13,6 @@ int main(int argc, char** argv) {
         return 1;
     }
     char* filepath = argv[1];
-    Array<char> bytes = read_file(filepath);
-    lumberyard::Model model(&bytes);
+    lumberyard::Material material = lumberyard::Material::from_path(filepath);
     return 0;
 }

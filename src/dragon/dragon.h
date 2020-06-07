@@ -8,6 +8,7 @@
 #define FMT_DRAGON_DRAGON_H
 
 #include "Array.h"
+#include <assert.h>
 #include <cstdint>
 #include <cstdio>
 #include <filesystem>

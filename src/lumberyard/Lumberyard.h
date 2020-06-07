@@ -14,11 +14,11 @@
 
 #include "../dragon/dragon.h"
 
-extern std::filesystem::path* LibraryRoot;
-
+#include "globals.h"
 #include "Actor.h"
 #include "Animation.h"
 #include "Model.h"
 #include "Texture.h"
+#include "Material.h"
 
 #endif // FMT_LUMBERYARD_LUMBERYARD_H
