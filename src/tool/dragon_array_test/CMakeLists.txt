@@ -1,3 +1,3 @@
 project(TOOL_dragon_array_test)
 add_executable(dragon_array_test main.cpp)
-target_link_libraries(dragon_array_test fmt_dragon)
+target_link_libraries(dragon_array_test)

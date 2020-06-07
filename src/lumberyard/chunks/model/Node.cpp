@@ -7,9 +7,7 @@
 namespace dragon::lumberyard::chunk::model {
     Node::Node(Array<char>* buffer, CRCH_CHUNK_HEADER chunk_header) {
         Chunk = chunk_header;
-        super_assert_dragon_log(Chunk.Version == 0x824 ||
-                                    Chunk.Version == 0x823,
-                                "version == 0x824 || version == 0x823");
+        assert(Chunk.Version == 0x824 || Chunk.Version == 0x823);
         Name = std::string(buffer->slice(0, 64).data());
         Header = buffer->cast<NODE_HEADER>(64);
         if (Header.PropertyStringLength > 0) {

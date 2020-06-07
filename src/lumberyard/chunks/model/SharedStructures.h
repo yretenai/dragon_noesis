@@ -43,16 +43,16 @@ namespace dragon::lumberyard::chunk::model {
     typedef int32_t CHUNK_ID;
 
     struct CRCH_CHUNK_HEADER {
-        enum CRCH_CHUNK_TYPE : uint16_t {
-            ModelChunkMesh = 0x1000,
-            ModelChunkNode = 0x100B,
-            ModelChunkMaterialName = 0x1014,
-            ModelChunkFlags = 0x1015,
-            ModelChunkData = 0x1016,
-            ModelChunkSubmesh = 0x1017
+        enum struct TYPE : uint16_t {
+            Mesh = 0x1000,
+            Node = 0x100B,
+            MaterialName = 0x1014,
+            Flags = 0x1015,
+            DataStream = 0x1016,
+            Submesh = 0x1017
         };
 
-        CRCH_CHUNK_TYPE Type;
+        TYPE Type;
         uint16_t Version;
         CHUNK_ID Id;
         uint32_t Size;
@@ -67,7 +67,7 @@ namespace dragon::lumberyard::chunk::model {
     };
 
     struct DATA_STREAM_HEADER {
-        enum TYPE : uint32_t {
+        enum struct TYPE : uint32_t {
             Position,
             Normal,
             UV,
@@ -83,7 +83,7 @@ namespace dragon::lumberyard::chunk::model {
             QTangent,
             SkinData,
             Dummy,
-            P3S_C4B_T2S,
+            CombinedPositionColorUV,
             NumTypes
         };
 
@@ -96,7 +96,7 @@ namespace dragon::lumberyard::chunk::model {
     };
 
     struct EXPORT_FLAGS_HEADER {
-        enum FLAGS : uint32_t {
+        enum struct FLAGS : uint32_t {
             MergeAllNodes = 0x1,
             HaveAllLods = 0x2,
             CustomNormals = 0x4,
@@ -116,7 +116,7 @@ namespace dragon::lumberyard::chunk::model {
     };
 
     struct MESH_HEADER {
-        enum FLAGS : uint32_t {
+        enum struct FLAGS : uint32_t {
             IsEmpty = 1,
             HasTexMappingDensity = 2,
             ExtraWeights = 4,
@@ -128,11 +128,12 @@ namespace dragon::lumberyard::chunk::model {
 
         uint32_t Vertices;
         uint32_t Indices;
-        uint32_t Subsets;
+        uint32_t Submeshes;
 
-        CHUNK_ID SubsetsChunkId;
+        CHUNK_ID SubmeshChunkId;
         CHUNK_ID VertexAnimId;
-        CHUNK_ID StreamChunkId[DATA_STREAM_HEADER::NumTypes][8];
+        CHUNK_ID StreamChunkId[static_cast<int>(
+            DATA_STREAM_HEADER::TYPE::NumTypes)][8];
         CHUNK_ID PhysicsDataChunkId[4];
 
         BOUNDING_BOX_SINGLE BoundingBox;
@@ -165,7 +166,7 @@ namespace dragon::lumberyard::chunk::model {
     };
 
     struct SUBMESH_HEADER {
-        enum FLAGS : uint32_t {
+        enum struct FLAGS : uint32_t {
             HasDecompMat = 0x1,
             BoneIndices = 0x2,
             SubsetTexelDensity = 0x4,

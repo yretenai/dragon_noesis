@@ -8,7 +8,6 @@
 #define FMT_DRAGON_DRAGON_H
 
 #include "Array.h"
-#include "export.h"
 #include <cstdint>
 #include <cstdio>
 #include <filesystem>
@@ -58,20 +57,6 @@ namespace dragon {
                            std::ios::binary | std::ios::out | std::ios::trunc);
         file.write(buffer->data(), buffer->size());
     }
-
-    DRAGON_EXPORT void open_dragon_log();
-
-    DRAGON_EXPORT void close_dragon_log();
-
-    DRAGON_EXPORT void flush_dragon_log();
-
-    DRAGON_EXPORT void open_dragon_log_stdout();
-
-    DRAGON_EXPORT void write_dragon_log(const char* fmt, ...);
-
-    DRAGON_EXPORT void assert_dragon_log(bool check, const char* error);
-
-    DRAGON_EXPORT void super_assert_dragon_log(bool check, const char* error);
 } // namespace dragon
 
 #endif // FMT_DRAGON_DRAGON_H

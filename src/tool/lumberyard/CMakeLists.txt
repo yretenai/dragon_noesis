@@ -1,3 +1,3 @@
 project(TOOL_lumberyard_test)
 add_executable(lumberyard_test main.cpp)
-target_link_libraries(lumberyard_test fmt_lumberyard fmt_dragon)
+target_link_libraries(lumberyard_test fmt_lumberyard)

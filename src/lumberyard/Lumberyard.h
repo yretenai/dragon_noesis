@@ -7,6 +7,7 @@
 #ifndef FMT_LUMBERYARD_LUMBERYARD_H
 #define FMT_LUMBERYARD_LUMBERYARD_H
 
+#include "../dragon.h"
 #include "Actor.h"
 #include "Animation.h"
 #include "Model.h"

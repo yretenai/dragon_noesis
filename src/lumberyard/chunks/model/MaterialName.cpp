@@ -8,7 +8,7 @@ namespace dragon::lumberyard::chunk::model {
     MaterialName::MaterialName(Array<char>* buffer,
                                CRCH_CHUNK_HEADER chunk_header) {
         Chunk = chunk_header;
-        super_assert_dragon_log(Chunk.Version == 0x802, "version == 0x802");
+        assert(Chunk.Version == 0x802);
         char* ptr = buffer->data();
         Name = std::string(ptr, ptr + 0x80);
         int offset = 0x80;
