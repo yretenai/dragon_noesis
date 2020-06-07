@@ -55,6 +55,9 @@ namespace dragon::lumberyard {
                 Chunks[chunk_header.Id] =
                     CAST_MODEL_CHUNK(new Submesh(&chunk_buffer, chunk_header));
                 break;
+            default:
+                LOG("Unhanled model chunk");
+                break;
             }
         }
     }
@@ -104,9 +107,14 @@ namespace dragon::lumberyard {
             rapi->rpgClearBufferBinds();
             Mesh* mesh =
                 CAST_ABSTRACT_CHUNK(Mesh, model.Chunks[node->Header.ObjectId]);
-
             if (mesh->Header.StreamChunkId[(
-                    int)DATA_STREAM_HEADER::TYPE::Position][0] != 0) {
+                    int)DATA_STREAM_HEADER::TYPE::Position][0] < 1 ||
+                mesh->Header.StreamChunkId[(int)DATA_STREAM_HEADER::TYPE::Index]
+                                          [0] < 1) {
+                LOG("Unable to load mesh, has no geometry data");
+            }
+
+            {
                 DataStream* stream = CAST_ABSTRACT_CHUNK(
                     DataStream,
                     model.Chunks[mesh->Header.StreamChunkId[(
@@ -142,7 +150,7 @@ namespace dragon::lumberyard {
                 uvLayer++;
             }
 
-            // TODO: Color.
+            // TODO: Color -- Multiple color streams have to be strided.
 
             if (mesh->Header
                     .StreamChunkId[(int)DATA_STREAM_HEADER::TYPE::Normal][0] !=

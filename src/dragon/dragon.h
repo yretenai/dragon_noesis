@@ -14,6 +14,7 @@
 #include <fstream>
 #include <iostream>
 #include <map>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 
@@ -27,10 +28,14 @@
 #define FOURCC_DX10 (MAKEFOURCC('D', 'X', '1', '0'))
 #endif
 
+#ifndef LIBRARY_NAME
+#define LIBRARY_NAME "fmt_dragon"
+#endif
+
 #ifdef WIN32
 #ifdef USE_NOESIS
 
-#include "noesis/pluginshare.h"
+#include "../noesis/pluginshare.h"
 
 #else // USE_NOESIS
 
@@ -38,6 +43,22 @@
 #include <windows.h>
 
 #endif // USE_NOESIS
+#endif
+
+#ifndef __PRETTY_FUNCTION__
+#define __PRETTY_FUNCTION__ __FUNCTION__
+#endif
+
+#ifdef USE_NOESIS
+#define LOG(msg)                                                               \
+    do {                                                                       \
+        std::stringstream s;                                                   \
+        s << "[" << LIBRARY_NAME << "][" << __PRETTY_FUNCTION__ << "] " << msg \
+          << std::endl;                                                        \
+        g_nfn->NPAPI_DebugLogStr(const_cast<char*>(s.str().c_str()));          \
+    } while (0)
+#else
+#define LOG(msg) (std::cout << __FUNCTION__ << ": " << msg << std::endl)
 #endif
 
 namespace dragon {

@@ -7,7 +7,7 @@
 #ifndef FMT_LUMBERYARD_ACTOR_H
 #define FMT_LUMBERYARD_ACTOR_H
 
-#include "../dragon.h"
+#include "../dragon/dragon.h"
 #include "export.h"
 
 namespace dragon::lumberyard {

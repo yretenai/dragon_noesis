@@ -2,7 +2,7 @@
 // Created by yretenai on 6/5/2020.
 //
 
-#include "../../dragon.h"
+#include "../../dragon/dragon.h"
 
 using namespace dragon;
 

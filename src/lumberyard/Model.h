@@ -7,7 +7,7 @@
 #ifndef FMT_LUMBERYARD_MODEL_H
 #define FMT_LUMBERYARD_MODEL_H
 
-#include "../dragon.h"
+#include "../dragon/dragon.h"
 #include "chunks/model/ModelChunks.h"
 #include "export.h"
 

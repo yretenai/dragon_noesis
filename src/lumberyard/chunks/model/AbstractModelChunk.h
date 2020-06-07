@@ -7,7 +7,7 @@
 #ifndef FMT_DRAGON_ABSTRACTMODELCHUNK_H
 #define FMT_DRAGON_ABSTRACTMODELCHUNK_H
 
-#include "../../../dragon.h"
+#include "../../../dragon/dragon.h"
 #include "../../export.h"
 #include "SharedStructures.h"
 
