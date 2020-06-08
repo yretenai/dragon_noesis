@@ -185,6 +185,8 @@ namespace dragon::lumberyard {
                     for (Material subMaterial : material.SubMaterials) {
                         noesisMaterial_t* mat = rapi->Noesis_GetMaterialList(1, false);
                         mat->name = rapi->Noesis_PooledString(const_cast<char*>(subMaterial.Name.c_str()));
+                        std::copy_n(subMaterial.DiffuseColor, 4, mat->diffuse);
+                        std::copy_n(subMaterial.SpecularColor, 4, mat->specular);
                         if (subMaterial.Textures.find("Diffuse") != subMaterial.Textures.end()) {
                             mat->texIdx = noesis_create_texture(subMaterial.Textures["Diffuse"], texList, rapi);
                         }
