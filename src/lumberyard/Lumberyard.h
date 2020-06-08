@@ -13,12 +13,11 @@
 #define LIBRARY_NAME "fmt_lumberyard"
 
 #include "../dragon/dragon.h"
-
-#include "globals.h"
 #include "Actor.h"
 #include "Animation.h"
+#include "Material.h"
 #include "Model.h"
 #include "Texture.h"
-#include "Material.h"
+#include "globals.h"
 
 #endif // FMT_LUMBERYARD_LUMBERYARD_H

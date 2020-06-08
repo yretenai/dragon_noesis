@@ -93,10 +93,14 @@ namespace dragon::lumberyard {
                 LOG("Unable to load mesh, has no geometry data");
             }
 
+            std::vector<char*> buffers;
+
             {
                 DataStream* stream =
                     CAST_ABSTRACT_CHUNK(DataStream, model.Chunks[mesh->Header.StreamChunkId[(int)DATA_STREAM_HEADER::TYPE::Position][0]]);
-                rapi->rpgBindPositionBufferSafe(stream->Buffer.data(), RPGEODATA_FLOAT, stream->Header.Size, stream->Buffer.size());
+                char* stream_buffer = stream->Buffer.to_noesis(rapi);
+                rapi->rpgBindPositionBufferSafe(stream_buffer, RPGEODATA_FLOAT, stream->Header.Size, stream->Buffer.size());
+                buffers.push_back(stream_buffer);
             }
 
             int uvLayer = 0;
@@ -105,14 +109,16 @@ namespace dragon::lumberyard {
                     break;
                 }
                 DataStream* stream = CAST_ABSTRACT_CHUNK(DataStream, model.Chunks[id]);
+                char* stream_buffer = stream->Buffer.to_noesis(rapi);
                 if (uvLayer == 0) {
-                    rapi->rpgBindUV1BufferSafe(stream->Buffer.data(), RPGEODATA_FLOAT, stream->Header.Size, stream->Buffer.size());
+                    rapi->rpgBindUV1BufferSafe(stream_buffer, RPGEODATA_FLOAT, stream->Header.Size, stream->Buffer.size());
                 } else if (uvLayer == 1) {
-                    rapi->rpgBindUV2BufferSafe(stream->Buffer.data(), RPGEODATA_FLOAT, stream->Header.Size, stream->Buffer.size());
+                    rapi->rpgBindUV2BufferSafe(stream_buffer, RPGEODATA_FLOAT, stream->Header.Size, stream->Buffer.size());
                 } else {
-                    rapi->rpgBindUVXBufferSafe(stream->Buffer.data(), RPGEODATA_FLOAT, stream->Header.Size, uvLayer, stream->Header.Count,
+                    rapi->rpgBindUVXBufferSafe(stream_buffer, RPGEODATA_FLOAT, stream->Header.Size, uvLayer, stream->Header.Count,
                                                stream->Buffer.size());
                 }
+                buffers.push_back(stream_buffer);
                 uvLayer++;
             }
 
@@ -121,13 +127,17 @@ namespace dragon::lumberyard {
             if (mesh->Header.StreamChunkId[(int)DATA_STREAM_HEADER::TYPE::Normal][0] != 0) {
                 DataStream* stream =
                     CAST_ABSTRACT_CHUNK(DataStream, model.Chunks[mesh->Header.StreamChunkId[(int)DATA_STREAM_HEADER::TYPE::Normal][0]]);
-                rapi->rpgBindNormalBufferSafe(stream->Buffer.data(), RPGEODATA_FLOAT, stream->Header.Size, stream->Buffer.size());
+                char* stream_buffer = stream->Buffer.to_noesis(rapi);
+                rapi->rpgBindNormalBufferSafe(stream_buffer, RPGEODATA_FLOAT, stream->Header.Size, stream->Buffer.size());
+                buffers.push_back(stream_buffer);
             }
 
             if (mesh->Header.StreamChunkId[(int)DATA_STREAM_HEADER::TYPE::Tangent][0] != 0) {
                 DataStream* stream =
                     CAST_ABSTRACT_CHUNK(DataStream, model.Chunks[mesh->Header.StreamChunkId[(int)DATA_STREAM_HEADER::TYPE::Tangent][0]]);
-                rapi->rpgBindTangentBufferSafe(stream->Buffer.data(), RPGEODATA_FLOAT, stream->Header.Size, stream->Buffer.size());
+                char* stream_buffer = stream->Buffer.to_noesis(rapi);
+                rapi->rpgBindTangentBufferSafe(stream_buffer, RPGEODATA_FLOAT, stream->Header.Size, stream->Buffer.size());
+                buffers.push_back(stream_buffer);
             }
 
             MaterialName* materials = nullptr;
@@ -135,19 +145,27 @@ namespace dragon::lumberyard {
                 materials = CAST_ABSTRACT_CHUNK(MaterialName, model.Chunks[node->Header.MaterialId]);
             }
 
-            DataStream* indiceBuffer =
+            DataStream* indiceStream =
                 CAST_ABSTRACT_CHUNK(DataStream, model.Chunks[mesh->Header.StreamChunkId[(int)DATA_STREAM_HEADER::TYPE::Index][0]]);
+            char* indice_buffer = indiceStream->Buffer.to_noesis(rapi);
+            buffers.push_back(indice_buffer);
             Submesh* submeshes = CAST_ABSTRACT_CHUNK(Submesh, model.Chunks[mesh->Header.SubmeshChunkId]);
             for (SUBMESH_DATA submesh : submeshes->Submeshes) {
-                rapi->rpgSetName(const_cast<char*>(node->Name.c_str()));
+                char* name = rapi->Noesis_PooledString(const_cast<char*>(node->Name.c_str()));
+                rapi->rpgSetName(name);
                 if (materials != nullptr) {
-                    rapi->rpgSetMaterial(const_cast<char*>(materials->Materials[submesh.MaterialId].c_str()));
+                    char* material_name = rapi->Noesis_PooledString(const_cast<char*>(materials->Materials[submesh.MaterialId].c_str()));
+                    rapi->rpgSetMaterial(material_name);
                 }
-                rapi->rpgCommitTriangles(indiceBuffer->Buffer.data() + submesh.FirstIndexId * indiceBuffer->Header.Size,
-                                         indiceBuffer->Header.Size == 4 ? RPGEODATA_UINT : RPGEODATA_USHORT, submesh.IndexCount, RPGEO_TRIANGLE,
+                rapi->rpgCommitTriangles(indice_buffer + submesh.FirstIndexId * indiceStream->Header.Size,
+                                         indiceStream->Header.Size == 4 ? RPGEODATA_UINT : RPGEODATA_USHORT, submesh.IndexCount, RPGEO_TRIANGLE,
                                          true);
             }
             models.Append(rapi->rpgConstructModel());
+
+            for (char* noesis_buffer : buffers) {
+                rapi->Noesis_UnpooledFree(noesis_buffer);
+            }
         }
         rapi->rpgDestroyContext(context);
         noesisModel_t* mdlList = rapi->Noesis_ModelsFromList(models, num_mdl);

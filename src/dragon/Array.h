@@ -8,6 +8,12 @@
 #include <algorithm>
 #include <memory>
 
+#ifdef WIN32
+#ifdef USE_NOESIS
+#include "../noesis/pluginshare.h"
+#endif
+#endif
+
 namespace dragon {
     template <typename T> class Array {
       private:
@@ -125,6 +131,14 @@ namespace dragon {
         Iterator begin() const { return Iterator(this, 0); }
 
         Iterator end() const { return Iterator(this, Length); }
+
+#if USE_NOESIS
+        T* to_noesis(noeRAPI_s* rapi) {
+            T* buffer = (T*)rapi->Noesis_UnpooledAlloc(sizeof(T) * Length);
+            std::copy_n(begin(), Length, buffer);
+            return buffer;
+        }
+#endif
     };
 } // namespace dragon
 

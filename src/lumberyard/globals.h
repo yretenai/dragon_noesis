@@ -9,4 +9,4 @@
 
 extern std::filesystem::path* LibraryRoot;
 
-#endif //FMT_DRAGON_GLOBALS_H
+#endif // FMT_DRAGON_GLOBALS_H

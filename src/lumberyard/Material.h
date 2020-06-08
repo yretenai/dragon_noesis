@@ -11,7 +11,7 @@
 
 namespace dragon::lumberyard {
     class LUMBERYARD_EXPORT Material {
-    public:
+      public:
         enum class MATERIAL_FLAGS : uint32_t {
             Wire = 0x0001,
             TwoSided = 0x0002,
@@ -53,6 +53,6 @@ namespace dragon::lumberyard {
         std::map<std::string, std::filesystem::path> Textures;
         std::vector<Material> SubMaterials;
     };
-}
+} // namespace dragon::lumberyard
 
 #endif // FMT_DRAGON_MATERIAL_H
