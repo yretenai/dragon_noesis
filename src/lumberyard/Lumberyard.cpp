@@ -25,10 +25,26 @@ void reset_game_root() {
 }
 
 int set_game_root([[maybe_unused]] int handle, [[maybe_unused]] void* user_data) {
+    char* defaultValue = nullptr;
+    if (LibraryRoot != nullptr) {
+        defaultValue = new char[MAX_NOESIS_PATH];
+        memset(defaultValue, 0, MAX_NOESIS_PATH);
+        wcstombs(defaultValue, LibraryRoot->c_str(), LibraryRoot->string().size());
+    }
+    noeUserPromptParam_t prompt = {const_cast<char*>("Select Game Extraction Directory"),
+                                   const_cast<char*>("Select the directory game files have been extracted to automatically load textures"),
+                                   defaultValue, NOEUSERVAL_FOLDERPATH};
+    bool promptResult = g_nfn->NPAPI_UserPrompt(&prompt);
+    if (defaultValue != nullptr) {
+        delete[] defaultValue;
+    }
     reset_game_root();
-    noeUserPromptParam_t prompt = {const_cast<char*>(""), nullptr, nullptr, NOEUSERVAL_FOLDERPATH};
-    if (!g_nfn->NPAPI_UserPrompt(&prompt) || prompt.valBuf[0] == 0) {
-        return 0;
+    if (!promptResult || prompt.valBuf[0] == 0) {
+        BYTE buffer[MAX_NOESIS_PATH];
+        memset(buffer, 0, MAX_NOESIS_PATH);
+        LOG("Updated library path.");
+        g_nfn->NPAPI_UserSettingWrite(const_cast<wchar_t*>(L"dragon::lumberyard::LibraryPath"), buffer, MAX_NOESIS_PATH);
+        return 1;
     }
 
     wchar_t* path = reinterpret_cast<wchar_t*>(prompt.valBuf);
@@ -37,7 +53,21 @@ int set_game_root([[maybe_unused]] int handle, [[maybe_unused]] void* user_data)
         return 0;
     }
     LibraryRoot = new std::filesystem::path(path);
+    BYTE buffer[MAX_NOESIS_PATH];
+    std::copy_n(prompt.valBuf, MAX_NOESIS_PATH, buffer);
+    g_nfn->NPAPI_UserSettingWrite(const_cast<wchar_t*>(L"dragon::lumberyard::LibraryPath"), buffer, MAX_NOESIS_PATH);
     return 1;
+}
+
+void load_saved_game_root() {
+    BYTE buffer[MAX_NOESIS_PATH];
+    if (g_nfn->NPAPI_UserSettingRead(const_cast<wchar_t*>(L"dragon::lumberyard::LibraryPath"), buffer, MAX_NOESIS_PATH)) {
+        wchar_t* path = reinterpret_cast<wchar_t*>(buffer);
+        if (!std::filesystem::exists(path)) {
+            return;
+        }
+        LibraryRoot = new std::filesystem::path(path);
+    }
 }
 
 bool NPAPI_InitLocal() {
@@ -63,6 +93,7 @@ bool NPAPI_InitLocal() {
     handle = g_nfn->NPAPI_RegisterTool((char*)"Set Lumberyard Game Directory", set_game_root, nullptr);
     g_nfn->NPAPI_SetToolHelpText(handle, (char*)"Sets the EXTRACTED game root folder, for loading other "
                                                 "assets like textures.");
+    load_saved_game_root();
     return true;
 }
 
