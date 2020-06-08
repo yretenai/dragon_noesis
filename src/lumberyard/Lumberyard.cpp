@@ -42,7 +42,7 @@ int set_game_root([[maybe_unused]] int handle, [[maybe_unused]] void* user_data)
     if (!promptResult || prompt.valBuf[0] == 0) {
         BYTE buffer[MAX_NOESIS_PATH];
         memset(buffer, 0, MAX_NOESIS_PATH);
-        LOG("Updated library path.");
+        LOG("Cleared library path");
         g_nfn->NPAPI_UserSettingWrite(const_cast<wchar_t*>(L"dragon::lumberyard::LibraryPath"), buffer, MAX_NOESIS_PATH);
         return 1;
     }
@@ -55,6 +55,7 @@ int set_game_root([[maybe_unused]] int handle, [[maybe_unused]] void* user_data)
     LibraryRoot = new std::filesystem::path(path);
     BYTE buffer[MAX_NOESIS_PATH];
     std::copy_n(prompt.valBuf, MAX_NOESIS_PATH, buffer);
+    LOG("Set library path to " << *LibraryRoot);
     g_nfn->NPAPI_UserSettingWrite(const_cast<wchar_t*>(L"dragon::lumberyard::LibraryPath"), buffer, MAX_NOESIS_PATH);
     return 1;
 }
@@ -67,6 +68,7 @@ void load_saved_game_root() {
             return;
         }
         LibraryRoot = new std::filesystem::path(path);
+        LOG("Set library path to " << *LibraryRoot);
     }
 }
 
@@ -77,6 +79,11 @@ bool NPAPI_InitLocal() {
     int handle = g_nfn->NPAPI_Register((char*)"Lumberyard Model", (char*)".cgf");
     g_nfn->NPAPI_SetTypeHandler_LoadModel(handle, Model::noesis_load);
     g_nfn->NPAPI_SetTypeHandler_TypeCheck(handle, Model::noesis_check);
+
+    LOG("Adding Lumberyard CGF Actor handler...");
+    handle = g_nfn->NPAPI_Register((char*)"Lumberyard EMFX Actor", (char*)".actor");
+    g_nfn->NPAPI_SetTypeHandler_LoadModel(handle, Actor::noesis_load);
+    g_nfn->NPAPI_SetTypeHandler_TypeCheck(handle, Actor::noesis_check);
 
     LOG("Adding Lumberyard DDS Texture handler...");
     handle = g_nfn->NPAPI_Register((char*)"Lumberyard Texture", (char*)".a;.1");

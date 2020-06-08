@@ -4,8 +4,8 @@
 
 #pragma once
 
-#ifndef FMT_LUMBERYARD_SHAREDSTRUCTURES_H
-#define FMT_LUMBERYARD_SHAREDSTRUCTURES_H
+#ifndef FMT_LUMBERYARD_MODEL_SHAREDSTRUCTURES_H
+#define FMT_LUMBERYARD_MODEL_SHAREDSTRUCTURES_H
 
 #include <stdint.h>
 
@@ -181,4 +181,4 @@ namespace dragon::lumberyard::chunk::model {
 #pragma pack(pop)
 } // namespace dragon::lumberyard::chunk::model
 
-#endif // FMT_LUMBERYARD_SHAREDSTRUCTURES_H
+#endif // FMT_LUMBERYARD_MODEL_SHAREDSTRUCTURES_H

@@ -21,7 +21,7 @@ namespace dragon::lumberyard {
         Array<chunk::model::CRCH_CHUNK_HEADER> ChunkTable;
         std::map<chunk::model::CHUNK_ID, std::shared_ptr<chunk::model::AbstractModelChunk>> Chunks;
 
-        bool get_chunk_header(uint32_t id, chunk::model::CRCH_CHUNK_HEADER& chunk);
+        bool get_chunk_header(chunk::model::CHUNK_ID id, chunk::model::CRCH_CHUNK_HEADER& chunk);
 
         void get_chunks_of_type(chunk::model::CRCH_CHUNK_HEADER::TYPE type, std::vector<std::shared_ptr<chunk::model::AbstractModelChunk>>* chunks);
 

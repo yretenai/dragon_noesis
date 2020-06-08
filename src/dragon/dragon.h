@@ -50,11 +50,11 @@
 #endif
 
 #ifdef USE_NOESIS
-#define LOG(msg)                                                                             \
-    do {                                                                                     \
-        std::stringstream s;                                                                 \
-        s << "[" << LIBRARY_NAME << "][" << __PRETTY_FUNCTION__ << "] " << msg << std::endl; \
-        g_nfn->NPAPI_DebugLogStr(const_cast<char*>(s.str().c_str()));                        \
+#define LOG(...)                                                                                     \
+    do {                                                                                             \
+        std::stringstream s;                                                                         \
+        s << "[" << LIBRARY_NAME << "][" << __PRETTY_FUNCTION__ << "] " << __VA_ARGS__ << std::endl; \
+        g_nfn->NPAPI_DebugLogStr(const_cast<char*>(s.str().c_str()));                                \
     } while (0)
 #else
 #define LOG(msg) (std::cout << __FUNCTION__ << ": " << msg << std::endl)

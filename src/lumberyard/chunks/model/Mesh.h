@@ -2,8 +2,8 @@
 // Created by yretenai on 6/5/2020.
 //
 
-#ifndef FMT_LUMBERYARD_MESH_H
-#define FMT_LUMBERYARD_MESH_H
+#ifndef FMT_LUMBERYARD_MODEL_MESH_H
+#define FMT_LUMBERYARD_MODEL_MESH_H
 
 #include "AbstractModelChunk.h"
 
@@ -16,4 +16,4 @@ namespace dragon::lumberyard::chunk::model {
     };
 } // namespace dragon::lumberyard::chunk::model
 
-#endif // FMT_LUMBERYARD_MESH_H
+#endif // FMT_LUMBERYARD_MODEL_MESH_H

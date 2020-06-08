@@ -4,8 +4,8 @@
 
 #pragma once
 
-#ifndef FMT_LUMBERYARD_EXPORTFLAGS_H
-#define FMT_LUMBERYARD_EXPORTFLAGS_H
+#ifndef FMT_LUMBERYARD_MODEL_EXPORTFLAGS_H
+#define FMT_LUMBERYARD_MODEL_EXPORTFLAGS_H
 
 #include "AbstractModelChunk.h"
 
@@ -18,4 +18,4 @@ namespace dragon::lumberyard::chunk::model {
     };
 } // namespace dragon::lumberyard::chunk::model
 
-#endif // FMT_LUMBERYARD_EXPORTFLAGS_H
+#endif // FMT_LUMBERYARD_MODEL_EXPORTFLAGS_H

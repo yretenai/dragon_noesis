@@ -16,7 +16,7 @@ using namespace dragon::lumberyard::chunk::model;
 
 namespace dragon::lumberyard {
     Model::Model(Array<char>* buffer) {
-        assert(buffer->size() >= sizeof(CRCH_HEADER));
+        assert(check(buffer));
         Header = buffer->cast<CRCH_HEADER>(0);
         if (Header.ChunkCount == 0)
             return;
@@ -46,18 +46,20 @@ namespace dragon::lumberyard {
                 Chunks[chunk_header.Id] = CAST_MODEL_CHUNK(new Submesh(&chunk_buffer, chunk_header));
                 break;
             default:
-                LOG("Unhanled model chunk");
+                LOG("Unhanled model chunk " << (uint32_t)chunk_header.Type);
                 break;
             }
         }
     }
 
     bool Model::check(Array<char>* buffer) {
+        if (buffer->size() < sizeof(CRCH_HEADER))
+            return false;
         uint32_t* pointer = reinterpret_cast<uint32_t*>(buffer->data());
         return buffer->size() >= sizeof(CRCH_HEADER) && pointer[0] == FOURCC_CRCH && pointer[1] == 0x746;
     }
 
-    bool Model::get_chunk_header(uint32_t id, CRCH_CHUNK_HEADER& chunk) {
+    bool Model::get_chunk_header(CHUNK_ID id, CRCH_CHUNK_HEADER& chunk) {
         for (uint32_t i = 0; i < Chunks.size(); i++) {
             if (ChunkTable[i].Id == id) {
                 chunk = ChunkTable[i];
@@ -94,7 +96,7 @@ namespace dragon::lumberyard {
             Mesh* mesh = CAST_ABSTRACT_CHUNK(Mesh, model.Chunks[node->Header.ObjectId]);
             if (mesh->Header.StreamChunkId[(int)DATA_STREAM_HEADER::TYPE::Position][0] < 1 ||
                 mesh->Header.StreamChunkId[(int)DATA_STREAM_HEADER::TYPE::Index][0] < 1) {
-                LOG("Unable to load mesh, has no geometry data");
+                LOG("Unable to load mesh " << node->Name << ", has no geometry data");
             }
 
             std::vector<char*> buffers;
@@ -213,7 +215,7 @@ namespace dragon::lumberyard {
 
     bool Model::noesis_check(BYTE* buffer, int length, [[maybe_unused]] noeRAPI_t* rapi) {
         Array<char> data_buffer = Array<char>(reinterpret_cast<char*>(buffer), length);
-        return Model::check(&data_buffer);
+        return check(&data_buffer);
     }
 
     int Model::noesis_create_texture(std::filesystem::path texturePath, CArrayList<noesisTex_t*>& texList, noeRAPI_t* rapi) {
