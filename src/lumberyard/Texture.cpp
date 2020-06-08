@@ -68,10 +68,14 @@ namespace dragon::lumberyard {
         if (!wpath.has_extension())
             return false;
 
-        if (wpath.extension().compare(".a") != 0)
-            wpath.replace_extension();
+        return noesies_load_direct(wpath, noe_tex, rapi);
+    }
 
-        Texture texture(wpath);
+    bool Texture::noesies_load_direct(std::filesystem::path& imagePath, CArrayList<noesisTex_t*>& texList, const noeRAPI_t* rapi) {
+        if (imagePath.extension().compare(".a") != 0)
+            imagePath.replace_extension();
+
+        Texture texture(imagePath);
 
         Array<char> data = texture.cook();
         if (data.empty())
@@ -79,7 +83,8 @@ namespace dragon::lumberyard {
         noesisTex_t* tex = rapi->Noesis_LoadTexByHandler(reinterpret_cast<BYTE*>(data.data()), data.size(), (char*)".dds");
         if (tex == nullptr)
             return false;
-        noe_tex.Append(tex);
+        tex->filename = rapi->Noesis_PooledString(const_cast<char*>(imagePath.filename().string().c_str()));
+        texList.Append(tex);
 
         return true;
     }

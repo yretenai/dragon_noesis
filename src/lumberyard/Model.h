@@ -33,6 +33,8 @@ namespace dragon::lumberyard {
 
         static bool noesis_check(BYTE* buffer, int length, [[maybe_unused]] noeRAPI_t* rapi);
 
+        static int noesis_create_texture(std::filesystem::path texturePath, CArrayList<noesisTex_t*>& texList, noeRAPI_t* rapi);
+
 #endif // USE_NOESIS
     };
 } // namespace dragon::lumberyard

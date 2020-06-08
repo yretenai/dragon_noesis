@@ -4,6 +4,9 @@
 
 #include "Model.h"
 
+#include "Material.h"
+#include "Texture.h"
+#include "globals.h"
 #include <memory>
 
 using namespace dragon::lumberyard::chunk::model;
@@ -81,6 +84,35 @@ namespace dragon::lumberyard {
         model.get_chunks_of_type(CRCH_CHUNK_HEADER::TYPE::Node, &chunks);
         void* context = rapi->rpgCreateContext();
         CArrayList<noesisModel_t*> models = CArrayList<noesisModel_t*>();
+        noesisMatData_t* matData;
+
+        if (LibraryRoot != nullptr) {
+            wchar_t* path = new wchar_t[MAX_NOESIS_PATH];
+            g_nfn->NPAPI_GetSelectedFile(path);
+            if (wcslen(path) < 2) {
+                delete[] path;
+                return 0;
+            }
+            std::filesystem::path materialPath(path);
+            materialPath.replace_extension(".mtl");
+            if (std::filesystem::exists(materialPath)) {
+                Material material = Material::from_path(materialPath);
+                CArrayList<noesisTex_t*> texList;
+                CArrayList<noesisMaterial_t*> matList;
+                for (Material subMaterial : material.SubMaterials) {
+                    noesisMaterial_t* mat = rapi->Noesis_GetMaterialList(1, false);
+                    mat->name = rapi->Noesis_PooledString(const_cast<char*>(subMaterial.Name.c_str()));
+                    std::copy_n(subMaterial.DiffuseColor, 4, mat->diffuse);
+                    std::copy_n(subMaterial.SpecularColor, 4, mat->specular);
+                    if (subMaterial.Textures.find("Diffuse") != subMaterial.Textures.end()) {
+                        mat->texIdx = noesis_create_texture(subMaterial.Textures["Diffuse"], texList, rapi);
+                    }
+                    matList.Push(mat);
+                }
+                matData = rapi->Noesis_GetMatDataFromLists(matList, texList);
+            }
+        }
+
         for (std::shared_ptr<AbstractModelChunk> abstractChunk : chunks) {
             Node* node = CAST_ABSTRACT_CHUNK(Node, abstractChunk);
             if (node->Header.ObjectId < 1) {
@@ -161,6 +193,11 @@ namespace dragon::lumberyard {
                                          indiceStream->Header.Size == 4 ? RPGEODATA_UINT : RPGEODATA_USHORT, submesh.IndexCount, RPGEO_TRIANGLE,
                                          true);
             }
+
+            if (matData != nullptr) {
+                rapi->rpgSetExData_Materials(matData);
+            }
+
             models.Append(rapi->rpgConstructModel());
 
             for (char* noesis_buffer : buffers) {
@@ -175,6 +212,17 @@ namespace dragon::lumberyard {
     bool Model::noesis_check(BYTE* buffer, int length, [[maybe_unused]] noeRAPI_t* rapi) {
         Array<char> data_buffer = Array<char>(reinterpret_cast<char*>(buffer), length);
         return Model::check(&data_buffer);
+    }
+
+    int Model::noesis_create_texture(std::filesystem::path texturePath, CArrayList<noesisTex_t*>& texList, noeRAPI_t* rapi) {
+        std::filesystem::path combinedPath = *LibraryRoot / texturePath;
+        combinedPath.replace_extension(".dds.1");
+        if (!std::filesystem::exists(combinedPath)) {
+            return -1;
+        }
+        int num = texList.Num();
+        Texture::noesies_load_direct(combinedPath, texList, rapi);
+        return num;
     }
 
 #endif // USE_NOESIS

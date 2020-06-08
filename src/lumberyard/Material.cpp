@@ -16,6 +16,14 @@ namespace dragon::lumberyard {
             Name = std::string(name);
         }
         Flags = (MATERIAL_FLAGS)xml->Unsigned64Attribute("MtlFlags", 0);
+        const char* colorBuffer = xml->Attribute("Diffuse");
+        if (colorBuffer != nullptr) {
+            sscanf(colorBuffer, "%f,%f,%f,%f", &DiffuseColor[0], &DiffuseColor[1], &DiffuseColor[2], &DiffuseColor[3]);
+        }
+        colorBuffer = xml->Attribute("Specular");
+        if (colorBuffer != nullptr) {
+            sscanf(colorBuffer, "%f,%f,%f,%f", &SpecularColor[0], &SpecularColor[1], &SpecularColor[2], &SpecularColor[3]);
+        }
 
         if (((uint64_t)Flags & (uint64_t)MATERIAL_FLAGS::MultiSubMaterial) == (uint64_t)MATERIAL_FLAGS::MultiSubMaterial) {
             XMLElement* sub_materials = xml->FirstChildElement("SubMaterials");

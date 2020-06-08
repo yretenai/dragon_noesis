@@ -50,6 +50,9 @@ namespace dragon::lumberyard {
         std::string Name;
         MATERIAL_FLAGS Flags;
 
+        float DiffuseColor[4] = {1, 1, 1, 1};
+        float SpecularColor[4] = {1, 1, 1, 1};
+
         std::map<std::string, std::filesystem::path> Textures;
         std::vector<Material> SubMaterials;
     };
