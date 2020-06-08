@@ -8,7 +8,7 @@
 #define FMT_LUMBERYARD_MODEL_H
 
 #include "../dragon/dragon.h"
-#include "chunks/model/ModelChunks.h"
+#include "chunk/model/ModelChunks.h"
 #include "export.h"
 
 #define FOURCC_CRCH (MAKEFOURCC('C', 'r', 'C', 'h'))

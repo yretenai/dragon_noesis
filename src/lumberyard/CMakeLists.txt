@@ -10,7 +10,8 @@ add_library(fmt_lumberyard SHARED
             Material.cpp Material.h globals.h)
 
 if(USE_NOESIS)
-    target_sources(fmt_lumberyard PRIVATE ../noesis/noesisplugin.cpp ../noesis/pluginsupport.cpp Lumberyard.cpp)
+    target_sources(fmt_lumberyard PRIVATE ../noesis/noesisplugin.cpp ../noesis/pluginsupport.cpp
+                   Model_Noesis.cpp Actor_Noesis.cpp Texture_Noesis.cpp Lumberyard.cpp)
     add_compile_definitions(USE_NOESIS)
 endif()
 
@@ -26,4 +27,4 @@ if(USE_NOESIS)
             COMPONENT RUNTIME)
 endif()
 
-add_subdirectory("chunks")
+add_subdirectory("chunk")

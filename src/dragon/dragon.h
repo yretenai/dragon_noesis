@@ -18,6 +18,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 #ifndef MAKEFOURCC
 #define MAKEFOURCC(ch0, ch1, ch2, ch3) \
@@ -50,14 +51,17 @@
 #endif
 
 #ifdef USE_NOESIS
-#define LOG(...)                                                                                     \
-    do {                                                                                             \
-        std::stringstream s;                                                                         \
-        s << "[" << LIBRARY_NAME << "][" << __PRETTY_FUNCTION__ << "] " << __VA_ARGS__ << std::endl; \
-        g_nfn->NPAPI_DebugLogStr(const_cast<char*>(s.str().c_str()));                                \
+#define LOG(msg)                                                                             \
+    do {                                                                                     \
+        std::stringstream s;                                                                 \
+        s << "[" << LIBRARY_NAME << "][" << __PRETTY_FUNCTION__ << "] " << msg << std::endl; \
+        if (g_nfn == nullptr)                                                                \
+            (std::cout << s.str());                                                          \
+        else                                                                                 \
+            g_nfn->NPAPI_DebugLogStr(const_cast<char*>(s.str().c_str()));                    \
     } while (0)
 #else
-#define LOG(msg) (std::cout << __FUNCTION__ << ": " << msg << std::endl)
+#define LOG(msg) (std::cout << __PRETTY_FUNCTION__ << ": " << msg << std::endl)
 #endif
 
 namespace dragon {
