@@ -10,6 +10,7 @@
 #include "AbstractEMFXChunk.h"
 #include "ActorInfo.h"
 #include "ActorNode.h"
+#include "ActorNodeMotionSources.h"
 #include "ActorNodes.h"
 #include "SharedStructures.h"
 

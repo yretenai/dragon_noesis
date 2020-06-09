@@ -114,6 +114,10 @@ namespace dragon::lumberyard::chunk::emfx {
         uint32_t NumRootNodes;
         BOUNDING_BOX_SINGLE BoundingBox;
     };
+
+    struct ACTOR_NODE_MOTION_SOURCES_V1_HEADER {
+        uint32_t NumNodes;
+    };
 #pragma pack(pop)
 } // namespace dragon::lumberyard::chunk::emfx
 

@@ -4,4 +4,5 @@ target_sources(fmt_lumberyard PRIVATE
                EMFXChunks.h AbstractEMFXChunk.h SharedStructures.h
                ActorInfo.cpp ActorInfo.h
                ActorNode.cpp ActorNode.h
+               ActorNodeMotionSources.cpp ActorNodeMotionSources.h
                ActorNodes.cpp ActorNodes.h)

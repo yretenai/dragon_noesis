@@ -21,12 +21,13 @@ namespace dragon::lumberyard {
         std::vector<std::shared_ptr<chunk::emfx::AbstractEMFXChunk>> Chunks;
 
         void get_chunks_of_type(chunk::emfx::ACTOR_CHUNK_TYPE type, std::vector<std::shared_ptr<chunk::emfx::AbstractEMFXChunk>>* chunks);
+        std::shared_ptr<chunk::emfx::AbstractEMFXChunk> get_chunk(chunk::emfx::ACTOR_CHUNK_TYPE type);
 
         static bool check(Array<char>* buffer);
 
 #ifdef USE_NOESIS
 
-        static noesisModel_t* noesis_load(BYTE* buffer, int length, int& num_mdl, noeRAPI_t* rapi);
+        static noesisModel_t* noesis_load(BYTE* buffer, int length, int& numMdl, noeRAPI_t* rapi);
 
         static bool noesis_check(BYTE* buffer, int length, [[maybe_unused]] [[maybe_unused]] noeRAPI_t* rapi);
 

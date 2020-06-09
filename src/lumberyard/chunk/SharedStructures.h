@@ -11,6 +11,18 @@ struct VECTOR3_SINGLE {
     float Z;
 };
 
+struct VECTOR3_USHORT {
+    uint16_t X;
+    uint16_t Y;
+    uint16_t Z;
+};
+
+struct VECTOR3_BYTE {
+    uint8_t X;
+    uint8_t Y;
+    uint8_t Z;
+};
+
 struct VECTOR4_SINGLE {
     float X;
     float Y;

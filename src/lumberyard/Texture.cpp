@@ -2,7 +2,7 @@
 // Created by yretenai on 5/31/2020.
 //
 
-#include "Lumberyard.h"
+#include "Texture.h"
 
 namespace dragon::lumberyard {
     Texture::Texture(std::filesystem::path path) {

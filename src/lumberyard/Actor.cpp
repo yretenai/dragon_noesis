@@ -29,10 +29,8 @@ namespace dragon::lumberyard {
                 throw not_implemented_exception();
             case ACTOR_CHUNK_TYPE::Material:
                 LOG("Found Material");
-                throw not_implemented_exception();
-            case ACTOR_CHUNK_TYPE::MaterialLayer:
-                LOG("Found MaterialLayer");
-                throw not_implemented_exception();
+                ptr += chunkHeader.Size;
+                break;
             case ACTOR_CHUNK_TYPE::Info:
                 LOG("Found Info");
                 Chunks.push_back(CAST_EMFX_CHUNK(new ActorInfo(buffer, chunkHeader, ptr)));
@@ -40,39 +38,22 @@ namespace dragon::lumberyard {
             case ACTOR_CHUNK_TYPE::MeshLOD:
                 LOG("Found MeshLOD");
                 throw not_implemented_exception();
-            case ACTOR_CHUNK_TYPE::MorphTarget:
-                LOG("Found MorphTarget");
-                throw not_implemented_exception();
-            case ACTOR_CHUNK_TYPE::NodeGroups:
-                LOG("Found NodeGroups");
-                throw not_implemented_exception();
             case ACTOR_CHUNK_TYPE::Nodes:
                 LOG("Found Nodes");
                 Chunks.push_back(CAST_EMFX_CHUNK(new ActorNodes(buffer, chunkHeader, ptr)));
-            case ACTOR_CHUNK_TYPE::MorphTargets:
-                LOG("Found MorphTargets");
-                throw not_implemented_exception();
+                return;
             case ACTOR_CHUNK_TYPE::MaterialInfo:
                 LOG("Found MaterialInfo");
-                throw not_implemented_exception();
+                ptr += chunkHeader.Size;
+                break;
             case ACTOR_CHUNK_TYPE::NodeMotionSources:
                 LOG("Found NodeMotionSources");
-                throw not_implemented_exception();
-            case ACTOR_CHUNK_TYPE::AttachmentSources:
-                LOG("Found AttachmentSources");
-                throw not_implemented_exception();
+                Chunks.push_back(CAST_EMFX_CHUNK(new ActorNodeMotionSources(buffer, chunkHeader, ptr)));
+                break;
             case ACTOR_CHUNK_TYPE::MaterialAttributeSet:
                 LOG("Found MaterialAttributeSet");
-                throw not_implemented_exception();
-            case ACTOR_CHUNK_TYPE::GenericMaterial:
-                LOG("Found GenericMaterial");
-                throw not_implemented_exception();
-            case ACTOR_CHUNK_TYPE::PhysicsSetup:
-                LOG("Found PhysicsSetup");
-                throw not_implemented_exception();
-            case ACTOR_CHUNK_TYPE::SimulatedObjectSetup:
-                LOG("Found SimulatedObjectSetup");
-                throw not_implemented_exception();
+                ptr += chunkHeader.Size;
+                break;
             default:
                 LOG("Unhandled chunk type " << chunkHeader.Type);
                 ptr += chunkHeader.Size;
@@ -84,7 +65,22 @@ namespace dragon::lumberyard {
         }
     }
 
-    void Actor::get_chunks_of_type(ACTOR_CHUNK_TYPE type, std::vector<std::shared_ptr<AbstractEMFXChunk>>* chunks) {}
+    void Actor::get_chunks_of_type(ACTOR_CHUNK_TYPE type, std::vector<std::shared_ptr<AbstractEMFXChunk>>* chunks) {
+        for (uint32_t i = 0; i < Chunks.size(); i++) {
+            if (static_cast<ACTOR_CHUNK_TYPE>(Chunks[i].get()->Chunk.Type) == type) {
+                chunks->push_back(Chunks[i]);
+            }
+        }
+    }
+
+    std::shared_ptr<AbstractEMFXChunk> Actor::get_chunk(ACTOR_CHUNK_TYPE type) {
+        for (uint32_t i = 0; i < Chunks.size(); i++) {
+            if (static_cast<ACTOR_CHUNK_TYPE>(Chunks[i].get()->Chunk.Type) == type) {
+                return Chunks[i];
+            }
+        }
+        return nullptr;
+    }
 
     bool Actor::check(Array<char>* buffer) {
         if (buffer->size() < sizeof(ACTOR_HEADER))
