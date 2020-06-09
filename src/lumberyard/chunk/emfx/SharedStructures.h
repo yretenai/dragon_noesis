@@ -46,7 +46,8 @@ namespace dragon::lumberyard::chunk::emfx {
         MaterialAttributeSet = 16,
         GenericMaterial = 17,
         PhysicsSetup = 18,
-        SimulatedObjectSetup = 19
+        SimulatedObjectSetup = 19,
+        END
     };
 
     enum struct UNIT_TYPE : uint8_t { Inches, Feet, Yards, Miles, Milimeters, Centimeters, Decimeters, Meters, Kilometers };
@@ -117,6 +118,40 @@ namespace dragon::lumberyard::chunk::emfx {
 
     struct ACTOR_NODE_MOTION_SOURCES_V1_HEADER {
         uint32_t NumNodes;
+    };
+
+    struct ACTOR_MATERIAL_INFO_V1_HEADER {
+        uint32_t LOD;
+        uint32_t NumTotalMaterials;
+        uint32_t NumMaterials;
+        uint32_t NumEffectMaterials;
+        uint32_t NumGenericMaterials;
+    };
+
+    struct ACTOR_MATERIAL_V1_HEADER {
+        uint32_t LOD;
+        VECTOR4_SINGLE AmbientColor;
+        VECTOR4_SINGLE DiffuseColor;
+        VECTOR4_SINGLE SpecularColor;
+        VECTOR4_SINGLE EmissiveColor;
+        float Shine;
+        float ShineStrength;
+        float Opacity;
+        float IOR;
+        uint8_t IsDoubleSided;
+        uint8_t RenderWireFrame;
+        uint8_t TransparencyType;
+        uint8_t NumLayers;
+    };
+
+    struct ACTOR_MATERIAL_LAYER_V1_HEADER {
+        float Amount;
+        VECTOR2_SINGLE Offset;
+        VECTOR2_SINGLE Tiling;
+        float Rotation;
+        uint16_t MaterialNumber;
+        uint8_t MapType;
+        uint8_t BlendMode;
     };
 #pragma pack(pop)
 } // namespace dragon::lumberyard::chunk::emfx

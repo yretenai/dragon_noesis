@@ -19,6 +19,10 @@ namespace dragon::lumberyard {
         int ptr = sizeof(ACTOR_HEADER);
         while (ptr < buffer->size()) {
             EMFX_CHUNK_HEADER chunkHeader = buffer->lpcast<EMFX_CHUNK_HEADER>(&ptr);
+            if (chunkHeader.Type >= (CHUNK_TYPE)ACTOR_CHUNK_TYPE::END) {
+                LOG("Chunk Id is out range, aborting.");
+                return;
+            }
             int expectedPtr = ptr + chunkHeader.Size;
             switch ((ACTOR_CHUNK_TYPE)chunkHeader.Type) {
             case ACTOR_CHUNK_TYPE::Mesh:
@@ -29,7 +33,7 @@ namespace dragon::lumberyard {
                 throw not_implemented_exception();
             case ACTOR_CHUNK_TYPE::Material:
                 LOG("Found Material");
-                ptr += chunkHeader.Size;
+                Chunks.push_back(CAST_EMFX_CHUNK(new ActorMaterial(buffer, chunkHeader, ptr)));
                 break;
             case ACTOR_CHUNK_TYPE::Info:
                 LOG("Found Info");
@@ -44,15 +48,11 @@ namespace dragon::lumberyard {
                 return;
             case ACTOR_CHUNK_TYPE::MaterialInfo:
                 LOG("Found MaterialInfo");
-                ptr += chunkHeader.Size;
+                Chunks.push_back(CAST_EMFX_CHUNK(new ActorMaterialInfo(buffer, chunkHeader, ptr)));
                 break;
             case ACTOR_CHUNK_TYPE::NodeMotionSources:
                 LOG("Found NodeMotionSources");
                 Chunks.push_back(CAST_EMFX_CHUNK(new ActorNodeMotionSources(buffer, chunkHeader, ptr)));
-                break;
-            case ACTOR_CHUNK_TYPE::MaterialAttributeSet:
-                LOG("Found MaterialAttributeSet");
-                ptr += chunkHeader.Size;
                 break;
             default:
                 LOG("Unhandled chunk type " << chunkHeader.Type);

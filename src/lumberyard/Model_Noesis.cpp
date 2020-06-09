@@ -105,7 +105,7 @@ namespace dragon::lumberyard {
             noesisMatData_t* matData = nullptr;
             if (materials != nullptr && LibraryRoot != nullptr) {
                 wchar_t* path = new wchar_t[MAX_NOESIS_PATH];
-                if(rapi->Noesis_IsExporting()) {
+                if (rapi->Noesis_IsExporting()) {
                     g_nfn->NPAPI_GetSelectedFile(path);
                 } else {
                     g_nfn->NPAPI_GetOpenPreviewFile(path);
@@ -121,11 +121,11 @@ namespace dragon::lumberyard {
                     }
                     if (std::filesystem::exists(materialPath)) {
                         Material material = Material::from_path(materialPath);
-                        CArrayList<noesisTex_t *> texList;
-                        CArrayList<noesisMaterial_t *> matList;
+                        CArrayList<noesisTex_t*> texList;
+                        CArrayList<noesisMaterial_t*> matList;
                         for (Material subMaterial : material.SubMaterials) {
-                            noesisMaterial_t *mat = rapi->Noesis_GetMaterialList(1, false);
-                            mat->name = rapi->Noesis_PooledString(const_cast<char *>(subMaterial.Name.c_str()));
+                            noesisMaterial_t* mat = rapi->Noesis_GetMaterialList(1, false);
+                            mat->name = rapi->Noesis_PooledString(const_cast<char*>(subMaterial.Name.c_str()));
                             std::copy_n(subMaterial.DiffuseColor, 4, mat->diffuse);
                             std::copy_n(subMaterial.SpecularColor, 4, mat->specular);
                             if (subMaterial.Textures.find("Diffuse") != subMaterial.Textures.end()) {

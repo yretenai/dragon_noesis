@@ -82,7 +82,7 @@ namespace dragon::lumberyard {
         rapi->rpgSetExData_Bones(bones, nodes->Header.NumNodes);
 
         rapi->rpgBegin(RPGEO_TRIANGLE);
-        float t[] = { 0, 0, 0 };
+        float t[] = {0, 0, 0};
         rapi->rpgVertex3f(t);
         rapi->rpgEnd();
         noesisModel_t* mdl = rapi->rpgConstructModel();

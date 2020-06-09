@@ -4,7 +4,7 @@
 
 #if USE_NOESIS
 
-#include "Lumberyard.h"
+#include "Texture.h"
 
 namespace dragon::lumberyard {
     bool Texture::noesis_load([[maybe_unused]] BYTE* buffer, [[maybe_unused]] int length, CArrayList<noesisTex_t*>& noe_tex, noeRAPI_t* rapi) {
@@ -42,7 +42,7 @@ namespace dragon::lumberyard {
 
     bool Texture::noesis_check([[maybe_unused]] BYTE* buffer, [[maybe_unused]] int length, [[maybe_unused]] noeRAPI_t* rapi) {
         wchar_t* path = new wchar_t[MAX_NOESIS_PATH];
-        if(rapi->Noesis_IsExporting()) {
+        if (rapi->Noesis_IsExporting()) {
             g_nfn->NPAPI_GetSelectedFile(path);
         } else {
             g_nfn->NPAPI_GetOpenPreviewFile(path);

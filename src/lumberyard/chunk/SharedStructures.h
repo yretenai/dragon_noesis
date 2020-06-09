@@ -5,6 +5,11 @@
 #ifndef FMT_LUMBERYARD_SHAREDSTRUCTURES_H
 #define FMT_LUMBERYARD_SHAREDSTRUCTURES_H
 
+struct VECTOR2_SINGLE {
+    float X;
+    float Y;
+};
+
 struct VECTOR3_SINGLE {
     float X;
     float Y;

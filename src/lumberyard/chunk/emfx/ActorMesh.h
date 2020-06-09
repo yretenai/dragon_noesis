@@ -2,9 +2,18 @@
 // Created by yretenai on 2020-06-09.
 //
 
-#ifndef FMT_DRAGON_ACTORMESH_H
-#define FMT_DRAGON_ACTORMESH_H
+#ifndef FMT_LUMBERYARD_EMFX_ACTORMESH_H
+#define FMT_LUMBERYARD_EMFX_ACTORMESH_H
 
-class ActorMesh {};
+#include "AbstractEMFXChunk.h"
 
-#endif // FMT_DRAGON_ACTORMESH_H
+namespace dragon::lumberyard::chunk::emfx {
+    class LUMBERYARD_EXPORT ActorMesh : public AbstractEMFXChunk {
+    public:
+        ActorMesh(Array<char>* buffer, EMFX_CHUNK_HEADER header, int& ptr);
+
+        ACTOR_MESH_V1_HEADER Header;
+    };
+} // namespace dragon::lumberyard::chunk::emfx
+
+#endif // FMT_LUMBERYARD_EMFX_ACTORMESH_H

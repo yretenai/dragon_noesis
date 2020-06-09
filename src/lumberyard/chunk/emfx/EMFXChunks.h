@@ -9,6 +9,9 @@
 
 #include "AbstractEMFXChunk.h"
 #include "ActorInfo.h"
+#include "ActorMaterial.h"
+#include "ActorMaterialInfo.h"
+#include "ActorMaterialLayer.h"
 #include "ActorNode.h"
 #include "ActorNodeMotionSources.h"
 #include "ActorNodes.h"
