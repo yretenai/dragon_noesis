@@ -105,34 +105,39 @@ namespace dragon::lumberyard {
             noesisMatData_t* matData = nullptr;
             if (materials != nullptr && LibraryRoot != nullptr) {
                 wchar_t* path = new wchar_t[MAX_NOESIS_PATH];
-                g_nfn->NPAPI_GetSelectedFile(path);
+                if(rapi->Noesis_IsExporting()) {
+                    g_nfn->NPAPI_GetSelectedFile(path);
+                } else {
+                    g_nfn->NPAPI_GetOpenPreviewFile(path);
+                }
                 if (wcslen(path) < 2) {
                     delete[] path;
-                    return 0;
-                }
-                std::filesystem::path materialPath(path);
-                materialPath.replace_filename(materials->Name + ".mtl");
-                if (!std::filesystem::exists(materialPath) && materials->Materials.size() == 1) {
-                    materialPath.replace_filename(materials->Materials[0] + ".mtl");
-                }
-                if (std::filesystem::exists(materialPath)) {
-                    Material material = Material::from_path(materialPath);
-                    CArrayList<noesisTex_t*> texList;
-                    CArrayList<noesisMaterial_t*> matList;
-                    for (Material subMaterial : material.SubMaterials) {
-                        noesisMaterial_t* mat = rapi->Noesis_GetMaterialList(1, false);
-                        mat->name = rapi->Noesis_PooledString(const_cast<char*>(subMaterial.Name.c_str()));
-                        std::copy_n(subMaterial.DiffuseColor, 4, mat->diffuse);
-                        std::copy_n(subMaterial.SpecularColor, 4, mat->specular);
-                        if (subMaterial.Textures.find("Diffuse") != subMaterial.Textures.end()) {
-                            mat->texIdx = noesis_create_texture(subMaterial.Textures["Diffuse"], texList, false, rapi);
-                        }
-                        if (subMaterial.Textures.find("Bumpmap") != subMaterial.Textures.end()) {
-                            mat->specularTexIdx = noesis_create_texture(subMaterial.Textures["Bumpmap"], texList, true, rapi);
-                        }
-                        matList.Push(mat);
+                } else {
+                    std::filesystem::path materialPath(path);
+                    delete[] path;
+                    materialPath.replace_filename(materials->Name + ".mtl");
+                    if (!std::filesystem::exists(materialPath) && materials->Materials.size() == 1) {
+                        materialPath.replace_filename(materials->Materials[0] + ".mtl");
                     }
-                    matData = rapi->Noesis_GetMatDataFromLists(matList, texList);
+                    if (std::filesystem::exists(materialPath)) {
+                        Material material = Material::from_path(materialPath);
+                        CArrayList<noesisTex_t *> texList;
+                        CArrayList<noesisMaterial_t *> matList;
+                        for (Material subMaterial : material.SubMaterials) {
+                            noesisMaterial_t *mat = rapi->Noesis_GetMaterialList(1, false);
+                            mat->name = rapi->Noesis_PooledString(const_cast<char *>(subMaterial.Name.c_str()));
+                            std::copy_n(subMaterial.DiffuseColor, 4, mat->diffuse);
+                            std::copy_n(subMaterial.SpecularColor, 4, mat->specular);
+                            if (subMaterial.Textures.find("Diffuse") != subMaterial.Textures.end()) {
+                                mat->texIdx = noesis_create_texture(subMaterial.Textures["Diffuse"], texList, false, rapi);
+                            }
+                            if (subMaterial.Textures.find("Bumpmap") != subMaterial.Textures.end()) {
+                                mat->specularTexIdx = noesis_create_texture(subMaterial.Textures["Bumpmap"], texList, true, rapi);
+                            }
+                            matList.Push(mat);
+                        }
+                        matData = rapi->Noesis_GetMatDataFromLists(matList, texList);
+                    }
                 }
             }
 
