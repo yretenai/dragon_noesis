@@ -1,3 +1,0 @@
-<component name="DependencyValidationManager">
-  <scope name="ProjectFiles" pattern="file[fmt_dragon]:*/&amp;&amp;!file[fmt_dragon]:.idea//*&amp;&amp;!file[fmt_dragon]:noesis//*&amp;&amp;!file:CMakeLists.txt&amp;&amp;!file[fmt_dragon]:vendor//*" />
-</component>
