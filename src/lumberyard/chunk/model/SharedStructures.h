@@ -7,6 +7,7 @@
 #ifndef FMT_LUMBERYARD_MODEL_SHAREDSTRUCTURES_H
 #define FMT_LUMBERYARD_MODEL_SHAREDSTRUCTURES_H
 
+#include "../SharedStructures.h"
 #include <stdint.h>
 
 namespace dragon::lumberyard::chunk::model {
@@ -16,28 +17,6 @@ namespace dragon::lumberyard::chunk::model {
         uint32_t B;
         uint32_t C;
         uint32_t D;
-    };
-
-    struct VECTOR3_SINGLE {
-        float X;
-        float Y;
-        float Z;
-    };
-
-    struct VECTOR4_SINGLE {
-        float X;
-        float Y;
-        float Z;
-        float W;
-    };
-
-    struct MATRIX44_SINGLE {
-        float Matrix[4][4];
-    };
-
-    struct BOUNDING_BOX_SINGLE {
-        VECTOR3_SINGLE Min;
-        VECTOR3_SINGLE Max;
     };
 
     typedef int32_t CHUNK_ID;

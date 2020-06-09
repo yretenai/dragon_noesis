@@ -14,6 +14,7 @@ namespace dragon::lumberyard {
         const char* name = xml->Attribute("Name");
         if (name != nullptr) {
             Name = std::string(name);
+            LOG("Found material " << Name);
         }
         Flags = (MATERIAL_FLAGS)xml->Unsigned64Attribute("MtlFlags", 0);
         const char* colorBuffer = xml->Attribute("Diffuse");
@@ -49,6 +50,7 @@ namespace dragon::lumberyard {
                 std::string key(key_attr);
                 std::filesystem::path value(value_attr);
                 Textures[key] = value;
+                LOG("\t" << key << " with file " << value.filename());
                 texture = texture->NextSiblingElement("Texture");
             }
         }

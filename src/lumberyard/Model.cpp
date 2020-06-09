@@ -22,21 +22,27 @@ namespace dragon::lumberyard {
             Array<char> chunk_buffer = buffer->slice(chunk_header.Pointer, chunk_header.Size);
             switch (chunk_header.Type) {
             case CRCH_CHUNK_HEADER::TYPE::Mesh:
+                LOG("Found Mesh");
                 Chunks[chunk_header.Id] = CAST_MODEL_CHUNK(new Mesh(&chunk_buffer, chunk_header));
                 break;
             case CRCH_CHUNK_HEADER::TYPE::Node:
+                LOG("Found Node");
                 Chunks[chunk_header.Id] = CAST_MODEL_CHUNK(new Node(&chunk_buffer, chunk_header));
                 break;
             case CRCH_CHUNK_HEADER::TYPE::MaterialName:
+                LOG("Found MaterialName");
                 Chunks[chunk_header.Id] = CAST_MODEL_CHUNK(new MaterialName(&chunk_buffer, chunk_header));
                 break;
             case CRCH_CHUNK_HEADER::TYPE::Flags:
+                LOG("Found Flags");
                 Chunks[chunk_header.Id] = CAST_MODEL_CHUNK(new ExportFlags(&chunk_buffer, chunk_header));
                 break;
             case CRCH_CHUNK_HEADER::TYPE::DataStream:
+                LOG("Found DataStream");
                 Chunks[chunk_header.Id] = CAST_MODEL_CHUNK(new DataStream(&chunk_buffer, chunk_header));
                 break;
             case CRCH_CHUNK_HEADER::TYPE::Submesh:
+                LOG("Found Submesh");
                 Chunks[chunk_header.Id] = CAST_MODEL_CHUNK(new Submesh(&chunk_buffer, chunk_header));
                 break;
             default:

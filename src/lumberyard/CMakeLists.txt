@@ -2,16 +2,18 @@ project(fmt_lumberyard)
 
 add_library(fmt_lumberyard SHARED
             ../vendor/tinyxml2/tinyxml2.cpp # tinyxml needs to be statically linked.
-            Lumberyard.h
+            Lumberyard.cpp Lumberyard.h
             Model.cpp Model.h
             Animation.cpp Animation.h
             Actor.cpp Actor.h
             Texture.cpp Texture.h
             Material.cpp Material.h globals.h)
 
+target_compile_definitions(fmt_lumberyard PRIVATE DRAGON_LIBRARY_NAME="fmt_lumberyard")
+
 if(USE_NOESIS)
     target_sources(fmt_lumberyard PRIVATE ../noesis/noesisplugin.cpp ../noesis/pluginsupport.cpp
-                   Model_Noesis.cpp Actor_Noesis.cpp Texture_Noesis.cpp Lumberyard.cpp)
+                   Model_Noesis.cpp Actor_Noesis.cpp Texture_Noesis.cpp)
     add_compile_definitions(USE_NOESIS)
 endif()
 

@@ -9,6 +9,8 @@
 
 #include "AbstractEMFXChunk.h"
 #include "ActorInfo.h"
+#include "ActorNode.h"
+#include "ActorNodes.h"
 #include "SharedStructures.h"
 
 #endif // FMT_LUMBERYARD_EMFX_EMFXCHUNKS_H

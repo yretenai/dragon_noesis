@@ -29,9 +29,11 @@
 #define FOURCC_DX10 (MAKEFOURCC('D', 'X', '1', '0'))
 #endif
 
-#ifndef LIBRARY_NAME
-#define LIBRARY_NAME "fmt_dragon"
+#ifndef DRAGON_LIBRARY_NAME
+#define DRAGON_LIBRARY_NAME "fmt_dragon"
 #endif
+
+extern std::ofstream* LogStream;
 
 #ifdef WIN32
 #ifdef USE_NOESIS
@@ -51,17 +53,21 @@
 #endif
 
 #ifdef USE_NOESIS
-#define LOG(msg)                                                                             \
-    do {                                                                                     \
-        std::stringstream s;                                                                 \
-        s << "[" << LIBRARY_NAME << "][" << __PRETTY_FUNCTION__ << "] " << msg << std::endl; \
-        if (g_nfn == nullptr)                                                                \
-            (std::cout << s.str());                                                          \
-        else                                                                                 \
-            g_nfn->NPAPI_DebugLogStr(const_cast<char*>(s.str().c_str()));                    \
+#define LOG(msg)                                                                                    \
+    do {                                                                                            \
+        std::stringstream s;                                                                        \
+        s << "[" << DRAGON_LIBRARY_NAME << "][" << __PRETTY_FUNCTION__ << "] " << msg << std::endl; \
+        if (LogStream != nullptr)                                                                   \
+            (*LogStream << s.str() << std::flush);                                                  \
+        else if (g_nfn != nullptr)                                                                  \
+            g_nfn->NPAPI_DebugLogStr(const_cast<char*>(s.str().c_str()));                           \
+        else                                                                                        \
+            (std::cout << s.str() << std::flush);                                                   \
     } while (0)
 #else
-#define LOG(msg) (std::cout << __PRETTY_FUNCTION__ << ": " << msg << std::endl)
+#define LOG(msg)                                                                                                                              \
+    ((LogStream != nullptr ? *LogStream : std::cout) << "[" << DRAGON_LIBRARY_NAME << "][" << __PRETTY_FUNCTION__ << "] " << msg << std::endl \
+                                                     << std::flush)
 #endif
 
 namespace dragon {
@@ -80,6 +86,8 @@ namespace dragon {
         std::ofstream file(path, std::ios::binary | std::ios::out | std::ios::trunc);
         file.write(buffer->data(), buffer->size());
     }
+
+    class not_implemented_exception : public std::exception {};
 } // namespace dragon
 
 #endif // FMT_DRAGON_DRAGON_H

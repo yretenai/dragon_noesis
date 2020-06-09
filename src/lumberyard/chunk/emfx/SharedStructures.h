@@ -7,6 +7,7 @@
 #ifndef FMT_LUMBERYARD_EMFX_SHAREDSTRUCTURES_H
 #define FMT_LUMBERYARD_EMFX_SHAREDSTRUCTURES_H
 
+#include "../SharedStructures.h"
 #include <stdint.h>
 
 namespace dragon::lumberyard::chunk::emfx {
@@ -29,16 +30,16 @@ namespace dragon::lumberyard::chunk::emfx {
         Node = 0,
         Mesh = 1,
         SkinningInfo = 2,
-        StandardMaterial = 3,
-        StandardMaterialLayer = 4,
+        Material = 3,
+        MaterialLayer = 4,
         EffectMaterial = 5,
         Limit = 6,
         Info = 7,
         MeshLOD = 8,
-        StandardProgMorphTargets = 9,
+        MorphTarget = 9,
         NodeGroups = 10,
         Nodes = 11,
-        StandardMorphTargets = 12,
+        MorphTargets = 12,
         MaterialInfo = 13,
         NodeMotionSources = 14,
         AttachmentSources = 15,
@@ -93,6 +94,25 @@ namespace dragon::lumberyard::chunk::emfx {
         UNIT_TYPE UnitType;
         uint16_t ExporterVersion;
         uint8_t IsOptimized;
+    };
+
+    struct ACTOR_NODE_V1_HEADER {
+        enum struct FLAGS { IncludeInBoundsCalculation = 1, AttachmentNode = 2, Critical = 4 };
+
+        VECTOR4_SINGLE Rotation;
+        VECTOR3_SINGLE Position;
+        VECTOR3_SINGLE Scale;
+        uint32_t SkeletalLOD;
+        int32_t ParentIndex;
+        int32_t NumChild;
+        FLAGS Flags;
+        MATRIX44_SINGLE OBB;
+    };
+
+    struct ACTOR_NODES_V1_HEADER {
+        uint32_t NumNodes;
+        uint32_t NumRootNodes;
+        BOUNDING_BOX_SINGLE BoundingBox;
     };
 #pragma pack(pop)
 } // namespace dragon::lumberyard::chunk::emfx

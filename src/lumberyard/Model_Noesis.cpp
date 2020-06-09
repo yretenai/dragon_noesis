@@ -125,7 +125,10 @@ namespace dragon::lumberyard {
                         std::copy_n(subMaterial.DiffuseColor, 4, mat->diffuse);
                         std::copy_n(subMaterial.SpecularColor, 4, mat->specular);
                         if (subMaterial.Textures.find("Diffuse") != subMaterial.Textures.end()) {
-                            mat->texIdx = noesis_create_texture(subMaterial.Textures["Diffuse"], texList, rapi);
+                            mat->texIdx = noesis_create_texture(subMaterial.Textures["Diffuse"], texList, false, rapi);
+                        }
+                        if (subMaterial.Textures.find("Bumpmap") != subMaterial.Textures.end()) {
+                            mat->specularTexIdx = noesis_create_texture(subMaterial.Textures["Bumpmap"], texList, true, rapi);
                         }
                         matList.Push(mat);
                     }
@@ -153,9 +156,13 @@ namespace dragon::lumberyard {
         return check(&data_buffer);
     }
 
-    int Model::noesis_create_texture(std::filesystem::path texturePath, CArrayList<noesisTex_t*>& texList, noeRAPI_t* rapi) {
+    int Model::noesis_create_texture(std::filesystem::path texturePath, CArrayList<noesisTex_t*>& texList, bool alpha, noeRAPI_t* rapi) {
         std::filesystem::path combinedPath = *LibraryRoot / texturePath;
-        combinedPath.replace_extension(".dds.1");
+        if (alpha) {
+            combinedPath.replace_extension(".dds.a");
+        } else {
+            combinedPath.replace_extension(".dds.1");
+        }
         if (!std::filesystem::exists(combinedPath)) {
             return -1;
         }

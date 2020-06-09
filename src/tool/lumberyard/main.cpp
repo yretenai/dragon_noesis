@@ -5,6 +5,8 @@
 #include "../../dragon/dragon.h"
 #include "../../lumberyard/Lumberyard.h"
 
+std::ofstream* LogStream;
+
 using namespace dragon;
 
 int main(int argc, char** argv) {

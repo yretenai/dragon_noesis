@@ -4,6 +4,8 @@
 
 #include "Lumberyard.h"
 
+std::ofstream* LogStream;
+
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "OCInconsistentNamingInspection"
 
@@ -73,7 +75,8 @@ void load_saved_game_root() {
 }
 
 bool NPAPI_InitLocal() {
-    g_nfn->NPAPI_PopupDebugLog(0);
+    // g_nfn->NPAPI_PopupDebugLog(0);
+    LogStream = new std::ofstream("fmt_lumberyard.log");
     LOG("v1.0.0 (fmt_dragon v1)");
     LOG("Adding Lumberyard CGF Model handler...");
     int handle = g_nfn->NPAPI_Register((char*)"Lumberyard Model", (char*)".cgf");
@@ -104,7 +107,12 @@ bool NPAPI_InitLocal() {
     return true;
 }
 
-void NPAPI_ShutdownLocal() { reset_game_root(); }
+void NPAPI_ShutdownLocal() {
+    if (LogStream != nullptr) {
+        delete LogStream;
+    }
+    reset_game_root();
+}
 
 #endif // USE_NOESIS
 

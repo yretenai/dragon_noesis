@@ -4,6 +4,8 @@
 
 #include "../../dragon/dragon.h"
 
+std::ofstream* LogStream;
+
 using namespace dragon;
 
 Array<int> test1() { return Array<int>(3); }

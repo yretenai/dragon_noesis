@@ -15,6 +15,8 @@
 #endif
 
 namespace dragon {
+    class out_of_bounds_exception : public std::exception {};
+
     template <typename T> class Array {
       private:
         size_t Length;
@@ -46,7 +48,7 @@ namespace dragon {
 
             Iterator& operator++() {
                 if (Index >= Parent->size()) {
-                    throw std::exception();
+                    throw out_of_bounds_exception();
                 }
                 Index++;
                 return *this;
@@ -78,14 +80,14 @@ namespace dragon {
 
         T& get(int index) const {
             if (index < 0 || index >= Length) {
-                throw std::exception();
+                throw out_of_bounds_exception();
             }
             return Pointer.get()[index];
         }
 
         template <typename U> U cast(int index) {
             if (index < 0 || index >= Length) {
-                throw std::exception();
+                throw out_of_bounds_exception();
             }
             return reinterpret_cast<U*>(Pointer.get() + index)[0];
         }
@@ -98,7 +100,7 @@ namespace dragon {
 
         template <typename U> Array<U> cast(int index, int size) {
             if (index < 0 || index >= Length || size < 0 || index + size > Length) {
-                throw std::exception();
+                throw out_of_bounds_exception();
             }
             return Array<U>(reinterpret_cast<U*>(Pointer.get() + index), size);
         }
@@ -111,7 +113,7 @@ namespace dragon {
 
         Array<T> slice(int index, int size) {
             if (index < 0 || index >= Length || size < 0 || index + size > Length) {
-                throw std::exception();
+                throw out_of_bounds_exception();
             }
             return Array<T>((Pointer.get() + index), size);
         }
