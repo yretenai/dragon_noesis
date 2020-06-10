@@ -37,7 +37,7 @@
 
 extern std::ofstream* LogStream;
 
-#ifdef WIN32
+#ifdef _WIN32
 #ifdef USE_NOESIS
 
 #include "../noesis/pluginshare.h"

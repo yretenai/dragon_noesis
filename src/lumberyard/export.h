@@ -6,7 +6,7 @@
 
 #ifndef FMT_LUMBERYARD_EXPORT_H
 #define FMT_LUMBERYARD_EXPORT_H
-#if WIN32
+#ifdef _WIN32
 #include "export_win32.h"
 #else
 #include "export_clang.h"

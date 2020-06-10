@@ -100,12 +100,18 @@ namespace dragon::lumberyard {
         return buffer->size() >= sizeof(ACTOR_HEADER) && header.Magic == FOURCC_ACTR && header.IsBigEndian == 0;
     }
 
-#ifdef _MSC_VER
+#ifdef _WIN32
 #define ALIGNED_ALLOC _aligned_malloc
 #define ALIGNED_FREE _aligned_free
 #else
 #define ALIGNED_ALLOC std::aligned_alloc
 #define ALIGNED_FREE std::free
+#endif
+
+#if defined(_WIN32) && !defined(_WIN32_CLANG)
+#define M128_GET(simd, index) simd.m128_f32[index]
+#else
+#define M128_GET(simd, index) simd[index]
 #endif
 
     // i hate my life
@@ -115,7 +121,7 @@ namespace dragon::lumberyard {
         Array<VECTOR3_SINGLE>* array = new Array<VECTOR3_SINGLE>(b.size() / 16);
         for(int i = 0; i < array->size(); i++) {
             __m128 gt = reinterpret_cast<__m128*>(buffer + i * 16)[0];
-            array->set(i, { gt[0], gt[1], gt[2] });
+            array->set(i, { M128_GET(gt, 0), M128_GET(gt, 1), M128_GET(gt, 2) });
         }
         ALIGNED_FREE(buffer);
         return array;

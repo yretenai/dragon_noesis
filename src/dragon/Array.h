@@ -9,7 +9,7 @@
 #include <memory>
 #include <vector>
 
-#ifdef WIN32
+#ifdef _WIN32
 #ifdef USE_NOESIS
 #include "../noesis/pluginshare.h"
 #endif
