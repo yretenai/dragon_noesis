@@ -94,6 +94,13 @@ namespace dragon {
             return data()[index];
         }
 
+        void set(int index, T value) const {
+            if (index < 0 || index >= this->size()) {
+                throw out_of_bounds_exception();
+            }
+            data()[index] = value;
+        }
+
         template <typename U> U cast(int index) {
             if (index < 0 || index >= this->size()) {
                 throw out_of_bounds_exception();

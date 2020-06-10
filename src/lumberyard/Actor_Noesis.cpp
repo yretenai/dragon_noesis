@@ -81,6 +81,24 @@ namespace dragon::lumberyard {
         }
         rapi->rpgSetExData_Bones(bones, nodes->Header.NumNodes);
 
+        std::vector<std::shared_ptr<AbstractEMFXChunk>> meshChunks;
+        std::vector<std::shared_ptr<AbstractEMFXChunk>> skinChunks;
+        actor.get_chunks_of_type(ACTOR_CHUNK_TYPE::Mesh, &meshChunks);
+        actor.get_chunks_of_type(ACTOR_CHUNK_TYPE::SkinningInfo, &meshChunks);
+        std::map<uint32_t, ActorSkinningInfo*> skins;
+        for(std::shared_ptr<AbstractEMFXChunk> skinPtr : skinChunks) {
+            ActorSkinningInfo* skin = CAST_ABSTRACT_CHUNK(ActorSkinningInfo, skinPtr);
+            if(skin->Header.LOD != 0) continue;
+            skins[skin->Header.NodeIndex] = skin;
+        }
+        for(std::shared_ptr<AbstractEMFXChunk> meshPtr : meshChunks) {
+            ActorMesh* mesh = CAST_ABSTRACT_CHUNK(ActorMesh, meshPtr);
+            // fuck
+            // TODO: Load Position, Normal, Tangent, Bitangent, call Actor::unwrap_simd_array if size == 16.
+            // TODO: Load VertedId, recreate bone weight/influence map -> Calculate max weights/indices per bone.
+            // TODO: Load Material, trust order as id.
+        }
+
         rapi->rpgBegin(RPGEO_TRIANGLE);
         float t[] = {0, 0, 0};
         rapi->rpgVertex3f(t);

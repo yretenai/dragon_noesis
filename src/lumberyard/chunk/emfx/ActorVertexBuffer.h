@@ -15,7 +15,7 @@ namespace dragon::lumberyard::chunk::emfx {
         ACTOR_VBO_V1_HEADER Header;
 
         std::string Name;
-        Array<char> Buffer;
+        Array<uint8_t> Buffer;
     };
 } // namespace dragon::lumberyard::chunk::emfx
 

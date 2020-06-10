@@ -6,6 +6,7 @@
 
 #include "globals.h"
 #include <memory>
+#include <xmmintrin.h>
 
 #define CAST_EMFX_CHUNK(chunk) (std::shared_ptr<AbstractEMFXChunk>(reinterpret_cast<AbstractEMFXChunk*>(chunk)))
 
@@ -97,5 +98,26 @@ namespace dragon::lumberyard {
             return false;
         ACTOR_HEADER header = buffer->cast<ACTOR_HEADER>(0);
         return buffer->size() >= sizeof(ACTOR_HEADER) && header.Magic == FOURCC_ACTR && header.IsBigEndian == 0;
+    }
+
+#ifdef _MSC_VER
+#define ALIGNED_ALLOC _aligned_malloc
+#define ALIGNED_FREE _aligned_free
+#else
+#define ALIGNED_ALLOC std::aligned_alloc
+#define ALIGNED_FREE std::free
+#endif
+
+    // i hate my life
+    Array<VECTOR3_SINGLE>* Actor::unwrap_simd_array(Array<uint8_t> b) {
+        char* buffer = static_cast<char*>(ALIGNED_ALLOC(16, b.size()));
+        std::copy_n(b.data(), b.size(), buffer);
+        Array<VECTOR3_SINGLE>* array = new Array<VECTOR3_SINGLE>(b.size() / 16);
+        for(int i = 0; i < array->size(); i++) {
+            __m128 gt = reinterpret_cast<__m128*>(buffer + i * 16)[0];
+            array->set(i, { gt[0], gt[1], gt[2] });
+        }
+        ALIGNED_FREE(buffer);
+        return array;
     }
 } // namespace dragon::lumberyard

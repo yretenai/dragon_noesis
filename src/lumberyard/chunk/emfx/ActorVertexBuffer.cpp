@@ -16,6 +16,6 @@ namespace dragon::lumberyard::chunk::emfx {
             Array<char> stringBuffer = buffer->lpslice(&ptr, size);
             Name = std::string(stringBuffer.data(), size);
         }
-        Buffer = buffer->lpslice(&ptr, Header.AttribSizeInBytes * mesh.TotalVerts);
+        Buffer = buffer->lpcast<uint8_t>(&ptr, Header.AttribSizeInBytes * mesh.TotalVerts);
     }
 }

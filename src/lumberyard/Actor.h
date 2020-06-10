@@ -25,6 +25,8 @@ namespace dragon::lumberyard {
 
         static bool check(Array<char>* buffer);
 
+        static Array<VECTOR3_SINGLE>* unwrap_simd_array(Array<uint8_t> buffer);
+
 #ifdef USE_NOESIS
 
         static noesisModel_t* noesis_load(BYTE* buffer, int length, int& numMdl, noeRAPI_t* rapi);
