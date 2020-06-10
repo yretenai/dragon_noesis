@@ -72,6 +72,12 @@ extern std::ofstream* LogStream;
 #endif
 
 namespace dragon {
+    inline int Align(int value, int align) {
+        int v = value % align;
+        if (v != 0) return value + align - v;
+        return value;
+    }
+
     inline Array<char> read_file(std::filesystem::path path) {
         std::ifstream file(path, std::ios::binary | std::ios::in);
         uint32_t size = (uint32_t)std::filesystem::file_size(path);

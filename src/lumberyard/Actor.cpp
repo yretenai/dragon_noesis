@@ -12,56 +12,66 @@
 using namespace dragon::lumberyard::chunk::emfx;
 
 namespace dragon::lumberyard {
-    Actor::Actor(Array<char>* buffer) {
-        assert(check(buffer));
+    Actor::Actor(Array<char>* baseBuffer) {
+        assert(check(baseBuffer));
 
-        Header = buffer->cast<ACTOR_HEADER>(0);
-        int ptr = sizeof(ACTOR_HEADER);
-        while (ptr < buffer->size()) {
-            EMFX_CHUNK_HEADER chunkHeader = buffer->lpcast<EMFX_CHUNK_HEADER>(&ptr);
+        Header = baseBuffer->cast<ACTOR_HEADER>(0);
+        int ptr = 0;
+        Array<char> buffer = baseBuffer->slice(sizeof(ACTOR_HEADER), baseBuffer->size() - sizeof(ACTOR_HEADER));
+        while (ptr < buffer.size()) {
+            EMFX_CHUNK_HEADER chunkHeader = buffer.lpcast<EMFX_CHUNK_HEADER>(&ptr);
             if (chunkHeader.Type >= (CHUNK_TYPE)ACTOR_CHUNK_TYPE::END) {
                 LOG("Chunk Id is out range, aborting.");
                 return;
             }
-            int expectedPtr = ptr + chunkHeader.Size;
+            Array<char> slice = buffer.shift(ptr);
+            int localPtr = 0;
             switch ((ACTOR_CHUNK_TYPE)chunkHeader.Type) {
             case ACTOR_CHUNK_TYPE::Mesh:
                 LOG("Found Mesh");
-                throw not_implemented_exception();
-            case ACTOR_CHUNK_TYPE::SkinningInfo:
+                Chunks.push_back(CAST_EMFX_CHUNK(new ActorMesh(&slice, chunkHeader, localPtr)));
+                break;
+            case ACTOR_CHUNK_TYPE::SkinningInfo: {
                 LOG("Found SkinningInfo");
-                throw not_implemented_exception();
+                std::vector<std::shared_ptr<chunk::emfx::AbstractEMFXChunk>> meshChunks;
+                get_chunks_of_type(ACTOR_CHUNK_TYPE::Mesh, &meshChunks);
+                Chunks.push_back(CAST_EMFX_CHUNK(new ActorSkinningInfo(&slice, chunkHeader, meshChunks, localPtr)));
+                break;
+            }
             case ACTOR_CHUNK_TYPE::Material:
                 LOG("Found Material");
-                Chunks.push_back(CAST_EMFX_CHUNK(new ActorMaterial(buffer, chunkHeader, ptr)));
+                Chunks.push_back(CAST_EMFX_CHUNK(new ActorMaterial(&slice, chunkHeader, localPtr)));
                 break;
             case ACTOR_CHUNK_TYPE::Info:
                 LOG("Found Info");
-                Chunks.push_back(CAST_EMFX_CHUNK(new ActorInfo(buffer, chunkHeader, ptr)));
+                Chunks.push_back(CAST_EMFX_CHUNK(new ActorInfo(&slice, chunkHeader, localPtr)));
                 break;
             case ACTOR_CHUNK_TYPE::MeshLOD:
                 LOG("Found MeshLOD");
                 throw not_implemented_exception();
             case ACTOR_CHUNK_TYPE::Nodes:
                 LOG("Found Nodes");
-                Chunks.push_back(CAST_EMFX_CHUNK(new ActorNodes(buffer, chunkHeader, ptr)));
-                return;
+                Chunks.push_back(CAST_EMFX_CHUNK(new ActorNodes(&slice, chunkHeader, localPtr)));
+                break;
             case ACTOR_CHUNK_TYPE::MaterialInfo:
                 LOG("Found MaterialInfo");
-                Chunks.push_back(CAST_EMFX_CHUNK(new ActorMaterialInfo(buffer, chunkHeader, ptr)));
+                Chunks.push_back(CAST_EMFX_CHUNK(new ActorMaterialInfo(&slice, chunkHeader, localPtr)));
                 break;
             case ACTOR_CHUNK_TYPE::NodeMotionSources:
                 LOG("Found NodeMotionSources");
-                Chunks.push_back(CAST_EMFX_CHUNK(new ActorNodeMotionSources(buffer, chunkHeader, ptr)));
+                Chunks.push_back(CAST_EMFX_CHUNK(new ActorNodeMotionSources(&slice, chunkHeader, localPtr)));
+                break;
+            case ACTOR_CHUNK_TYPE::MaterialAttributeSet:
+                LOG("Found MaterialAttributeSet");
+                    Chunks.push_back(CAST_EMFX_CHUNK(new ActorMaterialAttributeSet(&slice, chunkHeader, localPtr)));
                 break;
             default:
                 LOG("Unhandled chunk type " << chunkHeader.Type);
-                ptr += chunkHeader.Size;
+                localPtr = chunkHeader.Size;
+                    break;
             }
 
-            if (ptr != expectedPtr) {
-                LOG("WARNING! Expected to be at pos " << expectedPtr << " but we're at " << ptr << " behavior might be unpredictable.");
-            }
+            ptr += localPtr;
         }
     }
 

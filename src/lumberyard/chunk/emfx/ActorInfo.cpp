@@ -9,7 +9,9 @@ namespace dragon::lumberyard::chunk::emfx {
         assert(header.Version <= 3);
         Chunk = header;
         if (header.Version == 3) {
+            ptr = Align(ptr, 4);
             Header = buffer->lpcast<ACTOR_INFO_V3_HEADER>(&ptr);
+            ptr = Align(ptr, 4);
         } else if (header.Version == 2) {
             Header = buffer->lpcast<ACTOR_INFO_V2_HEADER>(&ptr);
         } else {

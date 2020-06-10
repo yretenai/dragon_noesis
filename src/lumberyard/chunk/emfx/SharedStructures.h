@@ -153,6 +153,96 @@ namespace dragon::lumberyard::chunk::emfx {
         uint8_t MapType;
         uint8_t BlendMode;
     };
+
+    struct ACTOR_MESH_V1_HEADER {
+        uint32_t MeshId;
+        uint32_t NodeIndex;
+        uint32_t LOD;
+        uint32_t NumOriginalVerts;
+        uint32_t NumPolygons;
+        uint32_t TotalVerts;
+        uint32_t TotalIndices;
+        uint32_t NumSubMeshes;
+        uint32_t NumVBOs;
+        uint8_t IsCollisionMesh;
+        uint8_t IsTriangleMesh;
+    };
+
+    struct ACTOR_VBO_V1_HEADER {
+        enum class TYPE : uint32_t {
+            POSITIONS,
+            NORMALS,
+            TANGENTS,
+            UV,
+            COLORS32,
+            VERTEXID,
+            COLORS128,
+            BITANGENTS,
+            CLOTH
+        };
+
+        TYPE LayerType;
+        uint32_t AttribSizeInBytes;
+        uint8_t EnableDeformations;
+        uint8_t ShouldScale;
+    };
+
+    struct ACTOR_SUBMESH_V1_HEADER {
+        uint32_t NumIndices;
+        uint32_t NumVertices;
+        uint32_t NumPolygons;
+        uint32_t MaterialId;
+        uint32_t NumBones;
+    };
+
+    struct ACTOR_SKINNING_INFO_v1_HEADER {
+        uint32_t NodeIndex;
+        uint32_t LOD;
+        uint32_t NumBones;
+        uint32_t NumTotalInfluences;
+        uint32_t IsForCollisionMesh;
+    };
+
+    struct ACTOR_SKINNING_INFO_v1_INFLUENCE {
+        float Weight;
+        uint32_t NodeIndex;
+    };
+
+    struct ACTOR_SKINNING_INFO_v1_ENTRY {
+        uint32_t StartIndex;
+        uint32_t NumElements;
+    };
+
+    struct ACTOR_MATERIAL_ATTRIBUTE_SET_V1_HEADER {
+        uint32_t MaterialIndex;
+        uint32_t LOD;
+        uint8_t Version;
+        uint32_t NumAttributes;
+    };
+
+    struct ACTOR_MATERIAL_ATTRIBUTE_V1_HEADER {
+        enum class TYPE : uint32_t {
+            FloatSpinner,
+            FloatSlider,
+            IntSpinner,
+            IntSlider,
+            ComboBox,
+            CheckBox,
+            Vector2,
+            Gizmo,
+            Vector4,
+            Quaternion,
+            Color,
+            String,
+            Tag = 26,
+            Vector3 = 113212,
+            PropertySet = 113213,
+            Default = 0xFFFFFFFF
+        };
+
+        TYPE Type;
+        uint32_t Size;
+    };
 #pragma pack(pop)
 } // namespace dragon::lumberyard::chunk::emfx
 

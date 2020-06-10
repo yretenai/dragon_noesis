@@ -8,7 +8,9 @@ namespace dragon::lumberyard::chunk::emfx {
     ActorMaterialLayer::ActorMaterialLayer(Array<char>* buffer, EMFX_CHUNK_HEADER header, int& ptr) {
         assert(header.Version <= 1);
         Chunk = header;
+        ptr = Align(ptr, 4);
         Header = buffer->lpcast<ACTOR_MATERIAL_LAYER_V1_HEADER>(&ptr);
+        ptr = Align(ptr, 4);
         int32_t size = buffer->lpcast<int32_t>(&ptr);
         if (size > 0) {
             Array<char> stringBuffer = buffer->lpslice(&ptr, size);
