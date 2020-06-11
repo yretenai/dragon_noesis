@@ -15,4 +15,7 @@ target_sources(fmt_lumberyard PRIVATE
                ActorNodes.cpp ActorNodes.h
                ActorSkinningInfo.cpp ActorSkinningInfo.h
                ActorSubmesh.cpp ActorSubmesh.h
-               ActorVertexBuffer.cpp ActorVertexBuffer.h)
+               ActorVertexBuffer.cpp ActorVertexBuffer.h
+               MotionInfo.cpp MotionInfo.h
+               MotionSubMotion.cpp MotionSubMotion.h
+               MotionSubMotions.cpp MotionSubMotions.h)

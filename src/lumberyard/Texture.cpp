@@ -5,6 +5,8 @@
 #include "Texture.h"
 
 namespace dragon::lumberyard {
+    Texture::Texture() {}
+
     Texture::Texture(std::filesystem::path path) {
         Array<char> dds = read_file(path);
         bool is_alpha = path.has_extension() && path.extension().compare(".a") == 0;

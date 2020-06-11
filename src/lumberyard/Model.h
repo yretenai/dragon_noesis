@@ -15,6 +15,7 @@
 namespace dragon::lumberyard {
     class LUMBERYARD_EXPORT Model {
       public:
+        Model();
         Model(Array<char>* buffer);
 
         chunk::model::CRCH_HEADER Header;

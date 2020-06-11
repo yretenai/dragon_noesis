@@ -16,6 +16,7 @@
 namespace dragon::lumberyard {
     class LUMBERYARD_EXPORT Texture {
       public:
+        Texture();
         Texture(std::filesystem::path path);
 
         Array<char> cook();

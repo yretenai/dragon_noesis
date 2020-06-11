@@ -18,6 +18,12 @@ namespace dragon::lumberyard::chunk::emfx {
         uint8_t IsBigEndian;
     };
 
+    struct MOTION_HEADER {
+        uint32_t Magic;
+        uint16_t Version;
+        uint8_t IsBigEndian;
+    };
+
     typedef uint32_t CHUNK_TYPE;
 
     struct EMFX_CHUNK_HEADER {
@@ -47,6 +53,16 @@ namespace dragon::lumberyard::chunk::emfx {
         GenericMaterial = 17,
         PhysicsSetup = 18,
         SimulatedObjectSetup = 19,
+        END
+    };
+
+    enum class MOTION_CHUNK_TYPE : CHUNK_TYPE {
+        MotionEventTable = 50,
+        SubMotion = 200,
+        Info = 201,
+        SubMotions = 202,
+        WaveletInfo = 203,
+        MorphSubMotions = 204,
         END
     };
 

@@ -87,8 +87,13 @@ bool NPAPI_InitLocal() {
     g_nfn->NPAPI_SetTypeHandler_LoadModel(handle, Model::noesis_load);
     g_nfn->NPAPI_SetTypeHandler_TypeCheck(handle, Model::noesis_check);
 
-    LOG("Adding Lumberyard CGF Actor handler...");
+    LOG("Adding Lumberyard EMFX Actor handler...");
     handle = g_nfn->NPAPI_Register((char*)"Lumberyard EMFX Actor", (char*)".actor");
+    g_nfn->NPAPI_SetTypeHandler_LoadModel(handle, Actor::noesis_load);
+    g_nfn->NPAPI_SetTypeHandler_TypeCheck(handle, Actor::noesis_check);
+
+    LOG("Adding Lumberyard EMFX Motion handler...");
+    handle = g_nfn->NPAPI_Register((char*)"Lumberyard EMFX Motion", (char*)".motion");
     g_nfn->NPAPI_SetTypeHandler_LoadModel(handle, Actor::noesis_load);
     g_nfn->NPAPI_SetTypeHandler_TypeCheck(handle, Actor::noesis_check);
 

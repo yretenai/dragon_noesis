@@ -7,6 +7,8 @@
 using namespace tinyxml2;
 
 namespace dragon::lumberyard {
+    Material::Material() {}
+
     Material::Material(XMLElement* xml) {
         if (xml == nullptr)
             return;

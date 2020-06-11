@@ -13,6 +13,8 @@
 using namespace dragon::lumberyard::chunk::emfx;
 
 namespace dragon::lumberyard {
+    Actor::Actor() {}
+
     Actor::Actor(Array<char>* baseBuffer) {
         assert(check(baseBuffer));
 

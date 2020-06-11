@@ -9,6 +9,8 @@ using namespace dragon::lumberyard::chunk::model;
 #define CAST_MODEL_CHUNK(chunk) (std::shared_ptr<AbstractModelChunk>(reinterpret_cast<AbstractModelChunk*>(chunk)))
 
 namespace dragon::lumberyard {
+    Model::Model() {}
+
     Model::Model(Array<char>* buffer) {
         assert(check(buffer));
         Header = buffer->cast<CRCH_HEADER>(0);

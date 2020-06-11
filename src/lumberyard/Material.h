@@ -43,6 +43,7 @@ namespace dragon::lumberyard {
             Fog = 0x8000000
         };
 
+        Material();
         Material(tinyxml2::XMLElement* xml);
 
         static Material from_path(std::filesystem::path path);

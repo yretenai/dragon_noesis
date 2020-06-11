@@ -5,6 +5,7 @@
 #ifdef USE_NOESIS
 
 #include "Actor.h"
+#include "Animation.h"
 #include "Material.h"
 #include "Model.h"
 #include "globals.h"
@@ -14,9 +15,56 @@
 using namespace dragon::lumberyard::chunk::emfx;
 
 namespace dragon::lumberyard {
+    char* checkActorFile(void* valIn, noeUserValType_e valInType) {
+        if (valInType != NOEUSERVAL_FILEPATH)
+            return const_cast<char*>("Unknown.");
+        std::filesystem::path path(reinterpret_cast<wchar_t*>(valIn));
+        if (!std::filesystem::exists(path))
+            return const_cast<char*>("Does not exist");
+        Array<char> data = read_file(path);
+        if (!Actor::check(&data)) {
+            return const_cast<char*>("Not an EMFX Actor file");
+        }
+        return NULL;
+    }
+
     noesisModel_t* Actor::noesis_load(BYTE* buffer, int length, int& numMdl, noeRAPI_t* rapi) {
+        wchar_t* path = new wchar_t[MAX_NOESIS_PATH];
+        if (rapi->Noesis_IsExporting()) {
+            g_nfn->NPAPI_GetSelectedFile(path);
+        } else {
+            g_nfn->NPAPI_GetOpenPreviewFile(path);
+        }
+        std::filesystem::path modelPath;
+        if (wcslen(path) < 2) {
+            delete[] path;
+            return nullptr;
+        } else {
+            modelPath = std::filesystem::path(path);
+            delete[] path;
+        }
+        bool isAnimation = modelPath.extension() == ".motion";
+
         Array<char> dataBuffer = Array<char>(reinterpret_cast<char*>(buffer), length);
-        Actor actor(&dataBuffer);
+        Actor actor;
+        std::shared_ptr<Animation> anim;
+        if (isAnimation) {
+            noeUserPromptParam_t prompt = {const_cast<char*>("Select EMFX Actor file"), nullptr, nullptr, NOEUSERVAL_FILEPATH, checkActorFile};
+            bool promptResult = g_nfn->NPAPI_UserPrompt(&prompt);
+            if (!promptResult || prompt.valBuf[0] == 0) {
+                return nullptr;
+            }
+            wchar_t* promptPath = reinterpret_cast<wchar_t*>(prompt.valBuf);
+            if (!std::filesystem::exists(promptPath)) {
+                return nullptr;
+            }
+            modelPath = std::filesystem::path(promptPath);
+            Array<char> data = read_file(modelPath);
+            actor = Actor(&data);
+            anim = std::shared_ptr<Animation>(new Animation(&dataBuffer));
+        } else {
+            actor = Actor(&dataBuffer);
+        }
 
         void* context = rapi->rpgCreateContext();
         CArrayList<noesisModel_t*> models = CArrayList<noesisModel_t*>();
@@ -53,40 +101,29 @@ namespace dragon::lumberyard {
         rapi->rpgSetExData_Bones(bones, nodes->Header.NumNodes);
 
         if (LibraryRoot != nullptr) {
-            wchar_t* path = new wchar_t[MAX_NOESIS_PATH];
-            if (rapi->Noesis_IsExporting()) {
-                g_nfn->NPAPI_GetSelectedFile(path);
-            } else {
-                g_nfn->NPAPI_GetOpenPreviewFile(path);
-            }
-            if (wcslen(path) < 2) {
-                delete[] path;
-            } else {
-                noesisMatData_t* matData = nullptr;
-                std::filesystem::path materialPath(path);
-                delete[] path;
-                materialPath.replace_extension(".mtl");
-                if (std::filesystem::exists(materialPath)) {
-                    Material material = Material::from_path(materialPath);
-                    CArrayList<noesisTex_t*> texList;
-                    CArrayList<noesisMaterial_t*> matList;
-                    for (Material subMaterial : material.SubMaterials) {
-                        noesisMaterial_t* mat = rapi->Noesis_GetMaterialList(1, false);
-                        mat->name = rapi->Noesis_PooledString(const_cast<char*>(subMaterial.Name.c_str()));
-                        std::copy_n(subMaterial.DiffuseColor, 4, mat->diffuse);
-                        std::copy_n(subMaterial.SpecularColor, 4, mat->specular);
-                        if (subMaterial.Textures.find("Diffuse") != subMaterial.Textures.end()) {
-                            mat->texIdx = Model::noesis_create_texture(subMaterial.Textures["Diffuse"], texList, false, rapi);
-                        }
-                        if (subMaterial.Textures.find("Bumpmap") != subMaterial.Textures.end()) {
-                            mat->specularTexIdx = Model::noesis_create_texture(subMaterial.Textures["Bumpmap"], texList, true, rapi);
-                        }
-                        matList.Push(mat);
+            noesisMatData_t* matData = nullptr;
+            std::filesystem::path materialPath(modelPath);
+            materialPath.replace_extension(".mtl");
+            if (std::filesystem::exists(materialPath)) {
+                Material material = Material::from_path(materialPath);
+                CArrayList<noesisTex_t*> texList;
+                CArrayList<noesisMaterial_t*> matList;
+                for (Material subMaterial : material.SubMaterials) {
+                    noesisMaterial_t* mat = rapi->Noesis_GetMaterialList(1, false);
+                    mat->name = rapi->Noesis_PooledString(const_cast<char*>(subMaterial.Name.c_str()));
+                    std::copy_n(subMaterial.DiffuseColor, 4, mat->diffuse);
+                    std::copy_n(subMaterial.SpecularColor, 4, mat->specular);
+                    if (subMaterial.Textures.find("Diffuse") != subMaterial.Textures.end()) {
+                        mat->texIdx = Model::noesis_create_texture(subMaterial.Textures["Diffuse"], texList, false, rapi);
                     }
-                    matData = rapi->Noesis_GetMatDataFromLists(matList, texList);
+                    if (subMaterial.Textures.find("Bumpmap") != subMaterial.Textures.end()) {
+                        mat->specularTexIdx = Model::noesis_create_texture(subMaterial.Textures["Bumpmap"], texList, true, rapi);
+                    }
+                    matList.Push(mat);
                 }
-                rapi->rpgSetExData_Materials(matData);
+                matData = rapi->Noesis_GetMatDataFromLists(matList, texList);
             }
+            rapi->rpgSetExData_Materials(matData);
         }
 
         std::vector<std::shared_ptr<AbstractEMFXChunk>> meshChunks;
@@ -224,7 +261,7 @@ namespace dragon::lumberyard {
 
     bool Actor::noesis_check(BYTE* buffer, int length, [[maybe_unused]] noeRAPI_t* rapi) {
         Array<char> data_buffer = Array<char>(reinterpret_cast<char*>(buffer), length);
-        return check(&data_buffer);
+        return check(&data_buffer) || Animation::check(&data_buffer);
     }
 
 } // namespace dragon::lumberyard

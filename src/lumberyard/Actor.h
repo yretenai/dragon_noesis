@@ -15,6 +15,7 @@
 namespace dragon::lumberyard {
     class LUMBERYARD_EXPORT Actor {
       public:
+        Actor();
         Actor(Array<char>* buffer);
 
         chunk::emfx::ACTOR_HEADER Header;

@@ -22,6 +22,9 @@
 #include "ActorSkinningInfo.h"
 #include "ActorSubmesh.h"
 #include "ActorVertexBuffer.h"
+#include "MotionInfo.h"
+#include "MotionSubMotion.h"
+#include "MotionSubMotions.h"
 #include "SharedStructures.h"
 
 #endif // FMT_LUMBERYARD_EMFX_EMFXCHUNKS_H
