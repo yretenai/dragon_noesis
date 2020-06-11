@@ -9,7 +9,7 @@
 
 namespace dragon::lumberyard::chunk::emfx {
     class LUMBERYARD_EXPORT ActorVertexBuffer : public AbstractEMFXChunk {
-    public:
+      public:
         ActorVertexBuffer(Array<char>* buffer, EMFX_CHUNK_HEADER header, ACTOR_MESH_V1_HEADER mesh, int& ptr);
 
         ACTOR_VBO_V1_HEADER Header;
@@ -19,4 +19,4 @@ namespace dragon::lumberyard::chunk::emfx {
     };
 } // namespace dragon::lumberyard::chunk::emfx
 
-#endif //FMT_DRAGON_ACTORVERTEXBUFFER_H
+#endif // FMT_DRAGON_ACTORVERTEXBUFFER_H

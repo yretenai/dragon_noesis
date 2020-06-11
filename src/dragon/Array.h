@@ -41,7 +41,8 @@ namespace dragon {
             }
 
             bool operator==(const Iterator& rhs) const {
-                return Parent->Pointer == rhs.Parent->Pointer && Index == rhs.Index && Parent->size() == rhs.Parent->size() && Parent->Offset == rhs.Parent->Offset;
+                return Parent->Pointer == rhs.Parent->Pointer && Index == rhs.Index && Parent->size() == rhs.Parent->size() &&
+                       Parent->Offset == rhs.Parent->Offset;
             }
 
             bool operator!=(const Iterator& rhs) const { return !(*this == rhs); }
@@ -81,7 +82,7 @@ namespace dragon {
             Offset = offset;
         }
 
-        template <typename U> static Array<T> cast(U* buffer, size_t size) {
+        template <typename U> static Array<T> ptr_cast(U* buffer, size_t size) {
             return Array<T>(reinterpret_cast<T*>(buffer), size * sizeof(U) / sizeof(T));
         }
 
@@ -147,9 +148,7 @@ namespace dragon {
             return tmp;
         }
 
-        std::vector<T> const to_vector() {
-            return std::vector<T>(data(), size());
-        }
+        std::vector<T> const to_vector() { return std::vector<T>(data(), data() + size()); }
 
         T* data() const { return Pointer.get() + Offset; }
 
@@ -164,7 +163,7 @@ namespace dragon {
         Iterator end() const { return Iterator(this, Length); }
 
 #if USE_NOESIS
-        T* to_noesis(noeRAPI_s* rapi) {
+        T* to_noesis(noeRAPI_t* rapi) {
             T* buffer = (T*)rapi->Noesis_UnpooledAlloc(sizeof(T) * Length);
             std::copy_n(begin(), Length, buffer);
             return buffer;

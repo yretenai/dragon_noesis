@@ -5,7 +5,7 @@
 #include "ActorVertexBuffer.h"
 
 namespace dragon::lumberyard::chunk::emfx {
-    ActorVertexBuffer::ActorVertexBuffer(Array<char> *buffer, EMFX_CHUNK_HEADER header, ACTOR_MESH_V1_HEADER mesh, int &ptr) {
+    ActorVertexBuffer::ActorVertexBuffer(Array<char>* buffer, EMFX_CHUNK_HEADER header, ACTOR_MESH_V1_HEADER mesh, int& ptr) {
         assert(header.Version <= 2);
         Chunk = header;
         ptr = Align(ptr, 4);
@@ -18,4 +18,4 @@ namespace dragon::lumberyard::chunk::emfx {
         }
         Buffer = buffer->lpcast<uint8_t>(&ptr, Header.AttribSizeInBytes * mesh.TotalVerts);
     }
-}
+} // namespace dragon::lumberyard::chunk::emfx

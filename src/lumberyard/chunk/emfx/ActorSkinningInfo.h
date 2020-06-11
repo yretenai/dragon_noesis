@@ -9,8 +9,9 @@
 
 namespace dragon::lumberyard::chunk::emfx {
     class LUMBERYARD_EXPORT ActorSkinningInfo : public AbstractEMFXChunk {
-    public:
-        ActorSkinningInfo(Array<char>* buffer, EMFX_CHUNK_HEADER header, std::vector<std::shared_ptr<chunk::emfx::AbstractEMFXChunk>> meshChunks, int& ptr);
+      public:
+        ActorSkinningInfo(Array<char>* buffer, EMFX_CHUNK_HEADER header, std::vector<std::shared_ptr<chunk::emfx::AbstractEMFXChunk>> meshChunks,
+                          int& ptr);
 
         ACTOR_SKINNING_INFO_v1_HEADER Header;
 
@@ -19,4 +20,4 @@ namespace dragon::lumberyard::chunk::emfx {
     };
 } // namespace dragon::lumberyard::chunk::emfx
 
-#endif //FMT_DRAGON_ACTORSKINNINGINFO_H
+#endif // FMT_DRAGON_ACTORSKINNINGINFO_H

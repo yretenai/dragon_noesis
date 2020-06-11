@@ -169,17 +169,7 @@ namespace dragon::lumberyard::chunk::emfx {
     };
 
     struct ACTOR_VBO_V1_HEADER {
-        enum class TYPE : uint32_t {
-            POSITIONS,
-            NORMALS,
-            TANGENTS,
-            UV,
-            COLORS32,
-            VERTEXID,
-            COLORS128,
-            BITANGENTS,
-            CLOTH
-        };
+        enum class TYPE : uint32_t { POSITIONS, NORMALS, TANGENTS, UV, COLORS32, VERTEXID, COLORS128, BITANGENTS, CLOTH };
 
         TYPE LayerType;
         uint32_t AttribSizeInBytes;

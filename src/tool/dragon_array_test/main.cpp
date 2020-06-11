@@ -12,7 +12,7 @@ Array<int> test1() { return Array<int>(3); }
 
 Array<int> test2() {
     short tmp[] = {1, 0, 2, 0, 3, 0};
-    return Array<int>::cast<short>(tmp, 6);
+    return Array<int>::ptr_cast<short>(tmp, 6);
 }
 
 Array<int> test3() {

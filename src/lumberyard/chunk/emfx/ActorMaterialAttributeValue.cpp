@@ -5,7 +5,7 @@
 #include "ActorMaterialAttributeValue.h"
 
 namespace dragon::lumberyard::chunk::emfx {
-    ActorMaterialAttributeValue::ActorMaterialAttributeValue(Array<char> *buffer, EMFX_CHUNK_HEADER header, int &ptr) {
+    ActorMaterialAttributeValue::ActorMaterialAttributeValue(Array<char>* buffer, EMFX_CHUNK_HEADER header, int& ptr) {
         Chunk = header;
         Header = buffer->lpcast<ACTOR_MATERIAL_ATTRIBUTE_V1_HEADER>(&ptr);
 
@@ -16,5 +16,4 @@ namespace dragon::lumberyard::chunk::emfx {
         }
         Buffer = buffer->lpslice(&ptr, Header.Size);
     }
-}
-
+} // namespace dragon::lumberyard::chunk::emfx

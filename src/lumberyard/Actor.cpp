@@ -64,12 +64,12 @@ namespace dragon::lumberyard {
                 break;
             case ACTOR_CHUNK_TYPE::MaterialAttributeSet:
                 LOG("Found MaterialAttributeSet");
-                    Chunks.push_back(CAST_EMFX_CHUNK(new ActorMaterialAttributeSet(&slice, chunkHeader, localPtr)));
+                Chunks.push_back(CAST_EMFX_CHUNK(new ActorMaterialAttributeSet(&slice, chunkHeader, localPtr)));
                 break;
             default:
                 LOG("Unhandled chunk type " << chunkHeader.Type);
                 localPtr = chunkHeader.Size;
-                    break;
+                break;
             }
 
             ptr += localPtr;
@@ -101,10 +101,10 @@ namespace dragon::lumberyard {
     }
 
 #ifdef _WIN32
-#define ALIGNED_ALLOC _aligned_malloc
+#define ALIGNED_ALLOC(size, alignment) _aligned_malloc(size, alignment)
 #define ALIGNED_FREE _aligned_free
 #else
-#define ALIGNED_ALLOC std::aligned_alloc
+#define ALIGNED_ALLOC(size, alignment) std::aligned_alloc(alignment, size)
 #define ALIGNED_FREE std::free
 #endif
 
@@ -116,12 +116,12 @@ namespace dragon::lumberyard {
 
     // i hate my life
     Array<VECTOR3_SINGLE>* Actor::unwrap_simd_array(Array<uint8_t> b) {
-        char* buffer = static_cast<char*>(ALIGNED_ALLOC(16, b.size()));
+        char* buffer = static_cast<char*>(ALIGNED_ALLOC(b.size(), 16));
         std::copy_n(b.data(), b.size(), buffer);
         Array<VECTOR3_SINGLE>* array = new Array<VECTOR3_SINGLE>(b.size() / 16);
-        for(int i = 0; i < array->size(); i++) {
+        for (int i = 0; i < array->size(); i++) {
             __m128 gt = reinterpret_cast<__m128*>(buffer + i * 16)[0];
-            array->set(i, { M128_GET(gt, 0), M128_GET(gt, 1), M128_GET(gt, 2) });
+            array->set(i, {M128_GET(gt, 0), M128_GET(gt, 1), M128_GET(gt, 2)});
         }
         ALIGNED_FREE(buffer);
         return array;

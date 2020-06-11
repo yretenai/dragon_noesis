@@ -75,7 +75,8 @@ extern std::ofstream* LogStream;
 namespace dragon {
     inline int Align(int value, int align) {
         int v = value % align;
-        if (v != 0) return value + align - v;
+        if (v != 0)
+            return value + align - v;
         return value;
     }
 

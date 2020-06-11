@@ -6,12 +6,12 @@
 #define FMT_LUMBERYARD_EMFX_ACTORMESH_H
 
 #include "AbstractEMFXChunk.h"
-#include "ActorVertexBuffer.h"
 #include "ActorSubmesh.h"
+#include "ActorVertexBuffer.h"
 
 namespace dragon::lumberyard::chunk::emfx {
     class LUMBERYARD_EXPORT ActorMesh : public AbstractEMFXChunk {
-    public:
+      public:
         ActorMesh(Array<char>* buffer, EMFX_CHUNK_HEADER header, int& ptr);
 
         ACTOR_MESH_V1_HEADER Header;

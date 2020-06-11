@@ -10,7 +10,7 @@
 
 namespace dragon::lumberyard::chunk::emfx {
     class LUMBERYARD_EXPORT ActorMaterialAttribute : public AbstractEMFXChunk {
-    public:
+      public:
         ActorMaterialAttribute(Array<char>* buffer, EMFX_CHUNK_HEADER header, int& ptr);
 
         uint16_t Flags;
@@ -26,4 +26,4 @@ namespace dragon::lumberyard::chunk::emfx {
     };
 } // namespace dragon::lumberyard::chunk::emfx
 
-#endif //FMT_DRAGON_ACTORMATERIALATTRIBUTE_H
+#endif // FMT_DRAGON_ACTORMATERIALATTRIBUTE_H
