@@ -20,11 +20,12 @@ namespace dragon::lumberyard {
 
         void* context = rapi->rpgCreateContext();
         CArrayList<noesisModel_t*> models = CArrayList<noesisModel_t*>();
-        ActorNodes* nodes = CAST_ABSTRACT_CHUNK(ActorNodes, actor.get_chunk(ACTOR_CHUNK_TYPE::Nodes));
+
         ActorInfo* info = CAST_ABSTRACT_CHUNK(ActorInfo, actor.get_chunk(ACTOR_CHUNK_TYPE::Info));
-        rapi->rpgClearBufferBinds();
+        rapi->rpgSetName(rapi->Noesis_PooledString(const_cast<char*>(info->Name.c_str())));
 
         // calculate bones
+        ActorNodes* nodes = CAST_ABSTRACT_CHUNK(ActorNodes, actor.get_chunk(ACTOR_CHUNK_TYPE::Nodes));
         modelBone_t* bones = rapi->Noesis_AllocBones(nodes->Header.NumNodes);
         std::set<std::string> addedBones;
         for (int i = 0; i < nodes->Header.NumNodes; i++) {
@@ -99,6 +100,7 @@ namespace dragon::lumberyard {
                 continue;
             skins[skin->Header.NodeIndex] = skin;
         }
+        std::vector<void*> buffers;
         for (std::shared_ptr<AbstractEMFXChunk> meshPtr : meshChunks) {
             ActorMesh* mesh = CAST_ABSTRACT_CHUNK(ActorMesh, meshPtr);
             if (mesh->Header.LOD != 0)
@@ -109,8 +111,6 @@ namespace dragon::lumberyard {
             }
             ActorSkinningInfo* skin = skins[mesh->Header.NodeIndex];
             rapi->rpgClearBufferBinds();
-            rapi->rpgSetName(bones[mesh->Header.NodeIndex].name);
-            std::vector<void*> buffers;
             int uvLayer = 0;
             ActorVertexBuffer* vertexId;
             for (std::shared_ptr<ActorVertexBuffer> vboPtr : mesh->VBOs) {
@@ -211,11 +211,11 @@ namespace dragon::lumberyard {
                 rapi->rpgCommitTriangles(indiceBuffer + indiceOffset, RPGEODATA_UINT, submesh->Header.NumIndices, RPGEO_TRIANGLE, true);
                 indiceOffset += submesh->Header.NumIndices;
             }
-            noesisModel_t* mdl = rapi->rpgConstructModel();
-            models.Append(mdl);
-            for (void* noesis_buffer : buffers) {
-                rapi->Noesis_UnpooledFree(noesis_buffer);
-            }
+        }
+        noesisModel_t* mdl = rapi->rpgConstructModel();
+        models.Append(mdl);
+        for (void* noesis_buffer : buffers) {
+            rapi->Noesis_UnpooledFree(noesis_buffer);
         }
         rapi->rpgDestroyContext(context);
         noesisModel_t* mdlList = rapi->Noesis_ModelsFromList(models, numMdl);
