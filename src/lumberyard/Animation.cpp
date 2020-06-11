@@ -34,13 +34,11 @@ namespace dragon::lumberyard {
             // case MOTION_CHUNK_TYPE::SubMotion: break;
             case MOTION_CHUNK_TYPE::Info:
                 LOG("Found Info");
-                // Chunks.push_back(CAST_EMFX_CHUNK(new MotionInfo(&slice, chunkHeader, localPtr)));
-                localPtr = chunkHeader.Size;
+                Chunks.push_back(CAST_EMFX_CHUNK(new MotionInfo(&slice, chunkHeader, localPtr)));
                 break;
             case MOTION_CHUNK_TYPE::SubMotions:
                 LOG("Found SubMotions");
-                // Chunks.push_back(CAST_EMFX_CHUNK(new MotionSubMotions(&slice, chunkHeader, localPtr)));
-                localPtr = chunkHeader.Size;
+                Chunks.push_back(CAST_EMFX_CHUNK(new MotionSubMotions(&slice, chunkHeader, localPtr)));
                 break;
             default:
                 LOG("Unhandled chunk type " << chunkHeader.Type);

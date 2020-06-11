@@ -47,7 +47,6 @@ namespace dragon::lumberyard {
 
         Array<char> dataBuffer = Array<char>(reinterpret_cast<char*>(buffer), length);
         Actor actor;
-        std::shared_ptr<Animation> anim;
         if (isAnimation) {
             noeUserPromptParam_t prompt = {const_cast<char*>("Select EMFX Actor file"), nullptr, nullptr, NOEUSERVAL_FILEPATH, checkActorFile};
             bool promptResult = g_nfn->NPAPI_UserPrompt(&prompt);
@@ -61,7 +60,6 @@ namespace dragon::lumberyard {
             modelPath = std::filesystem::path(promptPath);
             Array<char> data = read_file(modelPath);
             actor = Actor(&data);
-            anim = std::shared_ptr<Animation>(new Animation(&dataBuffer));
         } else {
             actor = Actor(&dataBuffer);
         }
@@ -75,13 +73,13 @@ namespace dragon::lumberyard {
         // calculate bones
         ActorNodes* nodes = CAST_ABSTRACT_CHUNK(ActorNodes, actor.get_chunk(ACTOR_CHUNK_TYPE::Nodes));
         modelBone_t* bones = rapi->Noesis_AllocBones(nodes->Header.NumNodes);
-        std::set<std::string> addedBones;
+        std::map<std::string, uint32_t> boneMap;
         for (int i = 0; i < nodes->Header.NumNodes; i++) {
             ActorNode* node = nodes->Nodes[i].get();
             modelBone_t* bone = &bones[i];
             assert(node->Name.length() < MAX_BONE_NAME_LEN);
-            assert(addedBones.find(node->Name) == addedBones.end());
-            addedBones.insert(node->Name);
+            assert(boneMap.find(node->Name) == boneMap.end());
+            boneMap[node->Name] = i;
             std::copy_n(node->Name.c_str(), node->Name.length(), bone->name);
             RichMat43 mat =
                 RichQuat(node->Header.Rotation.X, node->Header.Rotation.Y, node->Header.Rotation.Z, node->Header.Rotation.W).ToMat43().GetInverse();
@@ -99,6 +97,16 @@ namespace dragon::lumberyard {
             }
         }
         rapi->rpgSetExData_Bones(bones, nodes->Header.NumNodes);
+        std::vector<void*> buffers;
+        if (isAnimation) {
+            Animation anim(&dataBuffer);
+            // TODO: Create animation.
+            // --> anim chunk INFO check IsAdditive, might break things!
+            // --> unpooled allocate noeKeyFramedAnim_t, set name, bones.
+            // --> anim chunk SUBMOTIONS
+            // --> kfBones = SUBMOTIONS.count --> Iterate submotions --> add noeKeyFramedBone_t and data
+            // --> rapi->rpgSetExData_Anims(Noesis_AnimFromBonesAndKeyFramedAnim(bones, node->Header.NumNodes, kfAnim, true));
+        }
 
         if (LibraryRoot != nullptr) {
             noesisMatData_t* matData = nullptr;
@@ -137,7 +145,6 @@ namespace dragon::lumberyard {
                 continue;
             skins[skin->Header.NodeIndex] = skin;
         }
-        std::vector<void*> buffers;
         for (std::shared_ptr<AbstractEMFXChunk> meshPtr : meshChunks) {
             ActorMesh* mesh = CAST_ABSTRACT_CHUNK(ActorMesh, meshPtr);
             if (mesh->Header.LOD != 0)

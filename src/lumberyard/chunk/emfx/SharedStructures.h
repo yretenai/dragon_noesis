@@ -132,10 +132,6 @@ namespace dragon::lumberyard::chunk::emfx {
         BOUNDING_BOX_SINGLE BoundingBox;
     };
 
-    struct ACTOR_NODE_MOTION_SOURCES_V1_HEADER {
-        uint32_t NumNodes;
-    };
-
     struct ACTOR_MATERIAL_INFO_V1_HEADER {
         uint32_t LOD;
         uint32_t NumTotalMaterials;
@@ -248,6 +244,35 @@ namespace dragon::lumberyard::chunk::emfx {
 
         TYPE Type;
         uint32_t Size;
+    };
+
+    struct MOTION_INFO_V3_HEADER {
+        uint32_t Flags;
+        uint32_t Index;
+        UNIT_TYPE UnitType;
+        uint8_t IsAdditive;
+    };
+
+    struct MOTION_SUBMOTION_V1_HEADER {
+        VECTOR4_SHORT RefRotation;
+        VECTOR4_SHORT BindRotation;
+        VECTOR3_SINGLE RefPosition;
+        VECTOR3_SINGLE RefScale;
+        VECTOR3_SINGLE BindPosition;
+        VECTOR3_SINGLE BindScale;
+        uint32_t NumPositionKeys;
+        uint32_t NumRotationKeys;
+        uint32_t NumScaleKeys;
+    };
+
+    struct MOTION_VECTOR3_KEY {
+        VECTOR3_SINGLE Value;
+        float Time;
+    };
+
+    struct MOTION_VECTOR4_KEY {
+        VECTOR4_SHORT Value;
+        float Time;
     };
 #pragma pack(pop)
 } // namespace dragon::lumberyard::chunk::emfx

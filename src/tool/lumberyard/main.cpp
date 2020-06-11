@@ -16,6 +16,6 @@ int main(int argc, char** argv) {
     }
     char* filepath = argv[1];
     Array<char> buffer = read_file(filepath);
-    lumberyard::Actor actor = lumberyard::Actor(&buffer);
+    lumberyard::Animation anim = lumberyard::Animation(&buffer);
     return 0;
 }

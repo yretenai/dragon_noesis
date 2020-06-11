@@ -9,10 +9,9 @@ namespace dragon::lumberyard::chunk::emfx {
         assert(header.Version <= 1);
         Chunk = header;
         ptr = Align(ptr, 4);
-        Header = buffer->lpcast<ACTOR_NODE_MOTION_SOURCES_V1_HEADER>(&ptr);
-        ptr = Align(ptr, 4);
-        Indices = buffer->lpcast<uint16_t>(&ptr, Header.NumNodes);
-        Axes = buffer->lpcast<uint8_t>(&ptr, Header.NumNodes);
-        MirrorFlags = buffer->lpcast<uint8_t>(&ptr, Header.NumNodes);
+        uint32_t count = buffer->lpcast<uint32_t>(&ptr);
+        Indices = buffer->lpcast<uint16_t>(&ptr, count);
+        Axes = buffer->lpcast<uint8_t>(&ptr, count);
+        MirrorFlags = buffer->lpcast<uint8_t>(&ptr, count);
     }
 } // namespace dragon::lumberyard::chunk::emfx

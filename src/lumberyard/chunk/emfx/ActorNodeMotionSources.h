@@ -12,8 +12,6 @@ namespace dragon::lumberyard::chunk::emfx {
       public:
         ActorNodeMotionSources(Array<char>* buffer, EMFX_CHUNK_HEADER header, int& ptr);
 
-        ACTOR_NODE_MOTION_SOURCES_V1_HEADER Header;
-
         Array<uint16_t> Indices;
         Array<uint8_t> Axes;
         Array<uint8_t> MirrorFlags;
