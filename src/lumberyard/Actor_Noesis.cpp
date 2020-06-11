@@ -91,7 +91,7 @@ namespace dragon::lumberyard {
         std::vector<std::shared_ptr<AbstractEMFXChunk>> meshChunks;
         std::vector<std::shared_ptr<AbstractEMFXChunk>> skinChunks;
         actor.get_chunks_of_type(ACTOR_CHUNK_TYPE::Mesh, &meshChunks);
-        actor.get_chunks_of_type(ACTOR_CHUNK_TYPE::SkinningInfo, &meshChunks);
+        actor.get_chunks_of_type(ACTOR_CHUNK_TYPE::SkinningInfo, &skinChunks);
         std::map<uint32_t, ActorSkinningInfo*> skins;
         for (std::shared_ptr<AbstractEMFXChunk> skinPtr : skinChunks) {
             ActorSkinningInfo* skin = CAST_ABSTRACT_CHUNK(ActorSkinningInfo, skinPtr);
@@ -140,7 +140,6 @@ namespace dragon::lumberyard {
                         break;
                     default:
                         throw out_of_bounds_exception();
-                        break;
                     }
                 } break;
                 case ACTOR_VBO_V1_HEADER::TYPE::UV: {
@@ -163,6 +162,31 @@ namespace dragon::lumberyard {
                     continue;
                 }
             }
+
+            uint32_t maxInfluences = 0;
+            for (ACTOR_SKINNING_INFO_v1_ENTRY tableEntry : skin->Table) {
+                if (tableEntry.NumElements > maxInfluences)
+                    maxInfluences = tableEntry.NumElements;
+            }
+            float* weightBuffer = static_cast<float*>(rapi->Noesis_UnpooledAlloc(sizeof(float) * mesh->Header.TotalVerts * maxInfluences));
+            buffers.push_back(weightBuffer);
+            int32_t* boneBuffer = static_cast<int32_t*>(rapi->Noesis_UnpooledAlloc(sizeof(int32_t) * mesh->Header.TotalVerts * maxInfluences));
+            buffers.push_back(boneBuffer);
+            for (uint32_t i = 0; i < mesh->Header.TotalVerts; i++) {
+                int boneOffset = i * maxInfluences;
+                uint32_t vid = vertexId->Buffer.cast<uint32_t>(i * sizeof(uint32_t));
+                ACTOR_SKINNING_INFO_v1_ENTRY tableEntry = skin->Table[vid];
+                for (uint32_t j = 0; j < maxInfluences; j++) {
+                    if (j < tableEntry.NumElements) {
+                        weightBuffer[boneOffset + j] = skin->Influences[tableEntry.StartIndex + j].Weight;
+                        boneBuffer[boneOffset + j] = skin->Influences[tableEntry.StartIndex + j].NodeIndex;
+                    } else {
+                        weightBuffer[boneOffset + j] = 0;
+                        boneBuffer[boneOffset + j] = -1;
+                    }
+                }
+            }
+
             uint32_t* indiceBuffer = static_cast<uint32_t*>(rapi->Noesis_UnpooledAlloc(sizeof(uint32_t) * mesh->Header.TotalIndices));
             buffers.push_back(indiceBuffer);
             // rebuild vertex buffers.
@@ -176,7 +200,10 @@ namespace dragon::lumberyard {
                 indiceOffset += submesh->Header.NumIndices;
                 vertexOffset += submesh->Header.NumVertices;
             }
-            // TODO: Load recreate bone weight/influence map -> Calculate max weights/indices per bone.
+            rapi->rpgBindBoneWeightBufferSafe(weightBuffer, RPGEODATA_FLOAT, sizeof(float) * maxInfluences, maxInfluences,
+                                              sizeof(float) * mesh->Header.TotalVerts * maxInfluences);
+            rapi->rpgBindBoneIndexBufferSafe(boneBuffer, RPGEODATA_INT, sizeof(int32_t) * maxInfluences, maxInfluences,
+                                             sizeof(int32_t) * mesh->Header.TotalVerts * maxInfluences);
             indiceOffset = 0;
             for (std::shared_ptr<ActorSubmesh> submeshPtr : mesh->Submeshes) {
                 ActorSubmesh* submesh = submeshPtr.get();
@@ -184,7 +211,6 @@ namespace dragon::lumberyard {
                 rapi->rpgCommitTriangles(indiceBuffer + indiceOffset, RPGEODATA_UINT, submesh->Header.NumIndices, RPGEO_TRIANGLE, true);
                 indiceOffset += submesh->Header.NumIndices;
             }
-
             noesisModel_t* mdl = rapi->rpgConstructModel();
             models.Append(mdl);
             for (void* noesis_buffer : buffers) {
