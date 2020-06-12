@@ -80,7 +80,9 @@ void load_saved_game_root() {
 
 bool NPAPI_InitLocal() {
     // g_nfn->NPAPI_PopupDebugLog(0);
-    LogStream = new std::ofstream("fmt_lumberyard.log");
+    if (std::filesystem::exists("fmt_lumberyard.log")) {
+        LogStream = new std::ofstream("fmt_lumberyard.log");
+    }
     LOG("v1.0.0 (fmt_dragon v1)");
     LOG("Adding Lumberyard CGF Model handler...");
     int handle = g_nfn->NPAPI_Register((char*)"Lumberyard Model", (char*)".cgf");

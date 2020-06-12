@@ -125,95 +125,75 @@ namespace dragon::lumberyard {
                 if (boneMap.find(motion->Name) == boneMap.end()) {
                     continue;
                 }
-                keyFramedBones[actualIndex].boneIndex = boneMap[motion->Name];
-                keyFramedBones[actualIndex].translationType = NOEKF_TRANSLATION_VECTOR_3;
-                keyFramedBones[actualIndex].rotationType = NOEKF_ROTATION_QUATERNION_4;
-                keyFramedBones[actualIndex].scaleType = NOEKF_SCALE_VECTOR_3;
-                keyFramedBones[actualIndex].translationInterpolation = NOEKF_INTERPOLATE_LINEAR;
-                keyFramedBones[actualIndex].rotationInterpolation = NOEKF_INTERPOLATE_LINEAR;
-                keyFramedBones[actualIndex].scaleInterpolation = NOEKF_INTERPOLATE_LINEAR;
-                keyFramedBones[actualIndex].numTranslationKeys = motion->Positions.size();
-                keyFramedBones[actualIndex].numRotationKeys = motion->Rotations.size();
-                keyFramedBones[actualIndex].numScaleKeys = motion->Scales.size();
-                keyFramedBones[actualIndex].minTime = 0.0f;
+                ActorNode* bone = nodes->Nodes[boneMap[motion->Name]].get();
+                ActorNode* parentBone = nullptr;
+                if (bone->Header.ParentIndex > -1) {
+                    parentBone = nodes->Nodes[bone->Header.ParentIndex].get();
+                }
+                noeKeyFramedBone_t* boneKey = &keyFramedBones[actualIndex];
+                boneKey->boneIndex = boneMap[motion->Name];
+                boneKey->translationType = NOEKF_TRANSLATION_VECTOR_3;
+                boneKey->rotationType = NOEKF_ROTATION_QUATERNION_4;
+                boneKey->scaleType = NOEKF_SCALE_VECTOR_3;
+                boneKey->translationInterpolation = NOEKF_INTERPOLATE_LINEAR;
+                boneKey->rotationInterpolation = NOEKF_INTERPOLATE_LINEAR;
+                boneKey->scaleInterpolation = NOEKF_INTERPOLATE_LINEAR;
+                boneKey->numTranslationKeys = motion->Positions.size() + 1;
+                boneKey->numRotationKeys = motion->Rotations.size() + 1;
+                boneKey->numScaleKeys = motion->Scales.size() + 1;
+                boneKey->minTime = 0.0f;
+                boneKey->maxTime = 0.0f;
+                uint32_t frameOffset = 1;
+                bool isAdditive = animInfo->Header.IsAdditive == 1;
                 RichVec3 bindPos(motion->Header.BindPosition.X, motion->Header.BindPosition.Y, motion->Header.BindPosition.Z);
                 VECTOR4_SINGLE bindRotation = Animation::uncompress_quaternion(motion->Header.BindRotation);
                 RichMat43 bindRot = RichQuat(bindRotation.X, bindRotation.Y, bindRotation.Z, bindRotation.W).GetTranspose().ToMat43();
                 RichVec3 bindScale(motion->Header.BindScale.X, motion->Header.BindScale.Y, motion->Header.BindScale.Z);
-                if (keyFramedBones[actualIndex].numTranslationKeys > 0) {
-                    noeKeyFrameData_t* posKeyframes = static_cast<noeKeyFrameData_t*>(
-                        rapi->Noesis_UnpooledAlloc(sizeof(noeKeyFrameData_t) * keyFramedBones[actualIndex].numTranslationKeys));
-                    memset(posKeyframes, 0, sizeof(noeKeyFrameData_t) * keyFramedBones[actualIndex].numTranslationKeys);
+                if (boneKey->numTranslationKeys > 0) {
+                    noeKeyFrameData_t* posKeyframes =
+                        static_cast<noeKeyFrameData_t*>(rapi->Noesis_UnpooledAlloc(sizeof(noeKeyFrameData_t) * boneKey->numTranslationKeys));
+                    memset(posKeyframes, 0, sizeof(noeKeyFrameData_t) * boneKey->numTranslationKeys);
                     buffers.push_back(posKeyframes);
-                    for (uint32_t j = 0; j < keyFramedBones[actualIndex].numTranslationKeys; j++) {
+
+                    MOTION_VECTOR3_KEY refKey = {motion->Header.RefPosition, 0};
+                    insert_key(refKey, bindPos, isAdditive, false, keyFramedBones[actualIndex], posKeyframes[0], floats, floatIndex);
+
+                    for (uint32_t j = 0; j < boneKey->numTranslationKeys - frameOffset; j++) {
                         MOTION_VECTOR3_KEY key = motion->Positions[j];
-                        posKeyframes[j].dataIndex = floatIndex;
-                        posKeyframes[j].time = key.Time;
-                        if (posKeyframes[j].time > keyFramedBones[actualIndex].maxTime) {
-                            keyFramedBones[actualIndex].maxTime = posKeyframes[j].time;
-                        }
-                        floats.resize(floatIndex + 3);
-                        RichVec3 pos(key.Value.X, key.Value.Y, key.Value.Z);
-                        if (animInfo->Header.IsAdditive == 1) {
-                            pos += bindPos;
-                        }
-                        floats[floatIndex] = pos.v[0];
-                        floats[floatIndex + 1] = pos.v[1];
-                        floats[floatIndex + 2] = pos.v[2];
-                        floatIndex += 3;
+                        insert_key(key, bindPos, isAdditive, false, keyFramedBones[actualIndex], posKeyframes[j + frameOffset], floats, floatIndex);
                     }
-                    keyFramedBones[actualIndex].translationKeys = posKeyframes;
+                    boneKey->translationKeys = posKeyframes;
                 }
-                if (keyFramedBones[actualIndex].numRotationKeys > 0) {
-                    noeKeyFrameData_t* rotKeyframes = static_cast<noeKeyFrameData_t*>(
-                        rapi->Noesis_UnpooledAlloc(sizeof(noeKeyFrameData_t) * keyFramedBones[actualIndex].numRotationKeys));
-                    memset(rotKeyframes, 0, sizeof(noeKeyFrameData_t) * keyFramedBones[actualIndex].numRotationKeys);
+                if (boneKey->numRotationKeys > 0) {
+                    noeKeyFrameData_t* rotKeyframes =
+                        static_cast<noeKeyFrameData_t*>(rapi->Noesis_UnpooledAlloc(sizeof(noeKeyFrameData_t) * boneKey->numRotationKeys));
+                    memset(rotKeyframes, 0, sizeof(noeKeyFrameData_t) * boneKey->numRotationKeys);
                     buffers.push_back(rotKeyframes);
-                    for (uint32_t j = 0; j < keyFramedBones[actualIndex].numRotationKeys; j++) {
+
+                    MOTION_VECTOR4_KEY refKey = {motion->Header.RefRotation, 0};
+                    insert_key(refKey, bindRot, isAdditive, keyFramedBones[actualIndex], rotKeyframes[0], floats, floatIndex);
+
+                    for (uint32_t j = 0; j < boneKey->numRotationKeys - frameOffset; j++) {
                         MOTION_VECTOR4_KEY key = motion->Rotations[j];
-                        rotKeyframes[j].dataIndex = floatIndex;
-                        rotKeyframes[j].time = key.Time;
-                        if (rotKeyframes[j].time > keyFramedBones[actualIndex].maxTime) {
-                            keyFramedBones[actualIndex].maxTime = rotKeyframes[j].time;
-                        }
-                        floats.resize(floatIndex + 4);
-                        VECTOR4_SINGLE rotation = Animation::uncompress_quaternion(key.Value);
-                        RichMat43 rotMat = RichQuat(rotation.X, rotation.Y, rotation.Z, rotation.W).GetTranspose().ToMat43();
-                        if (animInfo->Header.IsAdditive == 1) {
-                            rotMat *= bindRot;
-                        }
-                        RichQuat rot = rotMat.ToQuat();
-                        floats[floatIndex] = rot[0];
-                        floats[floatIndex + 1] = rot[1];
-                        floats[floatIndex + 2] = rot[2];
-                        floats[floatIndex + 3] = rot[3];
-                        floatIndex += 4;
+                        insert_key(key, bindRot, isAdditive, keyFramedBones[actualIndex], rotKeyframes[j + frameOffset], floats, floatIndex);
                     }
-                    keyFramedBones[actualIndex].rotationKeys = rotKeyframes;
+                    boneKey->rotationKeys = rotKeyframes;
                 }
-                if (keyFramedBones[actualIndex].numScaleKeys > 0) {
-                    noeKeyFrameData_t* scaleKeyframes = static_cast<noeKeyFrameData_t*>(
-                        rapi->Noesis_UnpooledAlloc(sizeof(noeKeyFrameData_t) * keyFramedBones[actualIndex].numScaleKeys));
-                    memset(scaleKeyframes, 0, sizeof(noeKeyFrameData_t) * keyFramedBones[actualIndex].numScaleKeys);
+                if (boneKey->numScaleKeys > 0) {
+                    noeKeyFrameData_t* scaleKeyframes =
+                        static_cast<noeKeyFrameData_t*>(rapi->Noesis_UnpooledAlloc(sizeof(noeKeyFrameData_t) * boneKey->numScaleKeys));
+                    memset(scaleKeyframes, 0, sizeof(noeKeyFrameData_t) * boneKey->numScaleKeys);
                     buffers.push_back(scaleKeyframes);
-                    for (uint32_t j = 0; j < keyFramedBones[actualIndex].numScaleKeys; j++) {
+
+                    MOTION_VECTOR3_KEY refKey = {motion->Header.RefScale, 0};
+                    insert_key(refKey, bindScale, isAdditive, true, keyFramedBones[actualIndex], scaleKeyframes[0], floats, floatIndex);
+
+                    for (uint32_t j = 0; j < boneKey->numScaleKeys - frameOffset; j++) {
                         MOTION_VECTOR3_KEY key = motion->Scales[j];
-                        scaleKeyframes[j].dataIndex = floatIndex;
-                        scaleKeyframes[j].time = key.Time;
-                        if (scaleKeyframes[j].time > keyFramedBones[actualIndex].maxTime) {
-                            keyFramedBones[actualIndex].maxTime = scaleKeyframes[j].time;
-                        }
-                        floats.resize(floatIndex + 3);
-                        RichVec3 scale(key.Value.X, key.Value.Y, key.Value.Z);
-                        if (animInfo->Header.IsAdditive == 1) {
-                            scale += bindScale;
-                        }
-                        floats[floatIndex] = scale.v[0];
-                        floats[floatIndex + 1] = scale.v[1];
-                        floats[floatIndex + 2] = scale.v[2];
-                        floatIndex += 3;
+                        insert_key(key, bindScale, isAdditive, true, keyFramedBones[actualIndex], scaleKeyframes[j + frameOffset], floats,
+                                   floatIndex);
                     }
-                    keyFramedBones[actualIndex].scaleKeys = scaleKeyframes;
+                    boneKey->scaleKeys = scaleKeyframes;
                 }
                 actualIndex++;
             }
@@ -395,6 +375,49 @@ namespace dragon::lumberyard {
         return check(&data_buffer) || Animation::check(&data_buffer);
     }
 
+    void Actor::insert_key(chunk::emfx::MOTION_VECTOR3_KEY key, RichVec3 bind, bool isAdditive, bool multiply, noeKeyFramedBone_t& bone,
+                           noeKeyFrameData_t& frame, std::vector<float>& floats, uint32_t& floatIndex) {
+        frame.dataIndex = floatIndex;
+        frame.time = key.Time;
+        if (frame.time > bone.maxTime) {
+            bone.maxTime = frame.time;
+        }
+        floats.resize(floatIndex + 3);
+        RichVec3 vec(key.Value.X, key.Value.Y, key.Value.Z);
+        if (isAdditive) {
+            if (multiply) {
+                vec *= bind;
+            } else {
+                vec += bind;
+            }
+        }
+        floats[floatIndex] = vec.v[0];
+        floats[floatIndex + 1] = vec.v[1];
+        floats[floatIndex + 2] = vec.v[2];
+        floatIndex += 3;
+    }
+
+    void Actor::insert_key(chunk::emfx::MOTION_VECTOR4_KEY key, RichMat43 bind, bool isAdditive, noeKeyFramedBone_t& bone, noeKeyFrameData_t& frame,
+                           std::vector<float>& floats, uint32_t& floatIndex) {
+        frame.dataIndex = floatIndex;
+        frame.time = key.Time;
+        if (frame.time > bone.maxTime) {
+            bone.maxTime = frame.time;
+        }
+        floats.resize(floatIndex + 4);
+        VECTOR4_SINGLE rotation = Animation::uncompress_quaternion(key.Value);
+        RichMat43 mat = RichQuat(rotation.X, rotation.Y, rotation.Z, rotation.W).GetTranspose().ToMat43();
+        if (isAdditive) {
+            mat *= bind;
+        }
+        RichQuat rot = mat.ToQuat();
+        floats[floatIndex] = rot[0];
+        floats[floatIndex + 1] = rot[1];
+        floats[floatIndex + 2] = rot[2];
+        floats[floatIndex + 3] = rot[3];
+        floatIndex += 4;
+        floatIndex += 3;
+    }
 } // namespace dragon::lumberyard
 
 #endif
