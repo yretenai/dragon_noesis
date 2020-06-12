@@ -49,7 +49,9 @@ namespace dragon::lumberyard {
         Array<char> dataBuffer = Array<char>(reinterpret_cast<char*>(buffer), length);
         Actor actor;
         if (isAnimation) {
-            noeUserPromptParam_t prompt = {const_cast<char*>("Select EMFX Actor file"), nullptr, nullptr, NOEUSERVAL_FILEPATH, checkActorFile};
+            noeUserPromptParam_t prompt = {const_cast<char*>("Select EMFX Actor file"),
+                                           const_cast<char*>("Select Actor file to apply this animation to."), nullptr, NOEUSERVAL_FILEPATH,
+                                           checkActorFile};
             bool promptResult = g_nfn->NPAPI_UserPrompt(&prompt);
             if (!promptResult || prompt.valBuf[0] == 0) {
                 return nullptr;
