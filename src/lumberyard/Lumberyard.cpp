@@ -4,7 +4,7 @@
 
 #include "Lumberyard.h"
 
-#if NOESIS_PLUGINAPI_VERSION < 75
+#if defined(USE_NOESIS) && NOESIS_PLUGINAPI_VERSION < 75
 #error "Please update the Noesis plugin headers to at least version 75."
 #endif
 
