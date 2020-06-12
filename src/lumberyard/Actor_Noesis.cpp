@@ -167,7 +167,6 @@ namespace dragon::lumberyard {
                         rapi->Noesis_UnpooledAlloc(sizeof(noeKeyFrameData_t) * keyFramedBones[actualIndex].numRotationKeys));
                     memset(rotKeyframes, 0, sizeof(noeKeyFrameData_t) * keyFramedBones[actualIndex].numRotationKeys);
                     buffers.push_back(rotKeyframes);
-                    VECTOR4_SINGLE refRotation = Animation::uncompress_quaternion(motion->Header.RefRotation);
                     for (uint32_t j = 0; j < keyFramedBones[actualIndex].numRotationKeys; j++) {
                         MOTION_VECTOR4_KEY key = motion->Rotations[j];
                         rotKeyframes[j].dataIndex = floatIndex;
@@ -205,7 +204,7 @@ namespace dragon::lumberyard {
                         floats.resize(floatIndex + 3);
                         RichVec3 scale(key.Value.X, key.Value.Y, key.Value.Z);
                         if (animInfo->Header.IsAdditive == 1) {
-                            scale += bindPos;
+                            scale += bindScale;
                         }
                         floats[floatIndex] = scale.v[0];
                         floats[floatIndex + 1] = scale.v[1];
