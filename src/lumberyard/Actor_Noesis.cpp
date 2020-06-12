@@ -110,9 +110,6 @@ namespace dragon::lumberyard {
             keyFramedAnim->framesPerSecond = 30.0f;
             keyFramedAnim->flags = KFANIMFLAG_SEPARATETS | KFANIMFLAG_USEBONETIMES | KFANIMFLAG_PLUSONE;
             MotionInfo* animInfo = CAST_ABSTRACT_CHUNK(MotionInfo, anim.get_chunk(MOTION_CHUNK_TYPE::Info));
-            if (animInfo->Header.IsAdditive) {
-                LOG("Additive animations are unpredictable!");
-            }
             MotionSubMotions* subMotions = CAST_ABSTRACT_CHUNK(MotionSubMotions, anim.get_chunk(MOTION_CHUNK_TYPE::SubMotions));
             std::vector<float> floats;
             noeKeyFramedBone_t* keyFramedBones =
@@ -137,6 +134,10 @@ namespace dragon::lumberyard {
                 keyFramedBones[actualIndex].numRotationKeys = motion->Rotations.size();
                 keyFramedBones[actualIndex].numScaleKeys = motion->Scales.size();
                 keyFramedBones[actualIndex].minTime = 0.0f;
+                RichVec3 bindPos(motion->Header.BindPosition.X, motion->Header.BindPosition.Y, motion->Header.BindPosition.Z);
+                VECTOR4_SINGLE bindRotation = Animation::uncompress_quaternion(motion->Header.BindRotation);
+                RichMat43 bindRot = RichQuat(bindRotation.X, bindRotation.Y, bindRotation.Z, bindRotation.W).GetTranspose().ToMat43();
+                RichVec3 bindScale(motion->Header.BindScale.X, motion->Header.BindScale.Y, motion->Header.BindScale.Z);
                 if (keyFramedBones[actualIndex].numTranslationKeys > 0) {
                     noeKeyFrameData_t* posKeyframes = static_cast<noeKeyFrameData_t*>(
                         rapi->Noesis_UnpooledAlloc(sizeof(noeKeyFrameData_t) * keyFramedBones[actualIndex].numTranslationKeys));
@@ -150,9 +151,13 @@ namespace dragon::lumberyard {
                             keyFramedBones[actualIndex].maxTime = posKeyframes[j].time;
                         }
                         floats.resize(floatIndex + 3);
-                        floats[floatIndex] = key.Value.X;
-                        floats[floatIndex + 1] = key.Value.Y;
-                        floats[floatIndex + 2] = key.Value.Z;
+                        RichVec3 pos(key.Value.X, key.Value.Y, key.Value.Z);
+                        if (animInfo->Header.IsAdditive == 1) {
+                            pos += bindPos;
+                        }
+                        floats[floatIndex] = pos.v[0];
+                        floats[floatIndex + 1] = pos.v[1];
+                        floats[floatIndex + 2] = pos.v[2];
                         floatIndex += 3;
                     }
                     keyFramedBones[actualIndex].translationKeys = posKeyframes;
@@ -172,8 +177,11 @@ namespace dragon::lumberyard {
                         }
                         floats.resize(floatIndex + 4);
                         VECTOR4_SINGLE rotation = Animation::uncompress_quaternion(key.Value);
-                        RichQuat rot = RichQuat(rotation.X, rotation.Y, rotation.Z, rotation.W);
-                        rot.Transpose();
+                        RichMat43 rotMat = RichQuat(rotation.X, rotation.Y, rotation.Z, rotation.W).GetTranspose().ToMat43();
+                        if (animInfo->Header.IsAdditive == 1) {
+                            rotMat *= bindRot;
+                        }
+                        RichQuat rot = rotMat.ToQuat();
                         floats[floatIndex] = rot[0];
                         floats[floatIndex + 1] = rot[1];
                         floats[floatIndex + 2] = rot[2];
@@ -195,9 +203,13 @@ namespace dragon::lumberyard {
                             keyFramedBones[actualIndex].maxTime = scaleKeyframes[j].time;
                         }
                         floats.resize(floatIndex + 3);
-                        floats[floatIndex] = key.Value.X;
-                        floats[floatIndex + 1] = key.Value.Y;
-                        floats[floatIndex + 2] = key.Value.Z;
+                        RichVec3 scale(key.Value.X, key.Value.Y, key.Value.Z);
+                        if (animInfo->Header.IsAdditive == 1) {
+                            scale += bindPos;
+                        }
+                        floats[floatIndex] = scale.v[0];
+                        floats[floatIndex + 1] = scale.v[1];
+                        floats[floatIndex + 2] = scale.v[2];
                         floatIndex += 3;
                     }
                     keyFramedBones[actualIndex].scaleKeys = scaleKeyframes;
