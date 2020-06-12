@@ -8,14 +8,7 @@
 
 namespace dragon::lumberyard {
     bool Texture::noesis_load([[maybe_unused]] BYTE* buffer, [[maybe_unused]] int length, CArrayList<noesisTex_t*>& noe_tex, noeRAPI_t* rapi) {
-        wchar_t* path = new wchar_t[MAX_NOESIS_PATH];
-        g_nfn->NPAPI_GetOpenPreviewFile(path);
-        if (wcslen(path) < 2) {
-            delete[] path;
-            return 0;
-        }
-        std::filesystem::path wpath(path);
-        delete[] path;
+        std::filesystem::path wpath(rapi->Noesis_GetInputNameW());
         if (!wpath.has_extension())
             return false;
 
@@ -40,32 +33,19 @@ namespace dragon::lumberyard {
         return true;
     }
 
-    bool Texture::noesis_check([[maybe_unused]] BYTE* buffer, [[maybe_unused]] int length, [[maybe_unused]] noeRAPI_t* rapi) {
-        wchar_t* path = new wchar_t[MAX_NOESIS_PATH];
-        if (rapi->Noesis_IsExporting()) {
-            g_nfn->NPAPI_GetSelectedFile(path);
-        } else {
-            g_nfn->NPAPI_GetOpenPreviewFile(path);
-        }
-        if (wcslen(path) < 2) {
-            delete[] path;
-            return 0;
-        }
-
+    bool Texture::noesis_check([[maybe_unused]] BYTE* buffer, [[maybe_unused]] int length, noeRAPI_t* rapi) {
+        wchar_t* path = rapi->Noesis_GetInputNameW();
         bool test = noesis_tool_visibility(0, path, nullptr, nullptr);
-        delete[] path;
         return test;
     }
 
     int Texture::noesis_tool([[maybe_unused]] int handle, [[maybe_unused]] void* user_data) {
-        wchar_t* path = new wchar_t[MAX_NOESIS_PATH];
+        wchar_t path[MAX_NOESIS_PATH];
         g_nfn->NPAPI_GetSelectedFile(path);
         if (wcslen(path) < 2) {
-            delete[] path;
             return 0;
         }
         std::filesystem::path wpath(path);
-        delete[] path;
         if (!wpath.has_extension())
             return 0;
 

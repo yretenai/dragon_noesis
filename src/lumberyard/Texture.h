@@ -32,7 +32,7 @@ namespace dragon::lumberyard {
 
         static bool noesies_load_direct(std::filesystem::path& imagePath, CArrayList<noesisTex_t*>& texList, const noeRAPI_t* rapi);
 
-        static bool noesis_check([[maybe_unused]] BYTE* buffer, [[maybe_unused]] int length, [[maybe_unused]] noeRAPI_t* rapi);
+        static bool noesis_check([[maybe_unused]] BYTE* buffer, [[maybe_unused]] int length, noeRAPI_t* rapi);
 
         static int noesis_tool([[maybe_unused]] int handle, [[maybe_unused]] void* user_data);
 

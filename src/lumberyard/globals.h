@@ -8,5 +8,6 @@
 #include <filesystem>
 
 extern std::filesystem::path* LibraryRoot;
+extern bool AutoDetect;
 
 #endif // FMT_DRAGON_GLOBALS_H

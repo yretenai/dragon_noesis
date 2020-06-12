@@ -22,28 +22,25 @@ using namespace dragon;
 using namespace dragon::lumberyard;
 
 std::filesystem::path* LibraryRoot;
+bool AutoDetect = true;
 
 void reset_game_root() {
     if (LibraryRoot != nullptr) {
         delete LibraryRoot;
+        LibraryRoot = nullptr;
     }
-    LibraryRoot = nullptr;
 }
 
 int set_game_root([[maybe_unused]] int handle, [[maybe_unused]] void* user_data) {
-    char* defaultValue = nullptr;
+    char defaultValue[MAX_NOESIS_PATH];
+    memset(defaultValue, 0, MAX_NOESIS_PATH);
     if (LibraryRoot != nullptr) {
-        defaultValue = new char[MAX_NOESIS_PATH];
-        memset(defaultValue, 0, MAX_NOESIS_PATH);
         wcstombs(defaultValue, LibraryRoot->c_str(), LibraryRoot->string().size());
     }
     noeUserPromptParam_t prompt = {const_cast<char*>("Select Game Extraction Directory"),
                                    const_cast<char*>("Select the directory game files have been extracted to automatically load textures"),
                                    defaultValue, NOEUSERVAL_FOLDERPATH};
     bool promptResult = g_nfn->NPAPI_UserPrompt(&prompt);
-    if (defaultValue != nullptr) {
-        delete[] defaultValue;
-    }
     reset_game_root();
     if (!promptResult || prompt.valBuf[0] == 0) {
         BYTE buffer[MAX_NOESIS_PATH];
@@ -76,6 +73,23 @@ void load_saved_game_root() {
         LibraryRoot = new std::filesystem::path(path);
         LOG("Set library path to " << *LibraryRoot);
     }
+}
+
+void get_autodetect(int handle) {
+    BYTE buffer[1];
+    if (g_nfn->NPAPI_UserSettingRead(const_cast<wchar_t*>(L"dragon::lumberyard::AutoDetect"), buffer, 1)) {
+        AutoDetect = buffer[0] == 1;
+        LOG("Set auto detect to " << AutoDetect);
+    }
+    g_nfn->NPAPI_CheckToolMenuItem(handle, AutoDetect);
+}
+
+int set_autodetect(int handle, [[maybe_unused]] void* user_data) {
+    AutoDetect = !AutoDetect;
+    BYTE buffer[1] = {AutoDetect};
+    g_nfn->NPAPI_UserSettingWrite(const_cast<wchar_t*>(L"dragon::lumberyard::AutoDetect"), buffer, 1);
+    g_nfn->NPAPI_CheckToolMenuItem(handle, AutoDetect);
+    return 1;
 }
 
 bool NPAPI_InitLocal() {
@@ -115,12 +129,19 @@ bool NPAPI_InitLocal() {
     g_nfn->NPAPI_SetToolHelpText(handle, (char*)"Sets the EXTRACTED game root folder, for loading other "
                                                 "assets like textures.");
     load_saved_game_root();
+
+    LOG("Adding Lumberyard Auto Detect Material tool handler...");
+    handle = g_nfn->NPAPI_RegisterTool((char*)"Auto Detect Lumberyard Material", set_autodetect, nullptr);
+    g_nfn->NPAPI_SetToolFlags(handle, NTOOLFLAG_USERBITS);
+    g_nfn->NPAPI_SetToolHelpText(handle, (char*)"Automatically tries to find relevant MTL files");
+    get_autodetect(handle);
     return true;
 }
 
 void NPAPI_ShutdownLocal() {
     if (LogStream != nullptr) {
         delete LogStream;
+        LogStream = nullptr;
     }
     reset_game_root();
 }

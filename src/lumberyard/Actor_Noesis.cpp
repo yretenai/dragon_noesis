@@ -15,54 +15,26 @@
 using namespace dragon::lumberyard::chunk::emfx;
 
 namespace dragon::lumberyard {
-    char* checkActorFile(void* valIn, noeUserValType_e valInType) {
-        if (valInType != NOEUSERVAL_FILEPATH)
-            return const_cast<char*>("Unknown.");
-        std::filesystem::path path(reinterpret_cast<wchar_t*>(valIn));
-        if (!std::filesystem::exists(path))
-            return const_cast<char*>("Does not exist");
-        Array<char> data = read_file(path);
-        if (!Actor::check(&data)) {
-            return const_cast<char*>("Not an EMFX Actor file");
-        }
-        return NULL;
-    }
-
     noesisModel_t* Actor::noesis_load(BYTE* buffer, int length, int& numMdl, noeRAPI_t* rapi) {
-        wchar_t* path = new wchar_t[MAX_NOESIS_PATH];
-        if (rapi->Noesis_IsExporting()) {
-            g_nfn->NPAPI_GetSelectedFile(path);
-        } else {
-            g_nfn->NPAPI_GetOpenPreviewFile(path);
-        }
-        std::filesystem::path modelPath;
-        if (wcslen(path) < 2) {
-            delete[] path;
-            return nullptr;
-        } else {
-            modelPath = std::filesystem::path(path);
-            delete[] path;
-        }
+        std::filesystem::path modelPath(rapi->Noesis_GetInputNameW());
         std::string animName;
         bool isAnimation = modelPath.extension() == ".motion";
 
         Array<char> dataBuffer = Array<char>(reinterpret_cast<char*>(buffer), length);
         Actor actor;
+        std::vector<void*> buffers;
         if (isAnimation) {
-            noeUserPromptParam_t prompt = {const_cast<char*>("Select EMFX Actor file"),
-                                           const_cast<char*>("Select Actor file to apply this animation to."), nullptr, NOEUSERVAL_FILEPATH,
-                                           checkActorFile};
-            bool promptResult = g_nfn->NPAPI_UserPrompt(&prompt);
-            if (!promptResult || prompt.valBuf[0] == 0) {
-                return nullptr;
-            }
-            wchar_t* promptPath = reinterpret_cast<wchar_t*>(prompt.valBuf);
-            if (!std::filesystem::exists(promptPath)) {
+            char actorPath[MAX_NOESIS_PATH];
+            int modelSize = 0;
+            BYTE* modelData = rapi->Noesis_LoadPairedFile(rapi->Noesis_PooledString(const_cast<char*>("Select EMFX Actor file")),
+                                                          rapi->Noesis_PooledString(const_cast<char*>(".actor")), modelSize, actorPath);
+            if (modelData == nullptr) {
                 return nullptr;
             }
             animName = modelPath.filename().replace_extension("").string();
-            modelPath = std::filesystem::path(promptPath);
-            Array<char> data = read_file(modelPath);
+            modelPath = std::filesystem::path(actorPath);
+            buffers.push_back(modelData);
+            Array<char> data(reinterpret_cast<char*>(modelData), modelSize);
             actor = Actor(&data);
         } else {
             actor = Actor(&dataBuffer);
@@ -101,7 +73,6 @@ namespace dragon::lumberyard {
             }
         }
         rapi->rpgSetExData_Bones(bones, nodes->Header.NumNodes);
-        std::vector<void*> buffers;
         if (isAnimation) {
             Animation anim(&dataBuffer);
             noeKeyFramedAnim_t* keyFramedAnim = static_cast<noeKeyFramedAnim_t*>(rapi->Noesis_UnpooledAlloc(sizeof(noeKeyFramedAnim_t)));
@@ -124,11 +95,6 @@ namespace dragon::lumberyard {
                 MotionSubMotion* motion = subMotions->Motions[i].get();
                 if (boneMap.find(motion->Name) == boneMap.end()) {
                     continue;
-                }
-                ActorNode* bone = nodes->Nodes[boneMap[motion->Name]].get();
-                ActorNode* parentBone = nullptr;
-                if (bone->Header.ParentIndex > -1) {
-                    parentBone = nodes->Nodes[bone->Header.ParentIndex].get();
                 }
                 noeKeyFramedBone_t* boneKey = &keyFramedBones[actualIndex];
                 boneKey->boneIndex = boneMap[motion->Name];
@@ -212,10 +178,25 @@ namespace dragon::lumberyard {
         buffers.clear();
 
         if (LibraryRoot != nullptr) {
-            noesisMatData_t* matData = nullptr;
-            std::filesystem::path materialPath(modelPath);
-            materialPath.replace_extension(".mtl");
-            if (std::filesystem::exists(materialPath)) {
+            std::filesystem::path materialPath;
+            if (AutoDetect) {
+                materialPath = std::filesystem::path(modelPath);
+                materialPath.replace_extension(".mtl");
+            }
+
+            if (materialPath.empty() || !std::filesystem::exists(materialPath)) {
+                char materialPathNoe[MAX_NOESIS_PATH];
+                int unusedMaterialSize = 0;
+                BYTE* unusedMaterialData =
+                    rapi->Noesis_LoadPairedFile(rapi->Noesis_PooledString(const_cast<char*>("Select Lumberyard Material file")),
+                                                rapi->Noesis_PooledString(const_cast<char*>(".mtl")), unusedMaterialSize, materialPathNoe);
+                materialPath = std::filesystem::path(materialPathNoe);
+                if (unusedMaterialData != nullptr) {
+                    rapi->Noesis_UnpooledFree(unusedMaterialData);
+                }
+            }
+
+            if (!materialPath.empty()) {
                 Material material = Material::from_path(materialPath);
                 CArrayList<noesisTex_t*> texList;
                 CArrayList<noesisMaterial_t*> matList;
@@ -232,9 +213,9 @@ namespace dragon::lumberyard {
                     }
                     matList.Push(mat);
                 }
-                matData = rapi->Noesis_GetMatDataFromLists(matList, texList);
+                noesisMatData_t* matData = rapi->Noesis_GetMatDataFromLists(matList, texList);
+                rapi->rpgSetExData_Materials(matData);
             }
-            rapi->rpgSetExData_Materials(matData);
         }
 
         std::vector<std::shared_ptr<AbstractEMFXChunk>> meshChunks;

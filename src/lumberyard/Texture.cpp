@@ -21,7 +21,7 @@ namespace dragon::lumberyard {
         std::filesystem::path tmp(path);
         if (!is_alpha)
             tmp.replace_extension(".dds.1");
-        char* buffer = new char[3];
+        char buffer[3];
         for (uint32_t i = pointer[7]; i > 0; i--) {
             // try and find color texture
             sprintf(buffer, "%d", i);
@@ -33,7 +33,6 @@ namespace dragon::lumberyard {
                 break;
             }
         }
-        delete[] buffer;
     }
 
     Array<char> Texture::cook() {
