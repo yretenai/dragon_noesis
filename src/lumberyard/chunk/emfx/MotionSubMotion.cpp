@@ -7,6 +7,7 @@
 namespace dragon::lumberyard::chunk::emfx {
     MotionSubMotion::MotionSubMotion(Array<char>* buffer, EMFX_CHUNK_HEADER header, int& ptr) {
         assert(header.Version <= 1);
+        Chunk = header;
         Header = buffer->lpcast<MOTION_SUBMOTION_V1_HEADER>(&ptr);
         int32_t size = buffer->lpcast<int32_t>(&ptr);
         if (size > 0) {

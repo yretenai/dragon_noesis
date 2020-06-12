@@ -43,6 +43,7 @@ namespace dragon::lumberyard {
             modelPath = std::filesystem::path(path);
             delete[] path;
         }
+        std::string animName;
         bool isAnimation = modelPath.extension() == ".motion";
 
         Array<char> dataBuffer = Array<char>(reinterpret_cast<char*>(buffer), length);
@@ -57,6 +58,7 @@ namespace dragon::lumberyard {
             if (!std::filesystem::exists(promptPath)) {
                 return nullptr;
             }
+            animName = modelPath.filename().replace_extension("").string();
             modelPath = std::filesystem::path(promptPath);
             Array<char> data = read_file(modelPath);
             actor = Actor(&data);
@@ -100,13 +102,121 @@ namespace dragon::lumberyard {
         std::vector<void*> buffers;
         if (isAnimation) {
             Animation anim(&dataBuffer);
-            // TODO: Create animation.
-            // --> anim chunk INFO check IsAdditive, might break things!
-            // --> unpooled allocate noeKeyFramedAnim_t, set name, bones.
-            // --> anim chunk SUBMOTIONS
-            // --> kfBones = SUBMOTIONS.count --> Iterate submotions --> add noeKeyFramedBone_t and data
-            // --> rapi->rpgSetExData_Anims(Noesis_AnimFromBonesAndKeyFramedAnim(bones, node->Header.NumNodes, kfAnim, true));
+            noeKeyFramedAnim_t* keyFramedAnim = static_cast<noeKeyFramedAnim_t*>(rapi->Noesis_UnpooledAlloc(sizeof(noeKeyFramedAnim_t)));
+            buffers.push_back(keyFramedAnim);
+            memset(keyFramedAnim, 0, sizeof(noeKeyFramedAnim_t));
+            keyFramedAnim->name = rapi->Noesis_PooledString(const_cast<char*>(animName.c_str()));
+            keyFramedAnim->numBones = nodes->Header.NumNodes;
+            keyFramedAnim->framesPerSecond = 30.0f;
+            keyFramedAnim->flags = KFANIMFLAG_SEPARATETS | KFANIMFLAG_USEBONETIMES | KFANIMFLAG_PLUSONE;
+            MotionInfo* animInfo = CAST_ABSTRACT_CHUNK(MotionInfo, anim.get_chunk(MOTION_CHUNK_TYPE::Info));
+            if (animInfo->Header.IsAdditive) {
+                LOG("Additive animations are unpredictable!");
+            }
+            MotionSubMotions* subMotions = CAST_ABSTRACT_CHUNK(MotionSubMotions, anim.get_chunk(MOTION_CHUNK_TYPE::SubMotions));
+            std::vector<float> floats;
+            noeKeyFramedBone_t* keyFramedBones =
+                static_cast<noeKeyFramedBone_t*>(rapi->Noesis_UnpooledAlloc(sizeof(noeKeyFramedBone_t) * subMotions->Motions.size()));
+            memset(keyFramedBones, 0, sizeof(noeKeyFramedBone_t) * subMotions->Motions.size());
+            buffers.push_back(keyFramedBones);
+            uint32_t actualIndex = 0;
+            uint32_t floatIndex = 0;
+            for (uint32_t i = 0; i < subMotions->Motions.size(); i++) {
+                MotionSubMotion* motion = subMotions->Motions[i].get();
+                if (boneMap.find(motion->Name) == boneMap.end()) {
+                    continue;
+                }
+                keyFramedBones[actualIndex].boneIndex = boneMap[motion->Name];
+                keyFramedBones[actualIndex].translationType = NOEKF_TRANSLATION_VECTOR_3;
+                keyFramedBones[actualIndex].rotationType = NOEKF_ROTATION_QUATERNION_4;
+                keyFramedBones[actualIndex].scaleType = NOEKF_SCALE_VECTOR_3;
+                keyFramedBones[actualIndex].translationInterpolation = NOEKF_INTERPOLATE_LINEAR;
+                keyFramedBones[actualIndex].rotationInterpolation = NOEKF_INTERPOLATE_LINEAR;
+                keyFramedBones[actualIndex].scaleInterpolation = NOEKF_INTERPOLATE_LINEAR;
+                keyFramedBones[actualIndex].numTranslationKeys = motion->Positions.size();
+                keyFramedBones[actualIndex].numRotationKeys = motion->Rotations.size();
+                keyFramedBones[actualIndex].numScaleKeys = motion->Scales.size();
+                keyFramedBones[actualIndex].minTime = 0.0f;
+                if (keyFramedBones[actualIndex].numTranslationKeys > 0) {
+                    noeKeyFrameData_t* posKeyframes = static_cast<noeKeyFrameData_t*>(
+                        rapi->Noesis_UnpooledAlloc(sizeof(noeKeyFrameData_t) * keyFramedBones[actualIndex].numTranslationKeys));
+                    memset(posKeyframes, 0, sizeof(noeKeyFrameData_t) * keyFramedBones[actualIndex].numTranslationKeys);
+                    buffers.push_back(posKeyframes);
+                    for (uint32_t j = 0; j < keyFramedBones[actualIndex].numTranslationKeys; j++) {
+                        MOTION_VECTOR3_KEY key = motion->Positions[j];
+                        posKeyframes[j].dataIndex = floatIndex;
+                        posKeyframes[j].time = key.Time;
+                        if (posKeyframes[j].time > keyFramedBones[actualIndex].maxTime) {
+                            keyFramedBones[actualIndex].maxTime = posKeyframes[j].time;
+                        }
+                        floats.resize(floatIndex + 3);
+                        floats[floatIndex] = key.Value.X;
+                        floats[floatIndex + 1] = key.Value.Y;
+                        floats[floatIndex + 2] = key.Value.Z;
+                        floatIndex += 3;
+                    }
+                    keyFramedBones[actualIndex].translationKeys = posKeyframes;
+                }
+                if (keyFramedBones[actualIndex].numRotationKeys > 0) {
+                    noeKeyFrameData_t* rotKeyframes = static_cast<noeKeyFrameData_t*>(
+                        rapi->Noesis_UnpooledAlloc(sizeof(noeKeyFrameData_t) * keyFramedBones[actualIndex].numRotationKeys));
+                    memset(rotKeyframes, 0, sizeof(noeKeyFrameData_t) * keyFramedBones[actualIndex].numRotationKeys);
+                    buffers.push_back(rotKeyframes);
+                    VECTOR4_SINGLE refRotation = Animation::uncompress_quaternion(motion->Header.RefRotation);
+                    for (uint32_t j = 0; j < keyFramedBones[actualIndex].numRotationKeys; j++) {
+                        MOTION_VECTOR4_KEY key = motion->Rotations[j];
+                        rotKeyframes[j].dataIndex = floatIndex;
+                        rotKeyframes[j].time = key.Time;
+                        if (rotKeyframes[j].time > keyFramedBones[actualIndex].maxTime) {
+                            keyFramedBones[actualIndex].maxTime = rotKeyframes[j].time;
+                        }
+                        floats.resize(floatIndex + 4);
+                        VECTOR4_SINGLE rotation = Animation::uncompress_quaternion(key.Value);
+                        RichQuat rot = RichQuat(rotation.X, rotation.Y, rotation.Z, rotation.W);
+                        rot.Transpose();
+                        floats[floatIndex] = rot[0];
+                        floats[floatIndex + 1] = rot[1];
+                        floats[floatIndex + 2] = rot[2];
+                        floats[floatIndex + 3] = rot[3];
+                        floatIndex += 4;
+                    }
+                    keyFramedBones[actualIndex].rotationKeys = rotKeyframes;
+                }
+                if (keyFramedBones[actualIndex].numScaleKeys > 0) {
+                    noeKeyFrameData_t* scaleKeyframes = static_cast<noeKeyFrameData_t*>(
+                        rapi->Noesis_UnpooledAlloc(sizeof(noeKeyFrameData_t) * keyFramedBones[actualIndex].numScaleKeys));
+                    memset(scaleKeyframes, 0, sizeof(noeKeyFrameData_t) * keyFramedBones[actualIndex].numScaleKeys);
+                    buffers.push_back(scaleKeyframes);
+                    for (uint32_t j = 0; j < keyFramedBones[actualIndex].numScaleKeys; j++) {
+                        MOTION_VECTOR3_KEY key = motion->Scales[j];
+                        scaleKeyframes[j].dataIndex = floatIndex;
+                        scaleKeyframes[j].time = key.Time;
+                        if (scaleKeyframes[j].time > keyFramedBones[actualIndex].maxTime) {
+                            keyFramedBones[actualIndex].maxTime = scaleKeyframes[j].time;
+                        }
+                        floats.resize(floatIndex + 3);
+                        floats[floatIndex] = key.Value.X;
+                        floats[floatIndex + 1] = key.Value.Y;
+                        floats[floatIndex + 2] = key.Value.Z;
+                        floatIndex += 3;
+                    }
+                    keyFramedBones[actualIndex].scaleKeys = scaleKeyframes;
+                }
+                actualIndex++;
+            }
+            keyFramedAnim->numKfBones = actualIndex;
+            keyFramedAnim->numDataFloats = floats.size();
+            float* floatBuffer = static_cast<float*>(rapi->Noesis_UnpooledAlloc(sizeof(float) * keyFramedAnim->numDataFloats));
+            buffers.push_back(floatBuffer);
+            std::copy_n(floats.begin(), floats.size(), floatBuffer);
+            keyFramedAnim->data = floatBuffer;
+            keyFramedAnim->kfBones = keyFramedBones;
+            rapi->rpgSetExData_Anims(rapi->Noesis_AnimFromBonesAndKeyFramedAnim(bones, nodes->Header.NumNodes, keyFramedAnim, true));
         }
+        for (void* noesis_buffer : buffers) {
+            rapi->Noesis_UnpooledFree(noesis_buffer);
+        }
+        buffers.clear();
 
         if (LibraryRoot != nullptr) {
             noesisMatData_t* matData = nullptr;
@@ -261,6 +371,7 @@ namespace dragon::lumberyard {
         for (void* noesis_buffer : buffers) {
             rapi->Noesis_UnpooledFree(noesis_buffer);
         }
+        buffers.clear();
         rapi->rpgDestroyContext(context);
         noesisModel_t* mdlList = rapi->Noesis_ModelsFromList(models, numMdl);
         return mdlList;

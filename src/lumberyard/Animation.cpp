@@ -75,5 +75,8 @@ namespace dragon::lumberyard {
         return buffer->size() >= sizeof(MOTION_HEADER) && header.Magic == FOURCC_MOT && header.IsBigEndian == 0;
     }
 
-    VECTOR4_SINGLE Animation::uncompress_quaternion(VECTOR4_SHORT compressed) { return VECTOR4_SINGLE(); }
+    VECTOR4_SINGLE Animation::uncompress_quaternion(VECTOR4_SHORT compressed) {
+        float GT = 1.0f / (float)(((1 << (sizeof(uint16_t) << 3)) >> 1) - 1);
+        return VECTOR4_SINGLE{(float)compressed.X * GT, (float)compressed.Y * GT, (float)compressed.Z * GT, (float)compressed.W * GT};
+    }
 } // namespace dragon::lumberyard
