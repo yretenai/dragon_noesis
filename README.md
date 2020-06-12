@@ -1,5 +1,5 @@
 # fmt_dragon
 
-Noesis plugin DLL for multiple formats.
+My noesis plugin projects.
 
-Why not individual plugins? Because this is more fun :-)
+Probably should be separate repositories.
