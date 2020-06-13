@@ -28,6 +28,13 @@ struct VECTOR3_BYTE {
     uint8_t Z;
 };
 
+struct VECTOR4_BYTE {
+    uint8_t X;
+    uint8_t Y;
+    uint8_t Z;
+    uint8_t W;
+};
+
 struct VECTOR4_SHORT {
     int16_t X;
     int16_t Y;

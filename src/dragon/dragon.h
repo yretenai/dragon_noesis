@@ -7,6 +7,8 @@
 #ifndef FMT_DRAGON_DRAGON_H
 #define FMT_DRAGON_DRAGON_H
 
+#define FMT_DRAGON_VERSION "1.0.1"
+
 #include "Array.h"
 #include <assert.h>
 #include <cstdint>

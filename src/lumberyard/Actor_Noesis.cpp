@@ -186,6 +186,18 @@ namespace dragon::lumberyard {
                     }
                     uvLayer++;
                 } break;
+                case ACTOR_VBO_V1_HEADER::TYPE::COLORS32: {
+                    uint8_t* streamBuffer = vbo->Buffer.to_noesis(rapi);
+                    buffers.push_back(streamBuffer);
+                    rapi->rpgBindColorBufferSafe(streamBuffer, RPGEODATA_BYTE, 4, 4, mesh->Header.TotalVerts * 4);
+                    break;
+                }
+                case ACTOR_VBO_V1_HEADER::TYPE::COLORS128: {
+                    uint8_t* streamBuffer = vbo->Buffer.to_noesis(rapi);
+                    buffers.push_back(streamBuffer);
+                    rapi->rpgBindColorBufferSafe(streamBuffer, RPGEODATA_FLOAT, 16, 4, mesh->Header.TotalVerts * 16);
+                    break;
+                }
                 case ACTOR_VBO_V1_HEADER::TYPE::VERTEXID:
                     vertexId = vbo;
                     break;
@@ -194,28 +206,35 @@ namespace dragon::lumberyard {
                 }
             }
 
-            uint32_t maxInfluences = 0;
-            for (ACTOR_SKINNING_INFO_v1_ENTRY tableEntry : skin->Table) {
-                if (tableEntry.NumElements > maxInfluences)
-                    maxInfluences = tableEntry.NumElements;
-            }
-            float* weightBuffer = static_cast<float*>(rapi->Noesis_UnpooledAlloc(sizeof(float) * mesh->Header.TotalVerts * maxInfluences));
-            buffers.push_back(weightBuffer);
-            int32_t* boneBuffer = static_cast<int32_t*>(rapi->Noesis_UnpooledAlloc(sizeof(int32_t) * mesh->Header.TotalVerts * maxInfluences));
-            buffers.push_back(boneBuffer);
-            for (uint32_t i = 0; i < mesh->Header.TotalVerts; i++) {
-                int boneOffset = i * maxInfluences;
-                uint32_t vid = vertexId->Buffer.cast<uint32_t>(i * sizeof(uint32_t));
-                ACTOR_SKINNING_INFO_v1_ENTRY tableEntry = skin->Table[vid];
-                for (uint32_t j = 0; j < maxInfluences; j++) {
-                    if (j < tableEntry.NumElements) {
-                        weightBuffer[boneOffset + j] = skin->Influences[tableEntry.StartIndex + j].Weight;
-                        boneBuffer[boneOffset + j] = skin->Influences[tableEntry.StartIndex + j].NodeIndex;
-                    } else {
-                        weightBuffer[boneOffset + j] = 0;
-                        boneBuffer[boneOffset + j] = -1;
+            if (skin != nullptr) {
+                uint32_t maxInfluences = 0;
+                for (ACTOR_SKINNING_INFO_v1_ENTRY tableEntry : skin->Table) {
+                    if (tableEntry.NumElements > maxInfluences)
+                        maxInfluences = tableEntry.NumElements;
+                }
+                float* weightBuffer = static_cast<float*>(rapi->Noesis_UnpooledAlloc(sizeof(float) * mesh->Header.TotalVerts * maxInfluences));
+                buffers.push_back(weightBuffer);
+                int32_t* boneBuffer = static_cast<int32_t*>(rapi->Noesis_UnpooledAlloc(sizeof(int32_t) * mesh->Header.TotalVerts * maxInfluences));
+                buffers.push_back(boneBuffer);
+                for (uint32_t i = 0; i < mesh->Header.TotalVerts; i++) {
+                    int boneOffset = i * maxInfluences;
+                    uint32_t vid = vertexId->Buffer.cast<uint32_t>(i * sizeof(uint32_t));
+                    ACTOR_SKINNING_INFO_v1_ENTRY tableEntry = skin->Table[vid];
+                    for (uint32_t j = 0; j < maxInfluences; j++) {
+                        if (j < tableEntry.NumElements) {
+                            weightBuffer[boneOffset + j] = skin->Influences[tableEntry.StartIndex + j].Weight;
+                            boneBuffer[boneOffset + j] = skin->Influences[tableEntry.StartIndex + j].NodeIndex;
+                        } else {
+                            weightBuffer[boneOffset + j] = 0;
+                            boneBuffer[boneOffset + j] = -1;
+                        }
                     }
                 }
+
+                rapi->rpgBindBoneWeightBufferSafe(weightBuffer, RPGEODATA_FLOAT, sizeof(float) * maxInfluences, maxInfluences,
+                                                  sizeof(float) * mesh->Header.TotalVerts * maxInfluences);
+                rapi->rpgBindBoneIndexBufferSafe(boneBuffer, RPGEODATA_INT, sizeof(int32_t) * maxInfluences, maxInfluences,
+                                                 sizeof(int32_t) * mesh->Header.TotalVerts * maxInfluences);
             }
 
             uint32_t* indiceBuffer = static_cast<uint32_t*>(rapi->Noesis_UnpooledAlloc(sizeof(uint32_t) * mesh->Header.TotalIndices));
@@ -231,10 +250,7 @@ namespace dragon::lumberyard {
                 indiceOffset += submesh->Header.NumIndices;
                 vertexOffset += submesh->Header.NumVertices;
             }
-            rapi->rpgBindBoneWeightBufferSafe(weightBuffer, RPGEODATA_FLOAT, sizeof(float) * maxInfluences, maxInfluences,
-                                              sizeof(float) * mesh->Header.TotalVerts * maxInfluences);
-            rapi->rpgBindBoneIndexBufferSafe(boneBuffer, RPGEODATA_INT, sizeof(int32_t) * maxInfluences, maxInfluences,
-                                             sizeof(int32_t) * mesh->Header.TotalVerts * maxInfluences);
+
             indiceOffset = 0;
             for (std::shared_ptr<ActorSubmesh> submeshPtr : mesh->Submeshes) {
                 ActorSubmesh* submesh = submeshPtr.get();

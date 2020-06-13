@@ -160,12 +160,12 @@ namespace dragon {
 
         Iterator begin() const { return Iterator(this, 0); }
 
-        Iterator end() const { return Iterator(this, Length); }
+        Iterator end() const { return Iterator(this, size()); }
 
 #if USE_NOESIS
         T* to_noesis(noeRAPI_t* rapi) {
-            T* buffer = (T*)rapi->Noesis_UnpooledAlloc(sizeof(T) * Length);
-            std::copy_n(begin(), Length, buffer);
+            T* buffer = (T*)rapi->Noesis_UnpooledAlloc(sizeof(T) * size());
+            std::copy_n(begin(), size(), buffer);
             return buffer;
         }
 #endif

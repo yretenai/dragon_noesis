@@ -7,6 +7,8 @@
 
 #include <filesystem>
 
+#define FMT_LUMBERYARD_VERSION "1.0.2"
+
 extern std::filesystem::path* LibraryRoot;
 extern bool AutoDetect;
 

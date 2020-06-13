@@ -97,7 +97,7 @@ bool NPAPI_InitLocal() {
     if (std::filesystem::exists("fmt_lumberyard.log")) {
         LogStream = new std::ofstream("fmt_lumberyard.log");
     }
-    LOG("v1.0.1 (fmt_dragon v1)");
+    LOG("v" << FMT_LUMBERYARD_VERSION << " (fmt_dragon v" << FMT_DRAGON_VERSION << ")");
     LOG("Adding Lumberyard CGF Model handler...");
     int handle = g_nfn->NPAPI_Register((char*)"Lumberyard/CryEngine Model", (char*)".cgf");
     g_nfn->NPAPI_SetTypeHandler_LoadModel(handle, Model::noesis_load);

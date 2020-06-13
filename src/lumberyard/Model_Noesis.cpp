@@ -70,7 +70,22 @@ namespace dragon::lumberyard {
                 }
             }
 
-            // TODO: Color -- Multiple color streams have to be strided.
+            {
+                DataStream* stream = nullptr;
+                if (mesh->Header.StreamChunkId[(int)DATA_STREAM_HEADER::TYPE::Color][0] != 0) {
+                    stream = CAST_ABSTRACT_CHUNK(DataStream, model.Chunks[mesh->Header.StreamChunkId[(int)DATA_STREAM_HEADER::TYPE::Color][0]]);
+                }
+                if (stream == nullptr && mesh->Header.StreamChunkId[(int)DATA_STREAM_HEADER::TYPE::Color2][0] != 0) {
+                    stream = CAST_ABSTRACT_CHUNK(DataStream, model.Chunks[mesh->Header.StreamChunkId[(int)DATA_STREAM_HEADER::TYPE::Color2][0]]);
+                }
+
+                if (stream != nullptr) {
+                    char* stream_buffer = stream->Buffer.to_noesis(rapi);
+                    rapi->rpgBindColorBufferSafe(stream_buffer, stream->Header.Size == 4 ? RPGEODATA_BYTE : RPGEODATA_FLOAT, stream->Header.Size, 4,
+                                                 4);
+                    buffers.push_back(stream_buffer);
+                }
+            }
 
             if (mesh->Header.StreamChunkId[(int)DATA_STREAM_HEADER::TYPE::Normal][0] != 0) {
                 DataStream* stream =
