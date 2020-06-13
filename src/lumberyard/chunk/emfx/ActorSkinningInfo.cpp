@@ -20,7 +20,7 @@ namespace dragon::lumberyard::chunk::emfx {
         ActorMesh* mesh = nullptr;
         for (std::shared_ptr<chunk::emfx::AbstractEMFXChunk> chunk : meshChunks) {
             ActorMesh* meshPtr = CAST_ABSTRACT_CHUNK(ActorMesh, chunk);
-            if (meshPtr->Header.NodeIndex == Header.NodeIndex && meshPtr->Header.LOD == Header.LOD) {
+            if (meshPtr != nullptr && meshPtr->Header.NodeIndex == Header.NodeIndex && meshPtr->Header.LOD == Header.LOD) {
                 mesh = meshPtr;
                 break;
             }

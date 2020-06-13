@@ -13,7 +13,7 @@ target_compile_definitions(fmt_lumberyard PRIVATE DRAGON_LIBRARY_NAME="fmt_lumbe
 
 if(USE_NOESIS)
     target_sources(fmt_lumberyard PRIVATE ../noesis/noesisplugin.cpp ../noesis/pluginsupport.cpp
-                   Model_Noesis.cpp Actor_Noesis.cpp Texture_Noesis.cpp)
+                   Model_Noesis.cpp Actor_Noesis.cpp Texture_Noesis.cpp Animation_Noesis.cpp)
     add_compile_definitions(USE_NOESIS)
 endif()
 

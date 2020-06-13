@@ -99,7 +99,7 @@ bool NPAPI_InitLocal() {
     }
     LOG("v1.0.0 (fmt_dragon v1)");
     LOG("Adding Lumberyard CGF Model handler...");
-    int handle = g_nfn->NPAPI_Register((char*)"Lumberyard Model", (char*)".cgf");
+    int handle = g_nfn->NPAPI_Register((char*)"Lumberyard/CryEngine Model", (char*)".cgf");
     g_nfn->NPAPI_SetTypeHandler_LoadModel(handle, Model::noesis_load);
     g_nfn->NPAPI_SetTypeHandler_TypeCheck(handle, Model::noesis_check);
 
@@ -118,20 +118,26 @@ bool NPAPI_InitLocal() {
     g_nfn->NPAPI_SetTypeHandler_LoadRGBA(handle, Texture::noesis_load);
     g_nfn->NPAPI_SetTypeHandler_TypeCheck(handle, Texture::noesis_check);
 
+    LOG("Adding Lumberyard EMFX Motion Tool handler...");
+    handle = g_nfn->NPAPI_RegisterTool((char*)"Lumberyard - Append EMFX Motion", Animation::noesis_load, nullptr);
+    g_nfn->NPAPI_SetToolHelpText(handle, (char*)"Loads Lumberyard EMFX Motion to the selected model");
+    g_nfn->NPAPI_SetToolFlags(handle, NTOOLFLAG_CONTEXTITEM);
+    g_nfn->NPAPI_SetToolVisibleCallback(handle, Animation::noesis_check);
+
     LOG("Adding Lumberyard DDS Tool handler...");
-    handle = g_nfn->NPAPI_RegisterTool((char*)"Cook Lumberyard Texture", Texture::noesis_tool, nullptr);
+    handle = g_nfn->NPAPI_RegisterTool((char*)"Lumberyard - Cook Texture", Texture::noesis_tool, nullptr);
     g_nfn->NPAPI_SetToolHelpText(handle, (char*)"Merges streamed Lumberyard textures into one DDS");
     g_nfn->NPAPI_SetToolFlags(handle, NTOOLFLAG_CONTEXTITEM);
     g_nfn->NPAPI_SetToolVisibleCallback(handle, Texture::noesis_tool_visibility);
 
     LOG("Adding Lumberyard GameRoot tool handler...");
-    handle = g_nfn->NPAPI_RegisterTool((char*)"Set Lumberyard Game Directory", set_game_root, nullptr);
+    handle = g_nfn->NPAPI_RegisterTool((char*)"Lumberyard - Set Extracted Game Directory", set_game_root, nullptr);
     g_nfn->NPAPI_SetToolHelpText(handle, (char*)"Sets the EXTRACTED game root folder, for loading other "
                                                 "assets like textures.");
     load_saved_game_root();
 
     LOG("Adding Lumberyard Auto Detect Material tool handler...");
-    handle = g_nfn->NPAPI_RegisterTool((char*)"Auto Detect Lumberyard Material", set_autodetect, nullptr);
+    handle = g_nfn->NPAPI_RegisterTool((char*)"Lumberyard - Auto Detect Material", set_autodetect, nullptr);
     g_nfn->NPAPI_SetToolFlags(handle, NTOOLFLAG_USERBITS);
     g_nfn->NPAPI_SetToolHelpText(handle, (char*)"Automatically tries to find relevant MTL files");
     get_autodetect(handle);

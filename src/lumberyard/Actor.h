@@ -32,12 +32,8 @@ namespace dragon::lumberyard {
 
         static noesisModel_t* noesis_load(BYTE* buffer, int length, int& numMdl, noeRAPI_t* rapi);
 
-        static bool noesis_check(BYTE* buffer, int length, [[maybe_unused]] [[maybe_unused]] noeRAPI_t* rapi);
+        static bool noesis_check(BYTE* buffer, int length, [[maybe_unused]] noeRAPI_t* rapi);
 
-        static void insert_key(chunk::emfx::MOTION_VECTOR3_KEY key, RichVec3 bind, bool isAdditive, bool multiply, noeKeyFramedBone_t& bone,
-                               noeKeyFrameData_t& frame, std::vector<float>& floats, uint32_t& floatIndex);
-        static void insert_key(chunk::emfx::MOTION_VECTOR4_KEY key, RichMat43 bind, bool isAdditive, noeKeyFramedBone_t& bone,
-                               noeKeyFrameData_t& frame, std::vector<float>& floats, uint32_t& floatIndex);
 #endif // USE_NOESIS
     }; // namespace dragon::lumberyard
 } // namespace dragon::lumberyard
