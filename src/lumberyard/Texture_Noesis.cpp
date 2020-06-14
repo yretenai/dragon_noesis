@@ -66,7 +66,6 @@ namespace dragon::lumberyard {
         if (data.empty())
             return 0;
         write_file(wpath, &data);
-
         return 1;
     }
 

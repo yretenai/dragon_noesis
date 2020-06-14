@@ -7,7 +7,7 @@
 #ifndef FMT_DRAGON_DRAGON_H
 #define FMT_DRAGON_DRAGON_H
 
-#define FMT_DRAGON_VERSION "1.0.1"
+#define FMT_DRAGON_VERSION "1.0.2"
 
 #include "Array.h"
 #include <assert.h>
@@ -82,7 +82,7 @@ namespace dragon {
         return value;
     }
 
-    inline Array<char> read_file(std::filesystem::path path) {
+    inline Array<char> read_file_internal(std::filesystem::path path) {
         std::ifstream file(path, std::ios::binary | std::ios::in);
         uint32_t size = (uint32_t)std::filesystem::file_size(path);
         Array<char> bytes(size);
@@ -91,12 +91,96 @@ namespace dragon {
         return bytes;
     }
 
-    inline void write_file(std::filesystem::path path, Array<char>* buffer) {
+    inline void write_file_internal(std::filesystem::path path, Array<char>* buffer) {
         if (buffer->empty())
             return;
         std::ofstream file(path, std::ios::binary | std::ios::out | std::ios::trunc);
         file.write(buffer->data(), buffer->size());
     }
+
+#ifdef USE_NOESIS
+
+    inline Array<char> read_file(std::filesystem::path path) {
+        if (g_nfn == nullptr) {
+            return read_file_internal(path);
+        }
+        noeRAPI_t* rapi = g_nfn->NPAPI_GetPreviewRAPI();
+        int moduleHandle = -1;
+        if (rapi == nullptr) {
+            moduleHandle = g_nfn->NPAPI_InstantiateModule(nullptr);
+            rapi = g_nfn->NPAPI_GetModuleRAPI(moduleHandle);
+        }
+        if (rapi == nullptr) {
+            if (moduleHandle > -1) {
+                g_nfn->NPAPI_FreeModule(moduleHandle);
+            }
+            return read_file_internal(path);
+        }
+
+        std::string spath = path.string();
+        wchar_t* wpath = const_cast<wchar_t*>(path.c_str());
+        char* cpath = const_cast<char*>(spath.c_str());
+        if (!rapi->Noesis_FileExists(cpath)) {
+            if (moduleHandle > -1) {
+                g_nfn->NPAPI_FreeModule(moduleHandle);
+            }
+            return Array<char>(0);
+        }
+        int32_t size;
+        BYTE* ptr = rapi->Noesis_ReadFileW(wpath, &size);
+        if (ptr == nullptr) {
+            if (moduleHandle > -1) {
+                g_nfn->NPAPI_FreeModule(moduleHandle);
+            }
+            return Array<char>(0);
+        }
+        Array<char> bytes(reinterpret_cast<char*>(ptr), size);
+        rapi->Noesis_UnpooledFree(ptr);
+        if (moduleHandle > -1) {
+            g_nfn->NPAPI_FreeModule(moduleHandle);
+        }
+        return bytes;
+    }
+
+    inline void write_file(std::filesystem::path path, Array<char>* buffer) {
+        if (g_nfn == nullptr) {
+            write_file_internal(path, buffer);
+            return;
+        }
+        noeRAPI_t* rapi = g_nfn->NPAPI_GetPreviewRAPI();
+        int moduleHandle = -1;
+        auto noesis_log = [](char* ch) { LOG(ch); };
+        if (rapi == nullptr) {
+            moduleHandle = g_nfn->NPAPI_InstantiateModule(noesis_log);
+            rapi = g_nfn->NPAPI_GetModuleRAPI(moduleHandle);
+        }
+        if (rapi == nullptr) {
+            if (moduleHandle > -1) {
+                g_nfn->NPAPI_FreeModule(moduleHandle);
+            }
+            write_file_internal(path, buffer);
+            return;
+        }
+
+        if (buffer->empty()) {
+            if (moduleHandle > -1) {
+                g_nfn->NPAPI_FreeModule(moduleHandle);
+            }
+            write_file_internal(path, buffer);
+            return;
+        }
+
+        wchar_t* wpath = const_cast<wchar_t*>(path.c_str());
+        rapi->Noesis_WriteFileW(wpath, buffer->data(), buffer->byte_size());
+        if (moduleHandle > -1) {
+            g_nfn->NPAPI_FreeModule(moduleHandle);
+        }
+    }
+#else
+    inline Array<char> read_file(std::filesystem::path path) { return read_file_internal(path); }
+
+    inline void write_file(std::filesystem::path path, Array<char>* buffer) { write_file_internal(path, buffer); }
+#endif
 
     class not_implemented_exception : public std::exception {};
 } // namespace dragon

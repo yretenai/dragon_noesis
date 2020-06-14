@@ -156,6 +156,8 @@ namespace dragon {
 
         size_t size() const { return Length - Offset; }
 
+        size_t byte_size() const { return size() * sizeof(T); }
+
         bool empty() const { return this->size() <= 0; }
 
         Iterator begin() const { return Iterator(this, 0); }
@@ -164,7 +166,7 @@ namespace dragon {
 
 #if USE_NOESIS
         T* to_noesis(noeRAPI_t* rapi) {
-            T* buffer = (T*)rapi->Noesis_UnpooledAlloc(sizeof(T) * size());
+            T* buffer = (T*)rapi->Noesis_UnpooledAlloc(byte_size());
             std::copy_n(begin(), size(), buffer);
             return buffer;
         }

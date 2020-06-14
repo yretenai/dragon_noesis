@@ -4,6 +4,7 @@
 
 #include "Actor.h"
 #include "Animation.h"
+#include "globals.h"
 
 #define CAST_ABSTRACT_CHUNK(target, chunk) (std::reinterpret_pointer_cast<target>(chunk).get())
 using namespace dragon::lumberyard::chunk::emfx;
@@ -62,6 +63,10 @@ namespace dragon::lumberyard {
         for (uint32_t i = 0; i < shared->numBones; i++) {
             boneMap[std::string(shared->bones[i].name)] = i;
         }
+        noeKeyFrameInterpolation_e interpolation = NOEKF_INTERPOLATE_LINEAR;
+        if (!InterpolateAnimation) {
+            interpolation = NOEKF_INTERPOLATE_NEAREST;
+        }
         for (uint32_t i = 0; i < subMotions->Motions.size(); i++) {
             MotionSubMotion* motion = subMotions->Motions[i].get();
             if (boneMap.find(motion->Name) == boneMap.end()) {
@@ -72,9 +77,9 @@ namespace dragon::lumberyard {
             boneKey->translationType = NOEKF_TRANSLATION_VECTOR_3;
             boneKey->rotationType = NOEKF_ROTATION_QUATERNION_4;
             boneKey->scaleType = NOEKF_SCALE_VECTOR_3;
-            boneKey->translationInterpolation = NOEKF_INTERPOLATE_LINEAR;
-            boneKey->rotationInterpolation = NOEKF_INTERPOLATE_LINEAR;
-            boneKey->scaleInterpolation = NOEKF_INTERPOLATE_LINEAR;
+            boneKey->translationInterpolation = interpolation;
+            boneKey->rotationInterpolation = interpolation;
+            boneKey->scaleInterpolation = interpolation;
             boneKey->numTranslationKeys = motion->Positions.size() + 1;
             boneKey->numRotationKeys = motion->Rotations.size() + 1;
             boneKey->numScaleKeys = motion->Scales.size() + 1;
@@ -165,7 +170,8 @@ namespace dragon::lumberyard {
             return false;
 
         std::filesystem::path wpath(path);
-        if (!wpath.has_extension() || wpath.extension() != ".motion" || g_nfn->NPAPI_GetPreviewRAPI() == nullptr)
+        noeRAPI_t* rapi = g_nfn->NPAPI_GetPreviewRAPI();
+        if (!wpath.has_extension() || wpath.extension() != ".motion" || rapi == nullptr)
             return false;
 
         Array<char> data = read_file(wpath);

@@ -7,9 +7,10 @@
 
 #include <filesystem>
 
-#define FMT_LUMBERYARD_VERSION "1.0.2"
+#define FMT_LUMBERYARD_VERSION "1.0.3"
 
 extern std::filesystem::path* LibraryRoot;
 extern bool AutoDetect;
+extern bool InterpolateAnimation;
 
 #endif // FMT_DRAGON_GLOBALS_H

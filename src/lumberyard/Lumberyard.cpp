@@ -23,6 +23,7 @@ using namespace dragon::lumberyard;
 
 std::filesystem::path* LibraryRoot;
 bool AutoDetect = true;
+bool InterpolateAnimation = true;
 
 void reset_game_root() {
     if (LibraryRoot != nullptr) {
@@ -92,16 +93,38 @@ int set_autodetect(int handle, [[maybe_unused]] void* user_data) {
     return 1;
 }
 
+void get_interpolate(int handle) {
+    BYTE buffer[1];
+    if (g_nfn->NPAPI_UserSettingRead(const_cast<wchar_t*>(L"dragon::lumberyard::InterpolateAnimation"), buffer, 1)) {
+        InterpolateAnimation = buffer[0] == 1;
+        LOG("Set animation interpolation to " << InterpolateAnimation);
+    }
+    g_nfn->NPAPI_CheckToolMenuItem(handle, InterpolateAnimation);
+}
+
+int set_interpolate(int handle, [[maybe_unused]] void* user_data) {
+    InterpolateAnimation = !InterpolateAnimation;
+    BYTE buffer[1] = {InterpolateAnimation};
+    g_nfn->NPAPI_UserSettingWrite(const_cast<wchar_t*>(L"dragon::lumberyard::InterpolateAnimation"), buffer, 1);
+    g_nfn->NPAPI_CheckToolMenuItem(handle, InterpolateAnimation);
+    return 1;
+}
+
 bool NPAPI_InitLocal() {
     // g_nfn->NPAPI_PopupDebugLog(0);
     if (std::filesystem::exists("fmt_lumberyard.log")) {
         LogStream = new std::ofstream("fmt_lumberyard.log");
     }
     LOG("v" << FMT_LUMBERYARD_VERSION << " (fmt_dragon v" << FMT_DRAGON_VERSION << ")");
-    LOG("Adding Lumberyard CGF Model handler...");
-    int handle = g_nfn->NPAPI_Register((char*)"Lumberyard/CryEngine Model", (char*)".cgf");
-    g_nfn->NPAPI_SetTypeHandler_LoadModel(handle, Model::noesis_load);
-    g_nfn->NPAPI_SetTypeHandler_TypeCheck(handle, Model::noesis_check);
+    int handle;
+    if ((g_nfn->NPAPI_GetFormatExtensionFlags(const_cast<wchar_t*>(L".cgf"), nullptr) & NFORMATFLAG_MODELREAD) == 0) {
+        LOG("Adding Lumberyard CGF Model handler...");
+        handle = g_nfn->NPAPI_Register((char*)"Lumberyard/CryEngine Model", (char*)".cgf");
+        g_nfn->NPAPI_SetTypeHandler_LoadModel(handle, Model::noesis_load);
+        g_nfn->NPAPI_SetTypeHandler_TypeCheck(handle, Model::noesis_check);
+    } else {
+        LOG("Lumberyard handler already present, skipping...");
+    }
 
     LOG("Adding Lumberyard EMFX Actor handler...");
     handle = g_nfn->NPAPI_Register((char*)"Lumberyard EMFX Actor", (char*)".actor");
@@ -141,6 +164,12 @@ bool NPAPI_InitLocal() {
     g_nfn->NPAPI_SetToolFlags(handle, NTOOLFLAG_USERBITS);
     g_nfn->NPAPI_SetToolHelpText(handle, (char*)"Automatically tries to find relevant MTL files");
     get_autodetect(handle);
+
+    LOG("Adding Lumberyard Interpolate Animation tool handler...");
+    handle = g_nfn->NPAPI_RegisterTool((char*)"Lumberyard - Interpolate Animation", set_interpolate, nullptr);
+    g_nfn->NPAPI_SetToolFlags(handle, NTOOLFLAG_USERBITS);
+    g_nfn->NPAPI_SetToolHelpText(handle, (char*)"Interpolate animation frames");
+    get_interpolate(handle);
     return true;
 }
 
