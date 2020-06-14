@@ -191,6 +191,10 @@ namespace dragon::lumberyard {
     }
 
     bool Model::noesis_check(BYTE* buffer, int length, [[maybe_unused]] noeRAPI_t* rapi) {
+        intptr_t handles;
+        g_nfn->NPAPI_GetFormatExtensionFlags(const_cast<wchar_t*>(L".cgf"), &handles);
+        if (handles > 1) // something else added a CGF handler.
+            return false;
         Array<char> data_buffer = Array<char>(reinterpret_cast<char*>(buffer), length);
         return check(&data_buffer);
     }

@@ -117,59 +117,57 @@ bool NPAPI_InitLocal() {
     }
     LOG("v" << FMT_LUMBERYARD_VERSION << " (fmt_dragon v" << FMT_DRAGON_VERSION << ")");
     int handle;
-    if ((g_nfn->NPAPI_GetFormatExtensionFlags(const_cast<wchar_t*>(L".cgf"), nullptr) & NFORMATFLAG_MODELREAD) == 0) {
-        LOG("Adding Lumberyard CGF Model handler...");
-        handle = g_nfn->NPAPI_Register((char*)"Lumberyard/CryEngine Model", (char*)".cgf");
-        g_nfn->NPAPI_SetTypeHandler_LoadModel(handle, Model::noesis_load);
-        g_nfn->NPAPI_SetTypeHandler_TypeCheck(handle, Model::noesis_check);
-    } else {
-        LOG("Lumberyard handler already present, skipping...");
-    }
-
-    LOG("Adding Lumberyard EMFX Actor handler...");
-    handle = g_nfn->NPAPI_Register((char*)"Lumberyard EMFX Actor", (char*)".actor");
-    g_nfn->NPAPI_SetTypeHandler_LoadModel(handle, Actor::noesis_load);
-    g_nfn->NPAPI_SetTypeHandler_TypeCheck(handle, Actor::noesis_check);
-
-    LOG("Adding Lumberyard EMFX Motion handler...");
-    handle = g_nfn->NPAPI_Register((char*)"Lumberyard EMFX Motion", (char*)".motion");
-    g_nfn->NPAPI_SetTypeHandler_LoadModel(handle, Actor::noesis_load);
-    g_nfn->NPAPI_SetTypeHandler_TypeCheck(handle, Actor::noesis_check);
-
-    LOG("Adding Lumberyard DDS Texture handler...");
-    handle = g_nfn->NPAPI_Register((char*)"Lumberyard Texture", (char*)".a;.1");
-    g_nfn->NPAPI_SetTypeHandler_LoadRGBA(handle, Texture::noesis_load);
-    g_nfn->NPAPI_SetTypeHandler_TypeCheck(handle, Texture::noesis_check);
-
-    LOG("Adding Lumberyard EMFX Motion Tool handler...");
+    // context tools
+    LOG("Adding Lumberyard EMFX Motion Tool...");
     handle = g_nfn->NPAPI_RegisterTool((char*)"Lumberyard - Append EMFX Motion", Animation::noesis_load, nullptr);
     g_nfn->NPAPI_SetToolHelpText(handle, (char*)"Loads Lumberyard EMFX Motion to the selected model");
     g_nfn->NPAPI_SetToolFlags(handle, NTOOLFLAG_CONTEXTITEM);
     g_nfn->NPAPI_SetToolVisibleCallback(handle, Animation::noesis_check);
 
-    LOG("Adding Lumberyard DDS Tool handler...");
+    LOG("Adding Lumberyard Cook DDS Tool...");
     handle = g_nfn->NPAPI_RegisterTool((char*)"Lumberyard - Cook Texture", Texture::noesis_tool, nullptr);
     g_nfn->NPAPI_SetToolHelpText(handle, (char*)"Merges streamed Lumberyard textures into one DDS");
     g_nfn->NPAPI_SetToolFlags(handle, NTOOLFLAG_CONTEXTITEM);
     g_nfn->NPAPI_SetToolVisibleCallback(handle, Texture::noesis_tool_visibility);
 
-    LOG("Adding Lumberyard GameRoot tool handler...");
+    // Setting checkboxes -- I wish noesis had a dedicated interface for this.
+    LOG("Adding Lumberyard Extracted Game Directory Setting...");
     handle = g_nfn->NPAPI_RegisterTool((char*)"Lumberyard - Set Extracted Game Directory", set_game_root, nullptr);
     g_nfn->NPAPI_SetToolHelpText(handle, (char*)"Sets the EXTRACTED game root folder, for loading other "
                                                 "assets like textures.");
     load_saved_game_root();
 
-    LOG("Adding Lumberyard Auto Detect Material tool handler...");
+    LOG("Adding Lumberyard Auto Detect Material Setting...");
     handle = g_nfn->NPAPI_RegisterTool((char*)"Lumberyard - Auto Detect Material", set_autodetect, nullptr);
-    g_nfn->NPAPI_SetToolFlags(handle, NTOOLFLAG_USERBITS);
     g_nfn->NPAPI_SetToolHelpText(handle, (char*)"Automatically tries to find relevant MTL files");
     get_autodetect(handle);
 
-    LOG("Adding Lumberyard Interpolate Animation tool handler...");
+    LOG("Adding Lumberyard Interpolate Animation Setting...");
     handle = g_nfn->NPAPI_RegisterTool((char*)"Lumberyard - Interpolate Animation", set_interpolate, nullptr);
-    g_nfn->NPAPI_SetToolFlags(handle, NTOOLFLAG_USERBITS);
     g_nfn->NPAPI_SetToolHelpText(handle, (char*)"Interpolate animation frames");
     get_interpolate(handle);
+
+    // Model handlers
+    LOG("Adding Lumberyard CGF Model Importer...");
+    handle = g_nfn->NPAPI_Register((char*)"Lumberyard/CryEngine Model", (char*)".cgf");
+    g_nfn->NPAPI_SetTypeHandler_LoadModel(handle, Model::noesis_load);
+    g_nfn->NPAPI_SetTypeHandler_TypeCheck(handle, Model::noesis_check);
+
+    LOG("Adding Lumberyard EMFX Actor Importer...");
+    handle = g_nfn->NPAPI_Register((char*)"Lumberyard EMFX Actor", (char*)".actor");
+    g_nfn->NPAPI_SetTypeHandler_LoadModel(handle, Actor::noesis_load);
+    g_nfn->NPAPI_SetTypeHandler_TypeCheck(handle, Actor::noesis_check);
+
+    LOG("Adding Lumberyard EMFX Motion Importer...");
+    handle = g_nfn->NPAPI_Register((char*)"Lumberyard EMFX Motion", (char*)".motion");
+    g_nfn->NPAPI_SetTypeHandler_LoadModel(handle, Actor::noesis_load);
+    g_nfn->NPAPI_SetTypeHandler_TypeCheck(handle, Actor::noesis_check);
+
+    // Texture handlers
+    LOG("Adding Lumberyard DDS Texture Importer...");
+    handle = g_nfn->NPAPI_Register((char*)"Lumberyard Texture", (char*)".a;.1");
+    g_nfn->NPAPI_SetTypeHandler_LoadRGBA(handle, Texture::noesis_load);
+    g_nfn->NPAPI_SetTypeHandler_TypeCheck(handle, Texture::noesis_check);
     return true;
 }
 
