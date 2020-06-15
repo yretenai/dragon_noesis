@@ -9,7 +9,7 @@
 
 #include <filesystem>
 
-#define DRAGON_LUMBERYARD_VERSION "1.0.4"
+#define DRAGON_LUMBERYARD_VERSION "1.0.4a"
 
 extern std::filesystem::path* LibraryRoot;
 extern bool AutoDetect;
