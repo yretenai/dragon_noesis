@@ -1,4 +1,4 @@
-# fmt_dragon
+# NoesisPlugins
 
 My noesis plugin projects.
 
