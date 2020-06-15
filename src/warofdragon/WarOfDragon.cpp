@@ -26,6 +26,7 @@ bool NPAPI_InitLocal() {
 #ifndef _DEBUG
     }
 #endif
+    LOG("🐲");
     LOG("v" << DRAGON_VERSION << " (dragon v" << DRAGON_VERSION << ")");
     int handle;
     LOG("Adding File Table Exporter");

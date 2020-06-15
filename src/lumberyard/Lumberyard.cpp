@@ -120,6 +120,7 @@ bool NPAPI_InitLocal() {
 #ifndef _DEBUG
     }
 #endif
+    LOG("🐲");
     LOG("v" << DRAGON_LUMBERYARD_VERSION << " (dragon v" << DRAGON_VERSION << ")");
     int handle;
     // context tools
