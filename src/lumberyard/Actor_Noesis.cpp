@@ -30,27 +30,38 @@ namespace dragon::lumberyard {
             BYTE* modelData = nullptr;
             if (AutoDetect) {
                 std::vector<std::filesystem::path> files;
-                for (std::filesystem::directory_entry entry : std::filesystem::directory_iterator(modelPath.parent_path())) {
-                    if (entry.is_regular_file() && entry.path().extension() == ".actor") {
-                        files.push_back(entry.path());
+                std::vector<std::filesystem::path> testPaths = {modelPath.parent_path().parent_path() / "character",
+                                                                modelPath.parent_path().parent_path() / "characters",
+                                                                modelPath.parent_path().parent_path() / "object",
+                                                                modelPath.parent_path().parent_path() / "objects",
+                                                                modelPath.parent_path().parent_path(),
+                                                                modelPath.parent_path()};
+
+                for (std::filesystem::path testPath : testPaths) {
+                    LOG("Found looking for actor files in path " << testPath);
+                    if (!std::filesystem::is_directory(testPath)) {
+                        continue;
                     }
-                }
-                if (files.size() != 1) {
-                    if (files.size() > 0) {
-                        files.clear();
-                    }
-                    std::filesystem::path characterDir = modelPath.parent_path().parent_path() / "character";
-                    if (std::filesystem::is_directory(characterDir)) {
-                        for (std::filesystem::directory_entry entry : std::filesystem::directory_iterator(characterDir)) {
-                            if (entry.is_regular_file() && entry.path().extension() == ".actor") {
-                                files.push_back(entry.path());
-                            }
+                    for (std::filesystem::directory_entry entry : std::filesystem::directory_iterator(testPath)) {
+                        if (entry.is_regular_file() && entry.path().extension() == ".actor") {
+                            LOG("Found potential actor path " << entry.path());
+                            files.push_back(entry.path());
                         }
                     }
                 }
-                if (files.size() == 1) {
-                    modelData = rapi->Noesis_ReadFileW(files[0].c_str(), &modelSize);
-                    std::string tmp = files[0].string();
+
+                if (files.size() > 0) {
+                    std::filesystem::path largestFilePath;
+                    int size = -1;
+                    for (int i = 0; i < files.size(); ++i) {
+                        int iSize = std::filesystem::file_size(files[i]);
+                        if (iSize > size) {
+                            size = iSize;
+                            largestFilePath = files[i];
+                        }
+                    }
+                    modelData = rapi->Noesis_ReadFileW(largestFilePath.c_str(), &modelSize);
+                    std::string tmp = largestFilePath.string();
                     std::copy_n(tmp.c_str(), tmp.size(), actorPath);
                 }
             }
@@ -290,19 +301,26 @@ namespace dragon::lumberyard {
             }
         }
         noesisModel_t* mdl = rapi->rpgConstructModel();
-        CNoeCustomDataList custom;
-        custom.CreateCustomData("IsLumberyardActor", "dragon::lumberyard::ActorPresence", rapi, true);
-        rapi->Noesis_SetModelCustomData(mdl, custom);
-        // models.Append(mdl);
         for (void* noesis_buffer : buffers) {
             rapi->Noesis_UnpooledFree(noesis_buffer);
         }
         buffers.clear();
-        // noesisModel_t* mdlList = rapi->Noesis_ModelsFromList(models, numMdl);
+
+        if (mdl == nullptr) {
+            rapi->rpgDestroyContext(context);
+            numMdl = 0;
+            return nullptr;
+        }
+
+        CNoeCustomDataList custom;
+        custom.CreateCustomData("IsLumberyardActor", "dragon::lumberyard::ActorPresence", rapi, true);
+        rapi->Noesis_SetModelCustomData(mdl, custom);
+
         if (isAnimation) {
             Animation anim(&dataBuffer);
             Animation::noesis_inject_anim(mdl, animName, anim, rapi);
         }
+
         rapi->rpgDestroyContext(context);
         numMdl = 1;
         return mdl;

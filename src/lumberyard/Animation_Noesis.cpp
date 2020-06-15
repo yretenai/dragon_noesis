@@ -51,7 +51,7 @@ namespace dragon::lumberyard {
         keyFramedAnim->name = rapi->Noesis_PooledString(const_cast<char*>(animName.c_str()));
         keyFramedAnim->numBones = shared->numBones;
         keyFramedAnim->framesPerSecond = 30.0f;
-        keyFramedAnim->flags = KFANIMFLAG_SEPARATETS | KFANIMFLAG_USEBONETIMES | KFANIMFLAG_PLUSONE;
+        keyFramedAnim->flags = KFANIMFLAG_USEBONETIMES;
         std::vector<float> floats;
         noeKeyFramedBone_t* keyFramedBones =
             static_cast<noeKeyFramedBone_t*>(rapi->Noesis_UnpooledAlloc(sizeof(noeKeyFramedBone_t) * subMotions->Motions.size()));
@@ -97,7 +97,7 @@ namespace dragon::lumberyard {
                 memset(posKeyframes, 0, sizeof(noeKeyFrameData_t) * boneKey->numTranslationKeys);
                 buffers.push_back(posKeyframes);
 
-                MOTION_VECTOR3_KEY refKey = {motion->Header.RefPosition, 0};
+                MOTION_VECTOR3_KEY refKey = {motion->Header.RefPosition, -0.05};
                 insert_key(refKey, bindPos, isAdditive, false, keyFramedBones[actualIndex], posKeyframes[0], floats, floatIndex);
 
                 for (uint32_t j = 0; j < boneKey->numTranslationKeys - frameOffset; j++) {
@@ -112,7 +112,7 @@ namespace dragon::lumberyard {
                 memset(rotKeyframes, 0, sizeof(noeKeyFrameData_t) * boneKey->numRotationKeys);
                 buffers.push_back(rotKeyframes);
 
-                MOTION_VECTOR4_KEY refKey = {motion->Header.RefRotation, 0};
+                MOTION_VECTOR4_KEY refKey = {motion->Header.RefRotation, -0.05};
                 insert_key(refKey, bindRot, isAdditive, keyFramedBones[actualIndex], rotKeyframes[0], floats, floatIndex);
 
                 for (uint32_t j = 0; j < boneKey->numRotationKeys - frameOffset; j++) {
@@ -127,7 +127,7 @@ namespace dragon::lumberyard {
                 memset(scaleKeyframes, 0, sizeof(noeKeyFrameData_t) * boneKey->numScaleKeys);
                 buffers.push_back(scaleKeyframes);
 
-                MOTION_VECTOR3_KEY refKey = {motion->Header.RefScale, 0};
+                MOTION_VECTOR3_KEY refKey = {motion->Header.RefScale, -0.05};
                 insert_key(refKey, bindScale, isAdditive, true, keyFramedBones[actualIndex], scaleKeyframes[0], floats, floatIndex);
 
                 for (uint32_t j = 0; j < boneKey->numScaleKeys - frameOffset; j++) {
@@ -181,7 +181,7 @@ namespace dragon::lumberyard {
     void Animation::insert_key(chunk::emfx::MOTION_VECTOR3_KEY key, RichVec3 bind, bool isAdditive, bool multiply, noeKeyFramedBone_t& bone,
                                noeKeyFrameData_t& frame, std::vector<float>& floats, uint32_t& floatIndex) {
         frame.dataIndex = floatIndex;
-        frame.time = key.Time;
+        frame.time = key.Time + 0.1;
         if (frame.time > bone.maxTime) {
             bone.maxTime = frame.time;
         }
@@ -203,7 +203,7 @@ namespace dragon::lumberyard {
     void Animation::insert_key(chunk::emfx::MOTION_VECTOR4_KEY key, RichMat43 bind, bool isAdditive, noeKeyFramedBone_t& bone,
                                noeKeyFrameData_t& frame, std::vector<float>& floats, uint32_t& floatIndex) {
         frame.dataIndex = floatIndex;
-        frame.time = key.Time;
+        frame.time = key.Time + 0.1;
         if (frame.time > bone.maxTime) {
             bone.maxTime = frame.time;
         }
