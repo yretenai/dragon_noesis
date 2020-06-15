@@ -4,8 +4,8 @@
 
 #pragma once
 
-#ifndef FMT_LUMBERYARD_ANIMATION_H
-#define FMT_LUMBERYARD_ANIMATION_H
+#ifndef DRAGON_LUMBERYARD_ANIMATION_H
+#define DRAGON_LUMBERYARD_ANIMATION_H
 
 #include "../dragon/dragon.h"
 #include "chunk/emfx/EMFXChunks.h"
@@ -47,4 +47,4 @@ namespace dragon::lumberyard {
     };
 } // namespace dragon::lumberyard
 
-#endif // FMT_LUMBERYARD_ANIMATION_H
+#endif // DRAGON_LUMBERYARD_ANIMATION_H

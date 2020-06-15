@@ -4,8 +4,8 @@
 
 #pragma once
 
-#ifndef FMT_LUMBERYARD_MODEL_MATERIALNAME_H
-#define FMT_LUMBERYARD_MODEL_MATERIALNAME_H
+#ifndef DRAGON_LUMBERYARD_MODEL_MATERIALNAME_H
+#define DRAGON_LUMBERYARD_MODEL_MATERIALNAME_H
 
 #include "AbstractModelChunk.h"
 
@@ -20,4 +20,4 @@ namespace dragon::lumberyard::chunk::model {
     };
 } // namespace dragon::lumberyard::chunk::model
 
-#endif // FMT_LUMBERYARD_MODEL_MATERIALNAME_H
+#endif // DRAGON_LUMBERYARD_MODEL_MATERIALNAME_H

@@ -17,16 +17,20 @@ const char* g_pPluginDesc = "War of Dragon Asset Handler by yretenai";
 using namespace dragon;
 
 bool NPAPI_InitLocal() {
-#ifndef _DEBUG
-    if (std::filesystem::is_regular_file("fmt_warofdragon.log")) {
-#endif
-        LogStream = new std::ofstream("fmt_warofdragon.log");
-#ifndef _DEBUG
-    } else {
+    if (!g_nfn->NPAPI_DebugLogIsOpen())
         g_nfn->NPAPI_PopupDebugLog(0);
+#ifndef _DEBUG
+    if (std::filesystem::is_regular_file("dragon_warofdragon.log")) {
+#endif
+        LogStream = new std::ofstream("dragon_warofdragon.log");
+#ifndef _DEBUG
     }
 #endif
-    LOG("v" << FMT_DRAGON_VERSION << " (fmt_dragon v" << FMT_DRAGON_VERSION << ")");
+    LOG("v" << DRAGON_VERSION << " (dragon v" << DRAGON_VERSION << ")");
+    int handle;
+    LOG("Adding File Table Exporter");
+    handle = g_nfn->NPAPI_Register(const_cast<char*>("War of Dragon File Table"), const_cast<char*>(".tbl2"));
+    g_nfn->NPAPI_SetTypeHandler_ExtractArc(handle, nullptr);
     return true;
 }
 

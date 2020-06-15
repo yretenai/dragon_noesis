@@ -4,8 +4,8 @@
 
 #pragma once
 
-#ifndef FMT_LUMBERYARD_MODEL_MODELCHUNKS_H
-#define FMT_LUMBERYARD_MODEL_MODELCHUNKS_H
+#ifndef DRAGON_LUMBERYARD_MODEL_MODELCHUNKS_H
+#define DRAGON_LUMBERYARD_MODEL_MODELCHUNKS_H
 
 #include "AbstractModelChunk.h"
 #include "DataStream.h"
@@ -16,4 +16,4 @@
 #include "SharedStructures.h"
 #include "Submesh.h"
 
-#endif // FMT_LUMBERYARD_MODEL_MODELCHUNKS_H
+#endif // DRAGON_LUMBERYARD_MODEL_MODELCHUNKS_H

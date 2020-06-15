@@ -4,8 +4,8 @@
 
 #pragma once
 
-#ifndef FMT_LUMBERYARD_MATERIAL_H
-#define FMT_LUMBERYARD_MATERIAL_H
+#ifndef DRAGON_LUMBERYARD_MATERIAL_H
+#define DRAGON_LUMBERYARD_MATERIAL_H
 
 #include "../dragon/dragon.h"
 #include "export.h"
@@ -61,4 +61,4 @@ namespace dragon::lumberyard {
     };
 } // namespace dragon::lumberyard
 
-#endif // FMT_LUMBERYARD_MATERIAL_H
+#endif // DRAGON_LUMBERYARD_MATERIAL_H

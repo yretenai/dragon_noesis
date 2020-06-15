@@ -4,8 +4,8 @@
 
 #pragma once
 
-#ifndef FMT_LUMBERYARD_LUMBERYARD_H
-#define FMT_LUMBERYARD_LUMBERYARD_H
+#ifndef DRAGON_LUMBERYARD_LUMBERYARD_H
+#define DRAGON_LUMBERYARD_LUMBERYARD_H
 
 #include "../dragon/dragon.h"
 #include "Actor.h"
@@ -15,4 +15,4 @@
 #include "Texture.h"
 #include "globals.h"
 
-#endif // FMT_LUMBERYARD_LUMBERYARD_H
+#endif // DRAGON_LUMBERYARD_LUMBERYARD_H

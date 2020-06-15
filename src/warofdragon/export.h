@@ -4,8 +4,8 @@
 
 #pragma once
 
-#ifndef FMT_WAROFDRAGON_EXPORT_H
-#define FMT_WAROFDRAGON_EXPORT_H
+#ifndef DRAGON_WAROFDRAGON_EXPORT_H
+#define DRAGON_WAROFDRAGON_EXPORT_H
 #ifdef _WIN32
 #include "export_win32.h"
 #else

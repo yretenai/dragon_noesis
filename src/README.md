@@ -5,9 +5,9 @@ Don't ask.
 
 - The root folder (`/src`) is shared across all targets.
 - Each target should have their own folder
-    (i.e. fmt_lumberyard has `/src/lumberyard`)
+    (i.e. dragon_lumberyard has `/src/lumberyard`)
 - Each target should have a test tool in the test folder 
-    (i.e. fmt_lumberyard has `/src/tool/lumberyard`)
+    (i.e. dragon_lumberyard has `/src/tool/lumberyard`)
 
 ## Debugging Noesis
 

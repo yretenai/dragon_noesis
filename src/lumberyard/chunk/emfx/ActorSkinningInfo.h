@@ -4,8 +4,8 @@
 
 #pragma once
 
-#ifndef FMT_LUMBERYARD_ACTORSKINNINGINFO_H
-#define FMT_LUMBERYARD_ACTORSKINNINGINFO_H
+#ifndef DRAGON_LUMBERYARD_ACTORSKINNINGINFO_H
+#define DRAGON_LUMBERYARD_ACTORSKINNINGINFO_H
 
 #include "AbstractEMFXChunk.h"
 
@@ -22,4 +22,4 @@ namespace dragon::lumberyard::chunk::emfx {
     };
 } // namespace dragon::lumberyard::chunk::emfx
 
-#endif // FMT_LUMBERYARD_ACTORSKINNINGINFO_H
+#endif // DRAGON_LUMBERYARD_ACTORSKINNINGINFO_H

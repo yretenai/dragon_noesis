@@ -4,8 +4,8 @@
 
 #pragma once
 
-#ifndef FMT_LUMBERYARD_EMFX_EMFXCHUNKS_H
-#define FMT_LUMBERYARD_EMFX_EMFXCHUNKS_H
+#ifndef DRAGON_LUMBERYARD_EMFX_EMFXCHUNKS_H
+#define DRAGON_LUMBERYARD_EMFX_EMFXCHUNKS_H
 
 #include "AbstractEMFXChunk.h"
 #include "ActorInfo.h"
@@ -27,4 +27,4 @@
 #include "MotionSubMotions.h"
 #include "SharedStructures.h"
 
-#endif // FMT_LUMBERYARD_EMFX_EMFXCHUNKS_H
+#endif // DRAGON_LUMBERYARD_EMFX_EMFXCHUNKS_H

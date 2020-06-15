@@ -4,8 +4,8 @@
 
 #pragma once
 
-#ifndef FMT_LUMBERYARD_MODEL_H
-#define FMT_LUMBERYARD_MODEL_H
+#ifndef DRAGON_LUMBERYARD_MODEL_H
+#define DRAGON_LUMBERYARD_MODEL_H
 
 #include "../dragon/dragon.h"
 #include "chunk/model/ModelChunks.h"
@@ -40,4 +40,4 @@ namespace dragon::lumberyard {
     };
 } // namespace dragon::lumberyard
 
-#endif // FMT_LUMBERYARD_MODEL_H
+#endif // DRAGON_LUMBERYARD_MODEL_H

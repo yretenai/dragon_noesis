@@ -4,8 +4,8 @@
 
 #pragma once
 
-#ifndef FMT_LUMBERYARD_EMFX_ABSTRACTEMFXCHUNK_H
-#define FMT_LUMBERYARD_EMFX_ABSTRACTEMFXCHUNK_H
+#ifndef DRAGON_LUMBERYARD_EMFX_ABSTRACTEMFXCHUNK_H
+#define DRAGON_LUMBERYARD_EMFX_ABSTRACTEMFXCHUNK_H
 
 #include "../../../dragon/dragon.h"
 #include "../../export.h"
@@ -19,4 +19,4 @@ namespace dragon::lumberyard::chunk::emfx {
     };
 } // namespace dragon::lumberyard::chunk::emfx
 
-#endif // FMT_LUMBERYARD_EMFX_ABSTRACTEMFXCHUNK_H
+#endif // DRAGON_LUMBERYARD_EMFX_ABSTRACTEMFXCHUNK_H

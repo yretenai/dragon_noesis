@@ -2,8 +2,8 @@
 // Created by yretenai on 6/5/2020.
 //
 
-#ifndef FMT_DRAGON_ARRAY_H
-#define FMT_DRAGON_ARRAY_H
+#ifndef DRAGON_ARRAY_H
+#define DRAGON_ARRAY_H
 
 #include <algorithm>
 #include <memory>
@@ -174,4 +174,4 @@ namespace dragon {
     };
 } // namespace dragon
 
-#endif // FMT_DRAGON_ARRAY_H
+#endif // DRAGON_ARRAY_H

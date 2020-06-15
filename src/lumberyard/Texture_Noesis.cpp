@@ -24,7 +24,7 @@ namespace dragon::lumberyard {
         Array<char> data = texture.cook();
         if (data.empty())
             return false;
-        noesisTex_t* tex = rapi->Noesis_LoadTexByHandler(reinterpret_cast<BYTE*>(data.data()), data.size(), (char*)".dds");
+        noesisTex_t* tex = rapi->Noesis_LoadTexByHandler(reinterpret_cast<BYTE*>(data.data()), data.size(), const_cast<char*>(".dds"));
         if (tex == nullptr)
             return false;
         tex->filename = rapi->Noesis_PooledString(const_cast<char*>(imagePath.filename().string().c_str()));

@@ -1,6 +1,6 @@
-project(fmt_lumberyard)
+project(dragon_lumberyard)
 
-target_sources(fmt_lumberyard PRIVATE
+target_sources(dragon_lumberyard PRIVATE
                EMFXChunks.h AbstractEMFXChunk.h SharedStructures.h
                ActorInfo.cpp ActorInfo.h
                ActorMaterial.cpp ActorMaterial.h

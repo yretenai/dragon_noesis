@@ -4,8 +4,8 @@
 
 #pragma once
 
-#ifndef FMT_LUMBERYARD_EMFX_ACTORMESH_H
-#define FMT_LUMBERYARD_EMFX_ACTORMESH_H
+#ifndef DRAGON_LUMBERYARD_EMFX_ACTORMESH_H
+#define DRAGON_LUMBERYARD_EMFX_ACTORMESH_H
 
 #include "AbstractEMFXChunk.h"
 #include "ActorSubmesh.h"
@@ -23,4 +23,4 @@ namespace dragon::lumberyard::chunk::emfx {
     };
 } // namespace dragon::lumberyard::chunk::emfx
 
-#endif // FMT_LUMBERYARD_EMFX_ACTORMESH_H
+#endif // DRAGON_LUMBERYARD_EMFX_ACTORMESH_H

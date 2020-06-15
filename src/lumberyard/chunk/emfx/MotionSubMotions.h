@@ -4,8 +4,8 @@
 
 #pragma once
 
-#ifndef FMT_LUMBERYARD_MOTIONSUBMOTIONS_H
-#define FMT_LUMBERYARD_MOTIONSUBMOTIONS_H
+#ifndef DRAGON_LUMBERYARD_MOTIONSUBMOTIONS_H
+#define DRAGON_LUMBERYARD_MOTIONSUBMOTIONS_H
 
 #include "AbstractEMFXChunk.h"
 #include "MotionSubMotion.h"
@@ -19,4 +19,4 @@ namespace dragon::lumberyard::chunk::emfx {
     };
 } // namespace dragon::lumberyard::chunk::emfx
 
-#endif // FMT_LUMBERYARD_MOTIONSUBMOTIONS_H
+#endif // DRAGON_LUMBERYARD_MOTIONSUBMOTIONS_H

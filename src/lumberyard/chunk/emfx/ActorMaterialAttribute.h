@@ -4,8 +4,8 @@
 
 #pragma once
 
-#ifndef FMT_LUMBERYARD_ACTORMATERIALATTRIBUTE_H
-#define FMT_LUMBERYARD_ACTORMATERIALATTRIBUTE_H
+#ifndef DRAGON_LUMBERYARD_ACTORMATERIALATTRIBUTE_H
+#define DRAGON_LUMBERYARD_ACTORMATERIALATTRIBUTE_H
 
 #include "AbstractEMFXChunk.h"
 #include "ActorMaterialAttributeValue.h"
@@ -28,4 +28,4 @@ namespace dragon::lumberyard::chunk::emfx {
     };
 } // namespace dragon::lumberyard::chunk::emfx
 
-#endif // FMT_LUMBERYARD_ACTORMATERIALATTRIBUTE_H
+#endif // DRAGON_LUMBERYARD_ACTORMATERIALATTRIBUTE_H

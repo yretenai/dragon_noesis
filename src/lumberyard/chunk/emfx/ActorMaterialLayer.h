@@ -4,8 +4,8 @@
 
 #pragma once
 
-#ifndef FMT_LUMBERYARD_EMFX_ACTORMATERIALLAYER_H
-#define FMT_LUMBERYARD_EMFX_ACTORMATERIALLAYER_H
+#ifndef DRAGON_LUMBERYARD_EMFX_ACTORMATERIALLAYER_H
+#define DRAGON_LUMBERYARD_EMFX_ACTORMATERIALLAYER_H
 
 #include "AbstractEMFXChunk.h"
 
@@ -20,4 +20,4 @@ namespace dragon::lumberyard::chunk::emfx {
     };
 } // namespace dragon::lumberyard::chunk::emfx
 
-#endif // FMT_LUMBERYARD_EMFX_ACTORMATERIALLAYER_H
+#endif // DRAGON_LUMBERYARD_EMFX_ACTORMATERIALLAYER_H

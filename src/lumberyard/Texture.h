@@ -4,8 +4,8 @@
 
 #pragma once
 
-#ifndef FMT_LUMBERYARD_TEXTURE_H
-#define FMT_LUMBERYARD_TEXTURE_H
+#ifndef DRAGON_LUMBERYARD_TEXTURE_H
+#define DRAGON_LUMBERYARD_TEXTURE_H
 
 #include "../dragon/dragon.h"
 #include "export.h"
@@ -43,4 +43,4 @@ namespace dragon::lumberyard {
     };
 } // namespace dragon::lumberyard
 
-#endif // FMT_LUMBERYARD_TEXTURE_H
+#endif // DRAGON_LUMBERYARD_TEXTURE_H

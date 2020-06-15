@@ -4,8 +4,8 @@
 
 #pragma once
 
-#ifndef FMT_LUMBERYARD_EMFX_SHAREDSTRUCTURES_H
-#define FMT_LUMBERYARD_EMFX_SHAREDSTRUCTURES_H
+#ifndef DRAGON_LUMBERYARD_EMFX_SHAREDSTRUCTURES_H
+#define DRAGON_LUMBERYARD_EMFX_SHAREDSTRUCTURES_H
 
 #include "../SharedStructures.h"
 #include <stdint.h>
@@ -277,4 +277,4 @@ namespace dragon::lumberyard::chunk::emfx {
 #pragma pack(pop)
 } // namespace dragon::lumberyard::chunk::emfx
 
-#endif // FMT_LUMBERYARD_EMFX_SHAREDSTRUCTURES_H
+#endif // DRAGON_LUMBERYARD_EMFX_SHAREDSTRUCTURES_H

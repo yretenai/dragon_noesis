@@ -1,6 +1,6 @@
-project(fmt_lumberyard)
+project(dragon_lumberyard)
 
-target_sources(fmt_lumberyard PRIVATE SharedStructures.h)
+target_sources(dragon_lumberyard PRIVATE SharedStructures.h)
 
 add_subdirectory("model")
 add_subdirectory("emfx")

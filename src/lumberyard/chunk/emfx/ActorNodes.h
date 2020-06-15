@@ -4,8 +4,8 @@
 
 #pragma once
 
-#ifndef FMT_LUMBERYARD_EMFX_ACTORNODES_H
-#define FMT_LUMBERYARD_EMFX_ACTORNODES_H
+#ifndef DRAGON_LUMBERYARD_EMFX_ACTORNODES_H
+#define DRAGON_LUMBERYARD_EMFX_ACTORNODES_H
 
 #include "AbstractEMFXChunk.h"
 #include "ActorNode.h"
@@ -21,4 +21,4 @@ namespace dragon::lumberyard::chunk::emfx {
     };
 } // namespace dragon::lumberyard::chunk::emfx
 
-#endif // FMT_LUMBERYARD_EMFX_ACTORNODES_H
+#endif // DRAGON_LUMBERYARD_EMFX_ACTORNODES_H

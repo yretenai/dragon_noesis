@@ -4,10 +4,10 @@
 
 #pragma once
 
-#ifndef FMT_DRAGON_DRAGON_H
-#define FMT_DRAGON_DRAGON_H
+#ifndef DRAGON_DRAGON_H
+#define DRAGON_DRAGON_H
 
-#define FMT_DRAGON_VERSION "1.0.2"
+#define DRAGON_VERSION "1.0.2"
 
 #include "Array.h"
 #include <assert.h>
@@ -34,7 +34,7 @@
 #endif
 
 #ifndef DRAGON_LIBRARY_NAME
-#define DRAGON_LIBRARY_NAME "fmt_dragon"
+#define DRAGON_LIBRARY_NAME "dragon"
 #endif
 
 extern std::ofstream* LogStream;
@@ -63,10 +63,9 @@ extern std::ofstream* LogStream;
         s << "[" << DRAGON_LIBRARY_NAME << "][" << __PRETTY_FUNCTION__ << "] " << msg << std::endl; \
         if (LogStream != nullptr)                                                                   \
             (*LogStream << s.str() << std::flush);                                                  \
-        else if (g_nfn != nullptr)                                                                  \
+        if (g_nfn != nullptr && g_nfn->NPAPI_DebugLogIsOpen())                                      \
             g_nfn->NPAPI_DebugLogStr(const_cast<char*>(s.str().c_str()));                           \
-        else                                                                                        \
-            (std::cout << s.str() << std::flush);                                                   \
+        (std::cout << s.str() << std::flush);                                                       \
     } while (0)
 #else
 #define LOG(msg)                                                                                                                              \
@@ -185,4 +184,4 @@ namespace dragon {
     class not_implemented_exception : public std::exception {};
 } // namespace dragon
 
-#endif // FMT_DRAGON_DRAGON_H
+#endif // DRAGON_DRAGON_H

@@ -4,8 +4,8 @@
 
 #pragma once
 
-#ifndef FMT_LUMBERYARD_ACTOR_H
-#define FMT_LUMBERYARD_ACTOR_H
+#ifndef DRAGON_LUMBERYARD_ACTOR_H
+#define DRAGON_LUMBERYARD_ACTOR_H
 
 #include "../dragon/dragon.h"
 #include "chunk/emfx/EMFXChunks.h"
@@ -37,4 +37,4 @@ namespace dragon::lumberyard {
 #endif // USE_NOESIS
     }; // namespace dragon::lumberyard
 } // namespace dragon::lumberyard
-#endif // FMT_LUMBERYARD_ACTOR_H
+#endif // DRAGON_LUMBERYARD_ACTOR_H
