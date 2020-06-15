@@ -137,12 +137,12 @@ namespace dragon::lumberyard {
                 if (AutoDetect) {
                     materialPath = std::filesystem::path(rapi->Noesis_GetInputNameW());
                     materialPath.replace_filename(materials->Name + ".mtl");
-                    if (!std::filesystem::exists(materialPath) && materials->Materials.size() == 1) {
+                    if (!std::filesystem::is_regular_file(materialPath) && materials->Materials.size() == 1) {
                         materialPath.replace_filename(materials->Materials[0] + ".mtl");
                     }
                 }
 
-                if (materialPath.empty() || !std::filesystem::exists(materialPath)) {
+                if (materialPath.empty() || !std::filesystem::is_regular_file(materialPath)) {
                     char materialPathNoe[MAX_NOESIS_PATH];
                     int unusedMaterialSize = 0;
                     BYTE* unusedMaterialData =
@@ -191,7 +191,7 @@ namespace dragon::lumberyard {
     }
 
     bool Model::noesis_check(BYTE* buffer, int length, [[maybe_unused]] noeRAPI_t* rapi) {
-        intptr_t handles;
+        int32_t handles;
         g_nfn->NPAPI_GetFormatExtensionFlags(const_cast<wchar_t*>(L".cgf"), &handles);
         if (handles > 1) // something else added a CGF handler.
             return false;
@@ -206,7 +206,7 @@ namespace dragon::lumberyard {
         } else {
             combinedPath.replace_extension(".dds.1");
         }
-        if (!std::filesystem::exists(combinedPath)) {
+        if (!std::filesystem::is_regular_file(combinedPath)) {
             return -1;
         }
         int num = texList.Num();

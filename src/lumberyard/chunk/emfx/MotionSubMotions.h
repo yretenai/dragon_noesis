@@ -2,8 +2,10 @@
 // Created by yretenai on 2020-06-11.
 //
 
-#ifndef FMT_DRAGON_MOTIONSUBMOTIONS_H
-#define FMT_DRAGON_MOTIONSUBMOTIONS_H
+#pragma once
+
+#ifndef FMT_LUMBERYARD_MOTIONSUBMOTIONS_H
+#define FMT_LUMBERYARD_MOTIONSUBMOTIONS_H
 
 #include "AbstractEMFXChunk.h"
 #include "MotionSubMotion.h"
@@ -17,4 +19,4 @@ namespace dragon::lumberyard::chunk::emfx {
     };
 } // namespace dragon::lumberyard::chunk::emfx
 
-#endif // FMT_DRAGON_MOTIONSUBMOTIONS_H
+#endif // FMT_LUMBERYARD_MOTIONSUBMOTIONS_H

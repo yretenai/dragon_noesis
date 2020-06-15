@@ -2,8 +2,10 @@
 // Created by yretenai on 2020-06-10.
 //
 
-#ifndef FMT_DRAGON_ACTORMATERIALATTRIBUTE_H
-#define FMT_DRAGON_ACTORMATERIALATTRIBUTE_H
+#pragma once
+
+#ifndef FMT_LUMBERYARD_ACTORMATERIALATTRIBUTE_H
+#define FMT_LUMBERYARD_ACTORMATERIALATTRIBUTE_H
 
 #include "AbstractEMFXChunk.h"
 #include "ActorMaterialAttributeValue.h"
@@ -26,4 +28,4 @@ namespace dragon::lumberyard::chunk::emfx {
     };
 } // namespace dragon::lumberyard::chunk::emfx
 
-#endif // FMT_DRAGON_ACTORMATERIALATTRIBUTE_H
+#endif // FMT_LUMBERYARD_ACTORMATERIALATTRIBUTE_H

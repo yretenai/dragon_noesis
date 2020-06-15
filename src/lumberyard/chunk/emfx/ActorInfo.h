@@ -2,6 +2,8 @@
 // Created by yretenai on 2020-06-08.
 //
 
+#pragma once
+
 #ifndef FMT_LUMBERYARD_EMFX_INFO_H
 #define FMT_LUMBERYARD_EMFX_INFO_H
 

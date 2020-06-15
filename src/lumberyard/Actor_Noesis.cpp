@@ -25,9 +25,39 @@ namespace dragon::lumberyard {
         std::vector<void*> buffers;
         if (isAnimation) {
             char actorPath[MAX_NOESIS_PATH];
+            std::fill_n(actorPath, MAX_NOESIS_PATH, 0);
             int modelSize = 0;
-            BYTE* modelData = rapi->Noesis_LoadPairedFile(rapi->Noesis_PooledString(const_cast<char*>("Select EMFX Actor file")),
-                                                          rapi->Noesis_PooledString(const_cast<char*>(".actor")), modelSize, actorPath);
+            BYTE* modelData = nullptr;
+            if (AutoDetect) {
+                std::vector<std::filesystem::path> files;
+                for (std::filesystem::directory_entry entry : std::filesystem::directory_iterator(modelPath.parent_path())) {
+                    if (entry.is_regular_file() && entry.path().extension() == ".actor") {
+                        files.push_back(entry.path());
+                    }
+                }
+                if (files.size() != 1) {
+                    if (files.size() > 0) {
+                        files.clear();
+                    }
+                    std::filesystem::path characterDir = modelPath.parent_path().parent_path() / "character";
+                    if (std::filesystem::is_directory(characterDir)) {
+                        for (std::filesystem::directory_entry entry : std::filesystem::directory_iterator(characterDir)) {
+                            if (entry.is_regular_file() && entry.path().extension() == ".actor") {
+                                files.push_back(entry.path());
+                            }
+                        }
+                    }
+                }
+                if (files.size() == 1) {
+                    modelData = rapi->Noesis_ReadFileW(files[0].c_str(), &modelSize);
+                    std::string tmp = files[0].string();
+                    std::copy_n(tmp.c_str(), tmp.size(), actorPath);
+                }
+            }
+            if (modelData == nullptr) {
+                modelData = rapi->Noesis_LoadPairedFile(rapi->Noesis_PooledString(const_cast<char*>("Select EMFX Actor file")),
+                                                        rapi->Noesis_PooledString(const_cast<char*>(".actor")), modelSize, actorPath);
+            }
             if (modelData == nullptr) {
                 return nullptr;
             }
@@ -87,7 +117,7 @@ namespace dragon::lumberyard {
                 materialPath.replace_extension(".mtl");
             }
 
-            if (materialPath.empty() || !std::filesystem::exists(materialPath)) {
+            if (materialPath.empty() || !std::filesystem::is_regular_file(materialPath)) {
                 char materialPathNoe[MAX_NOESIS_PATH];
                 int unusedMaterialSize = 0;
                 BYTE* unusedMaterialData =

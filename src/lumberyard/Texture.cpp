@@ -28,7 +28,7 @@ namespace dragon::lumberyard {
             tmp.replace_extension(buffer);
             if (is_alpha)
                 tmp += "a";
-            if (std::filesystem::exists(tmp)) {
+            if (std::filesystem::is_regular_file(tmp)) {
                 Data = read_file(tmp);
                 break;
             }

@@ -1,0 +1,10 @@
+//
+// Created by yretenai on 2020-06-15.
+//
+
+#ifndef FMT_WAROFDRAGON_GLOBALS_H
+#define FMT_WAROFDRAGON_GLOBALS_H
+
+#define FMT_WAROFDRAGON_VERSION "1.0.0"
+
+#endif // FMT_WAROFDRAGON_GLOBALS_H

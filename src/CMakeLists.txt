@@ -52,4 +52,5 @@ include(GenerateExportHeader)
 include_directories(vendor)
 
 add_subdirectory("lumberyard")
+add_subdirectory("warofdragon")
 add_subdirectory("tool" EXCLUDE_FROM_ALL)

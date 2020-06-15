@@ -2,6 +2,8 @@
 // Created by yretenai on 6/5/2020.
 //
 
+#pragma once
+
 #ifndef FMT_LUMBERYARD_MODEL_MESH_H
 #define FMT_LUMBERYARD_MODEL_MESH_H
 

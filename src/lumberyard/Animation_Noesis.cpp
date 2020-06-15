@@ -63,9 +63,9 @@ namespace dragon::lumberyard {
         for (uint32_t i = 0; i < shared->numBones; i++) {
             boneMap[std::string(shared->bones[i].name)] = i;
         }
-        noeKeyFrameInterpolation_e interpolation = NOEKF_INTERPOLATE_LINEAR;
-        if (!InterpolateAnimation) {
-            interpolation = NOEKF_INTERPOLATE_NEAREST;
+        noeKeyFrameInterpolation_e interpolation = NOEKF_INTERPOLATE_NEAREST;
+        if (InterpolateAnimation) {
+            interpolation = NOEKF_INTERPOLATE_LINEAR;
         }
         for (uint32_t i = 0; i < subMotions->Motions.size(); i++) {
             MotionSubMotion* motion = subMotions->Motions[i].get();

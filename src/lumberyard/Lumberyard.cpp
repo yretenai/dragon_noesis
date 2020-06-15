@@ -4,16 +4,16 @@
 
 #include "Lumberyard.h"
 
-#if defined(USE_NOESIS) && NOESIS_PLUGINAPI_VERSION < 75
-#error "Please update the Noesis plugin headers to at least version 75."
-#endif
-
 std::ofstream* LogStream;
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "OCInconsistentNamingInspection"
 
 #ifdef USE_NOESIS
+
+#if NOESIS_PLUGINAPI_VERSION < 75
+#error "Please update the Noesis plugin headers to at least version 75."
+#endif
 
 const char* g_pPluginName = "lumberyard";
 const char* g_pPluginDesc = "Lumberyard EMFX Asset Handler by yretenai";
@@ -52,7 +52,7 @@ int set_game_root([[maybe_unused]] int handle, [[maybe_unused]] void* user_data)
     }
 
     wchar_t* path = reinterpret_cast<wchar_t*>(prompt.valBuf);
-    if (!std::filesystem::exists(path)) {
+    if (!std::filesystem::is_directory(path)) {
         LOG("Path does not exist");
         return 0;
     }
@@ -68,7 +68,7 @@ void load_saved_game_root() {
     BYTE buffer[MAX_NOESIS_PATH];
     if (g_nfn->NPAPI_UserSettingRead(const_cast<wchar_t*>(L"dragon::lumberyard::LibraryPath"), buffer, MAX_NOESIS_PATH)) {
         wchar_t* path = reinterpret_cast<wchar_t*>(buffer);
-        if (!std::filesystem::exists(path)) {
+        if (!std::filesystem::is_directory(path)) {
             return;
         }
         LibraryRoot = new std::filesystem::path(path);
@@ -111,10 +111,15 @@ int set_interpolate(int handle, [[maybe_unused]] void* user_data) {
 }
 
 bool NPAPI_InitLocal() {
-    // g_nfn->NPAPI_PopupDebugLog(0);
-    if (std::filesystem::exists("fmt_lumberyard.log")) {
+#ifndef _DEBUG
+    if (std::filesystem::is_regular_file("fmt_lumberyard.log")) {
+#endif
         LogStream = new std::ofstream("fmt_lumberyard.log");
+#ifndef _DEBUG
+    } else {
+        g_nfn->NPAPI_PopupDebugLog(0);
     }
+#endif
     LOG("v" << FMT_LUMBERYARD_VERSION << " (fmt_dragon v" << FMT_DRAGON_VERSION << ")");
     int handle;
     // context tools
@@ -138,8 +143,8 @@ bool NPAPI_InitLocal() {
     load_saved_game_root();
 
     LOG("Adding Lumberyard Auto Detect Material Setting...");
-    handle = g_nfn->NPAPI_RegisterTool((char*)"Lumberyard - Auto Detect Material", set_autodetect, nullptr);
-    g_nfn->NPAPI_SetToolHelpText(handle, (char*)"Automatically tries to find relevant MTL files");
+    handle = g_nfn->NPAPI_RegisterTool((char*)"Lumberyard - Auto Detect Paired File", set_autodetect, nullptr);
+    g_nfn->NPAPI_SetToolHelpText(handle, (char*)"Automatically tries to find relevant ACTOR/MTL files");
     get_autodetect(handle);
 
     LOG("Adding Lumberyard Interpolate Animation Setting...");

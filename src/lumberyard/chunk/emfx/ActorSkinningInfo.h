@@ -2,8 +2,10 @@
 // Created by yretenai on 2020-06-10.
 //
 
-#ifndef FMT_DRAGON_ACTORSKINNINGINFO_H
-#define FMT_DRAGON_ACTORSKINNINGINFO_H
+#pragma once
+
+#ifndef FMT_LUMBERYARD_ACTORSKINNINGINFO_H
+#define FMT_LUMBERYARD_ACTORSKINNINGINFO_H
 
 #include "AbstractEMFXChunk.h"
 
@@ -20,4 +22,4 @@ namespace dragon::lumberyard::chunk::emfx {
     };
 } // namespace dragon::lumberyard::chunk::emfx
 
-#endif // FMT_DRAGON_ACTORSKINNINGINFO_H
+#endif // FMT_LUMBERYARD_ACTORSKINNINGINFO_H

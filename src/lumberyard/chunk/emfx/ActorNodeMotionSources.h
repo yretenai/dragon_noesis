@@ -2,6 +2,8 @@
 // Created by yretenai on 2020-06-09.
 //
 
+#pragma once
+
 #ifndef FMT_LUMBERYARD_EMFX_ACTORNODEMOTIONSOURCES_H
 #define FMT_LUMBERYARD_EMFX_ACTORNODEMOTIONSOURCES_H
 

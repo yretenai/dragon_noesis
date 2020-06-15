@@ -2,8 +2,10 @@
 // Created by yretenai on 6/7/2020.
 //
 
-#ifndef FMT_DRAGON_MATERIAL_H
-#define FMT_DRAGON_MATERIAL_H
+#pragma once
+
+#ifndef FMT_LUMBERYARD_MATERIAL_H
+#define FMT_LUMBERYARD_MATERIAL_H
 
 #include "../dragon/dragon.h"
 #include "export.h"
@@ -59,4 +61,4 @@ namespace dragon::lumberyard {
     };
 } // namespace dragon::lumberyard
 
-#endif // FMT_DRAGON_MATERIAL_H
+#endif // FMT_LUMBERYARD_MATERIAL_H
