@@ -113,13 +113,8 @@ int set_interpolate(int handle, [[maybe_unused]] void* user_data) {
 bool NPAPI_InitLocal() {
     if (!g_nfn->NPAPI_DebugLogIsOpen())
         g_nfn->NPAPI_PopupDebugLog(0);
-#ifndef _DEBUG
-    if (std::filesystem::is_regular_file("dragon_lumberyard.log")) {
-#endif
+    if (std::filesystem::is_regular_file("dragon_lumberyard.log"))
         LogStream = new std::ofstream("dragon_lumberyard.log");
-#ifndef _DEBUG
-    }
-#endif
     LOG("🐲");
     LOG("v" << DRAGON_LUMBERYARD_VERSION << " (dragon v" << DRAGON_VERSION << ")");
     int handle;

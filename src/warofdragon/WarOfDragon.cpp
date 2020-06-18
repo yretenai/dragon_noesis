@@ -19,13 +19,8 @@ using namespace dragon;
 bool NPAPI_InitLocal() {
     if (!g_nfn->NPAPI_DebugLogIsOpen())
         g_nfn->NPAPI_PopupDebugLog(0);
-#ifndef _DEBUG
-    if (std::filesystem::is_regular_file("dragon_warofdragon.log")) {
-#endif
+    if (std::filesystem::is_regular_file("dragon_warofdragon.log"))
         LogStream = new std::ofstream("dragon_warofdragon.log");
-#ifndef _DEBUG
-    }
-#endif
     LOG("🐲");
     LOG("v" << DRAGON_VERSION << " (dragon v" << DRAGON_VERSION << ")");
     int handle;
