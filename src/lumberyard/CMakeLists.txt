@@ -12,7 +12,8 @@ add_library(dragon_lumberyard SHARED
 target_compile_definitions(dragon_lumberyard PRIVATE DRAGON_LIBRARY_NAME="dragon_lumberyard")
 
 if(USE_NOESIS)
-    target_sources(dragon_lumberyard PRIVATE ../noesis/noesisplugin.cpp ../noesis/pluginsupport.cpp
+    target_compile_definitions(dragon_lumberyard PRIVATE USE_NOESIS=1)
+    target_sources(dragon_lumberyard PRIVATE ${NOESIS_API_SOURCES}
                    Model_Noesis.cpp Actor_Noesis.cpp Texture_Noesis.cpp Animation_Noesis.cpp)
     add_compile_definitions(USE_NOESIS)
 endif()

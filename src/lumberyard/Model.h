@@ -7,7 +7,7 @@
 #ifndef DRAGON_LUMBERYARD_MODEL_H
 #define DRAGON_LUMBERYARD_MODEL_H
 
-#include "../dragon/dragon.h"
+#include "standard_dragon/dragon.h"
 #include "chunk/model/ModelChunks.h"
 #include "export.h"
 

@@ -32,7 +32,7 @@ namespace dragon::lumberyard::chunk::emfx {
         }
 
         InterfaceType = buffer->lpcast<uint32_t>(&ptr);
-        ComboValues = Array<std::string>(buffer->lpcast<uint32_t>(&ptr));
+        ComboValues = Array<std::string>(buffer->lpcast<uint32_t>(&ptr), nullptr);
         for (size_t i = 0; i < ComboValues.size(); i++) {
             size = buffer->lpcast<int32_t>(&ptr);
             if (size > 0) {

@@ -7,7 +7,7 @@
 #ifndef DRAGON_WAROFDRAGON_WAROFDRAGON_H
 #define DRAGON_WAROFDRAGON_WAROFDRAGON_H
 
-#include "../dragon/dragon.h"
+#include "standard_dragon/dragon.h"
 #include "globals.h"
 
 #endif // DRAGON_WAROFDRAGON_WAROFDRAGON_H

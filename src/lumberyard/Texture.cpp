@@ -38,7 +38,7 @@ namespace dragon::lumberyard {
     Array<char> Texture::cook() {
         if (Header.empty() || Data.empty())
             return Array<char>();
-        Array<char> data(Header.size() + Data.size());
+        Array<char> data(Header.size() + Data.size(), nullptr);
         char* pointer = data.data();
         // oh god.
         memcpy(pointer, Header.data(), Header.size());

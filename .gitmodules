@@ -1,3 +1,6 @@
 [submodule "src/vendor/tinyxml2"]
 	path = src/vendor/tinyxml2
 	url = https://github.com/leethomason/tinyxml2.git
+[submodule "src/vendor/standard_dragon"]
+	path = src/vendor/standard_dragon
+	url = git@github.com:yretenai/standard_dragon.git

@@ -2,7 +2,7 @@
 // Created by yretenai on 2020-06-15.
 //
 
-#include "WarOfDragon.h"
+#include "standard_dragon/dragon.h"
 
 std::ofstream* LogStream;
 

@@ -7,7 +7,7 @@
 #ifndef DRAGON_LUMBERYARD_EMFX_ABSTRACTEMFXCHUNK_H
 #define DRAGON_LUMBERYARD_EMFX_ABSTRACTEMFXCHUNK_H
 
-#include "../../../dragon/dragon.h"
+#include "standard_dragon/dragon.h"
 #include "../../export.h"
 #include "SharedStructures.h"
 

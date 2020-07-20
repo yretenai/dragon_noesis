@@ -7,7 +7,7 @@
 #ifndef DRAGON_LUMBERYARD_LUMBERYARD_H
 #define DRAGON_LUMBERYARD_LUMBERYARD_H
 
-#include "../dragon/dragon.h"
+#include "standard_dragon/dragon.h"
 #include "Actor.h"
 #include "Animation.h"
 #include "Material.h"

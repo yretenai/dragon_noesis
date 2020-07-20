@@ -11,7 +11,7 @@ namespace dragon::lumberyard::chunk::emfx {
         ptr = Align(ptr, 4);
         Header = buffer->lpcast<ACTOR_MATERIAL_V1_HEADER>(&ptr);
         ptr = Align(ptr, 4);
-        Layers = Array<std::shared_ptr<ActorMaterialLayer>>(Header.NumLayers);
+        Layers = Array<std::shared_ptr<ActorMaterialLayer>>(Header.NumLayers, nullptr);
         int32_t size = buffer->lpcast<int32_t>(&ptr);
         if (size > 0) {
             Array<char> stringBuffer = buffer->lpslice(&ptr, size);

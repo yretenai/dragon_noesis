@@ -120,7 +120,7 @@ namespace dragon::lumberyard {
     Array<VECTOR3_SINGLE>* Actor::unwrap_simd_array(Array<uint8_t> b) {
         char* buffer = static_cast<char*>(ALIGNED_ALLOC(b.size(), 16));
         std::copy_n(b.data(), b.size(), buffer);
-        Array<VECTOR3_SINGLE>* array = new Array<VECTOR3_SINGLE>(b.size() / 16);
+        Array<VECTOR3_SINGLE>* array = new Array<VECTOR3_SINGLE>(b.size() / 16, nullptr);
         for (int i = 0; i < array->size(); i++) {
             __m128 gt = reinterpret_cast<__m128*>(buffer + i * 16)[0];
             array->set(i, {M128_GET(gt, 0), M128_GET(gt, 1), M128_GET(gt, 2)});

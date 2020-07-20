@@ -7,7 +7,7 @@
 #ifndef DRAGON_LUMBERYARD_MATERIAL_H
 #define DRAGON_LUMBERYARD_MATERIAL_H
 
-#include "../dragon/dragon.h"
+#include "standard_dragon/dragon.h"
 #include "export.h"
 #include <tinyxml2/tinyxml2.h>
 

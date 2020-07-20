@@ -2,7 +2,7 @@
 // Created by yretenai on 6/5/2020.
 //
 
-#include "../../dragon/dragon.h"
+#include "standard_dragon/dragon.h"
 
 std::ofstream* LogStream;
 
@@ -17,12 +17,12 @@ Array<int> test2() {
 
 Array<int> test3() {
     int tmp[] = {1, 2, 3};
-    return Array<int>(tmp, 3);
+    return Array<int>(tmp, 3, nullptr);
 }
 
 Array<short> test4() {
     short tmp[] = {1, 0, 2, 0, 3, 0};
-    return Array<short>(tmp, 6);
+    return Array<short>(tmp, 6, nullptr);
 }
 
 template <typename T> void print(Array<T>& test) {

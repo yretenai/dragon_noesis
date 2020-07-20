@@ -7,7 +7,8 @@ add_library(dragon_warofdragon SHARED
 target_compile_definitions(dragon_warofdragon PRIVATE DRAGON_LIBRARY_NAME="dragon_warofdragon")
 
 if(USE_NOESIS)
-    target_sources(dragon_warofdragon PRIVATE ../noesis/noesisplugin.cpp ../noesis/pluginsupport.cpp FileTable_Noesis.cpp)
+    target_compile_definitions(dragon_lumberyard PRIVATE USE_NOESIS=1)
+    target_sources(dragon_warofdragon PRIVATE ${NOESIS_API_SOURCES} FileTable_Noesis.cpp)
     add_compile_definitions(USE_NOESIS)
 endif()
 

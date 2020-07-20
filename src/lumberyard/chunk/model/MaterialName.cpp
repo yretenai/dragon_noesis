@@ -13,7 +13,7 @@ namespace dragon::lumberyard::chunk::model {
         int offset = 0x80;
         uint32_t count = buffer->lpcast<uint32_t>(&offset);
         Types = buffer->lpcast<int32_t>(&offset, count);
-        Materials = Array<std::string>(count);
+        Materials = Array<std::string>(count, nullptr);
         ptr += offset;
         for (uint32_t i = 0; i < count; i++) {
             std::string material(ptr);

@@ -20,7 +20,7 @@ namespace dragon::lumberyard {
         std::string animName;
         bool isAnimation = modelPath.extension() == ".motion";
 
-        Array<char> dataBuffer = Array<char>(reinterpret_cast<char*>(buffer), length);
+        Array<char> dataBuffer = Array<char>(reinterpret_cast<char*>(buffer), length, nullptr);
         Actor actor;
         std::vector<void*> buffers;
         if (isAnimation) {
@@ -327,7 +327,7 @@ namespace dragon::lumberyard {
     }
 
     bool Actor::noesis_check(BYTE* buffer, int length, [[maybe_unused]] noeRAPI_t* rapi) {
-        Array<char> data_buffer = Array<char>(reinterpret_cast<char*>(buffer), length);
+        Array<char> data_buffer = Array<char>(reinterpret_cast<char*>(buffer), length, nullptr);
         return check(&data_buffer) || Animation::check(&data_buffer);
     }
 } // namespace dragon::lumberyard

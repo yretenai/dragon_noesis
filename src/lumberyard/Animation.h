@@ -7,7 +7,7 @@
 #ifndef DRAGON_LUMBERYARD_ANIMATION_H
 #define DRAGON_LUMBERYARD_ANIMATION_H
 
-#include "../dragon/dragon.h"
+#include "standard_dragon/dragon.h"
 #include "chunk/emfx/EMFXChunks.h"
 #include "export.h"
 

@@ -15,7 +15,7 @@ using namespace dragon::lumberyard::chunk::model;
 
 namespace dragon::lumberyard {
     noesisModel_t* Model::noesis_load(BYTE* buffer, int length, int& num_mdl, noeRAPI_t* rapi) {
-        Array<char> data_buffer = Array<char>(reinterpret_cast<char*>(buffer), length);
+        Array<char> data_buffer = Array<char>(reinterpret_cast<char*>(buffer), length, nullptr);
         Model model(&data_buffer);
         std::vector<std::shared_ptr<AbstractModelChunk>> chunks;
         model.get_chunks_of_type(CRCH_CHUNK_HEADER::TYPE::Node, &chunks);
@@ -195,7 +195,7 @@ namespace dragon::lumberyard {
         g_nfn->NPAPI_GetFormatExtensionFlags(const_cast<wchar_t*>(L".cgf"), &handles);
         if (handles > 1) // something else added a CGF handler.
             return false;
-        Array<char> data_buffer = Array<char>(reinterpret_cast<char*>(buffer), length);
+        Array<char> data_buffer = Array<char>(reinterpret_cast<char*>(buffer), length, nullptr);
         return check(&data_buffer);
     }
 
