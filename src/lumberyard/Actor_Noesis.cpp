@@ -75,7 +75,7 @@ namespace dragon::lumberyard {
             animName = modelPath.filename().replace_extension("").string();
             modelPath = std::filesystem::path(actorPath);
             buffers.push_back(modelData);
-            Array<char> data(reinterpret_cast<char*>(modelData), modelSize);
+            Array<char> data(reinterpret_cast<char*>(modelData), modelSize, nullptr);
             actor = Actor(&data);
         } else {
             actor = Actor(&dataBuffer);

@@ -87,6 +87,9 @@ namespace dragon::lumberyard {
             boneKey->maxTime = 0.0f;
             uint32_t frameOffset = 1;
             bool isAdditive = animInfo->Header.IsAdditive == 1;
+            if(isAdditive) {
+                boneKey->flags = KFBONEFLAG_ADDITIVE;
+            }
             RichVec3 bindPos(motion->Header.BindPosition.X, motion->Header.BindPosition.Y, motion->Header.BindPosition.Z);
             VECTOR4_SINGLE bindRotation = uncompress_quaternion(motion->Header.BindRotation);
             RichMat43 bindRot = RichQuat(bindRotation.X, bindRotation.Y, bindRotation.Z, bindRotation.W).GetTranspose().ToMat43();

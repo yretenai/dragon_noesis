@@ -120,31 +120,36 @@ bool NPAPI_InitLocal() {
     int handle;
     // context tools
     LOG("Adding EMFX Motion Tool...");
-    handle = g_nfn->NPAPI_RegisterTool(const_cast<char*>("Lumberyard - Append EMFX Motion"), Animation::noesis_load, nullptr);
+    handle = g_nfn->NPAPI_RegisterTool(const_cast<char*>("Append EMFX Motion"), Animation::noesis_load, nullptr);
     g_nfn->NPAPI_SetToolHelpText(handle, const_cast<char*>("Loads Lumberyard EMFX Motion to the selected model"));
     g_nfn->NPAPI_SetToolFlags(handle, NTOOLFLAG_CONTEXTITEM);
+    g_nfn->NPAPI_SetToolSubMenuName(handle, const_cast<char*>("Lumberyard"));
     g_nfn->NPAPI_SetToolVisibleCallback(handle, Animation::noesis_check);
 
     LOG("Adding Cook DDS Tool...");
-    handle = g_nfn->NPAPI_RegisterTool(const_cast<char*>("Lumberyard - Cook Texture"), Texture::noesis_tool, nullptr);
+    handle = g_nfn->NPAPI_RegisterTool(const_cast<char*>("Cook Texture"), Texture::noesis_tool, nullptr);
     g_nfn->NPAPI_SetToolHelpText(handle, const_cast<char*>("Merges streamed Lumberyard textures into one DDS"));
     g_nfn->NPAPI_SetToolFlags(handle, NTOOLFLAG_CONTEXTITEM);
+    g_nfn->NPAPI_SetToolSubMenuName(handle, const_cast<char*>("Lumberyard"));
     g_nfn->NPAPI_SetToolVisibleCallback(handle, Texture::noesis_tool_visibility);
 
     // Setting checkboxes -- I wish noesis had a dedicated interface for this.
     LOG("Adding Extracted Game Directory Setting...");
-    handle = g_nfn->NPAPI_RegisterTool(const_cast<char*>("Lumberyard - Set Extracted Game Directory"), set_game_root, nullptr);
+    handle = g_nfn->NPAPI_RegisterTool(const_cast<char*>("Set Extracted Game Directory"), set_game_root, nullptr);
     g_nfn->NPAPI_SetToolHelpText(handle, const_cast<char*>("Sets the EXTRACTED game root folder, for loading other assets like textures."));
+    g_nfn->NPAPI_SetToolSubMenuName(handle, const_cast<char*>("Lumberyard"));
     load_saved_game_root();
 
     LOG("Adding Auto Detect Material Setting...");
-    handle = g_nfn->NPAPI_RegisterTool(const_cast<char*>("Lumberyard - Auto Detect Paired File"), set_autodetect, nullptr);
+    handle = g_nfn->NPAPI_RegisterTool(const_cast<char*>("Auto Detect Paired File"), set_autodetect, nullptr);
     g_nfn->NPAPI_SetToolHelpText(handle, const_cast<char*>("Automatically tries to find relevant ACTOR/MTL files"));
+    g_nfn->NPAPI_SetToolSubMenuName(handle, const_cast<char*>("Lumberyard"));
     get_autodetect(handle);
 
     LOG("Adding Interpolate Animation Setting...");
-    handle = g_nfn->NPAPI_RegisterTool(const_cast<char*>("Lumberyard - Interpolate Animation"), set_interpolate, nullptr);
+    handle = g_nfn->NPAPI_RegisterTool(const_cast<char*>("Interpolate Animation"), set_interpolate, nullptr);
     g_nfn->NPAPI_SetToolHelpText(handle, const_cast<char*>("Interpolate animation frames"));
+    g_nfn->NPAPI_SetToolSubMenuName(handle, const_cast<char*>("Lumberyard"));
     get_interpolate(handle);
 
     // Model handlers
