@@ -120,17 +120,15 @@ bool NPAPI_InitLocal() {
     int handle;
     // context tools
     LOG("Adding EMFX Motion Tool...");
-    handle = g_nfn->NPAPI_RegisterTool(const_cast<char*>("Append EMFX Motion"), Animation::noesis_load, nullptr);
+    handle = g_nfn->NPAPI_RegisterTool(const_cast<char*>("Append Lumberyard EMFX Motion"), Animation::noesis_load, nullptr);
     g_nfn->NPAPI_SetToolHelpText(handle, const_cast<char*>("Loads Lumberyard EMFX Motion to the selected model"));
     g_nfn->NPAPI_SetToolFlags(handle, NTOOLFLAG_CONTEXTITEM);
-    g_nfn->NPAPI_SetToolSubMenuName(handle, const_cast<char*>("Lumberyard"));
     g_nfn->NPAPI_SetToolVisibleCallback(handle, Animation::noesis_check);
 
     LOG("Adding Cook DDS Tool...");
-    handle = g_nfn->NPAPI_RegisterTool(const_cast<char*>("Cook Texture"), Texture::noesis_tool, nullptr);
+    handle = g_nfn->NPAPI_RegisterTool(const_cast<char*>("Cook Lumberyard Texture"), Texture::noesis_tool, nullptr);
     g_nfn->NPAPI_SetToolHelpText(handle, const_cast<char*>("Merges streamed Lumberyard textures into one DDS"));
     g_nfn->NPAPI_SetToolFlags(handle, NTOOLFLAG_CONTEXTITEM);
-    g_nfn->NPAPI_SetToolSubMenuName(handle, const_cast<char*>("Lumberyard"));
     g_nfn->NPAPI_SetToolVisibleCallback(handle, Texture::noesis_tool_visibility);
 
     // Setting checkboxes -- I wish noesis had a dedicated interface for this.
