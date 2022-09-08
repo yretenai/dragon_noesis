@@ -167,7 +167,6 @@ namespace dragon::lumberyard::chunk::emfx {
     };
 
     struct ACTOR_MESH_V1_HEADER {
-        uint32_t MeshId;
         uint32_t NodeIndex;
         uint32_t LOD;
         uint32_t NumOriginalVerts;
